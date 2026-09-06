@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
@@ -64,7 +64,7 @@
         .board-wrapper {
             position: relative;
             width: 360px;
-            height: 390px;
+            height: 410px;
             margin-top: 5px;
             background: rgba(0, 0, 0, 0.35);
             border-radius: 15px;
@@ -188,7 +188,6 @@
             font-weight: bold;
         }
 
-        /* Son 15 saniye ortadaki büyük uyarı */
         #urgentAlert {
             display: none;
             position: absolute;
@@ -199,13 +198,14 @@
             color: white;
             padding: 10px 20px;
             border-radius: 12px;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             box-shadow: 0 0 25px rgba(231, 76, 60, 0.8);
             z-index: 150;
             animation: urgentPulse 0.5s infinite alternate;
             text-align: center;
             border: 2px solid #fff;
+            width: 80%;
         }
 
         @keyframes urgentPulse {
@@ -304,7 +304,6 @@
         </div>
     </div>
 
-    <!-- Seviye Geçiş / Özlü Söz Modalı -->
     <div class="modal" id="winModal">
         <h2>Bölüm Tamamlandı! 🎉</h2>
         <p id="winMessage">Süre Bonusu Ekleniyor...</p>
@@ -312,7 +311,6 @@
         <button class="btn-main" onclick="nextLevel()">Sonraki Seviye ➡️</button>
     </div>
 
-    <!-- Oyun Bitiş / Süre / Sıkışma Modalı -->
     <div class="modal" id="loseModal">
         <h2 id="loseTitle" style="color: #e74c3c;">Süre Bitti! ⏳</h2>
         <p id="loseMessage">Tekrar denemek ister misin?</p>
@@ -330,10 +328,11 @@
             { main: '一', sub: '萬', color: '#27ae60', name: '1 Char' },
             { main: '二', sub: '萬', color: '#c0392b', name: '2 Char' },
             { main: '三', sub: '萬', color: '#8e44ad', name: '3 Char' },
-            { main: '九', sub: '萬', color: '#16a085', name: '9 Char' }
+            { main: '九', sub: '萬', color: '#16a085', name: '9 Char' },
+            { main: '四', sub: '萬', color: '#e67e22', name: '4 Char' },
+            { main: '五', sub: '萬', color: '#2980b9', name: '5 Char' }
         ];
 
-        // 10. Levele özel tamamen farklı hayvan simgeleri bonus seti
         const animalSymbols = [
             { main: '🐱', sub: 'Kedi', color: '#e67e22', name: 'Animal Cat' },
             { main: '🐶', sub: 'Köpek', color: '#d35400', name: 'Animal Dog' },
@@ -344,7 +343,9 @@
             { main: '🐸', sub: 'Kurbağa', color: '#00b894', name: 'Animal Frog' },
             { main: '🐵', sub: 'Maymun', color: '#d63031', name: 'Animal Monkey' },
             { main: '🐨', sub: 'Koala', color: '#636e72', name: 'Animal Koala' },
-            { main: '🐯', sub: 'Kaplan', color: '#e17055', name: 'Animal Tiger' }
+            { main: '🐯', sub: 'Kaplan', color: '#e17055', name: 'Animal Tiger' },
+            { main: '🐧', sub: 'Penguen', color: '#0984e3', name: 'Animal Penguin' },
+            { main: '🦉', sub: 'Baykuş', color: '#6c5ce7', name: 'Animal Owl' }
         ];
 
         const memoryQuotes = [
@@ -357,7 +358,31 @@
             "\"Odaklanma ve dikkat, hafızanın kapılarını aralayan iki anahtardır.\""
         ];
 
-        let currentLevel = 0; // 0 ile 49 arası (Toplam 50 level)
+        // Garantili ve düzgün görünen sabit şablonlar havuzu (farklı taş sayılarına göre)
+        const layoutsPool = [
+            // Küçük şablon (16 taş / 8 çift - Seviye 1 için)
+            [
+                {x: 80, y: 50, l: 0}, {x: 130, y: 50, l: 0}, {x: 180, y: 50, l: 0}, {x: 230, y: 50, l: 0},
+                {x: 80, y: 130, l: 0}, {x: 130, y: 130, l: 0}, {x: 180, y: 130, l: 0}, {x: 230, y: 130, l: 0},
+                {x: 80, y: 210, l: 0}, {x: 130, y: 210, l: 0}, {x: 180, y: 210, l: 0}, {x: 230, y: 210, l: 0},
+                {x: 105, y: 90, l: 1}, {x: 155, y: 90, l: 1}, {x: 105, y: 170, l: 1}, {x: 155, y: 170, l: 1}
+            ],
+            // Orta şablon (36 taş / 18 çift)
+            [
+                {x: 50, y: 30, l: 0}, {x: 100, y: 30, l: 0}, {x: 150, y: 30, l: 0}, {x: 200, y: 30, l: 0}, {x: 250, y: 30, l: 0},
+                {x: 50, y: 100, l: 0}, {x: 100, y: 100, l: 0}, {x: 150, y: 100, l: 0}, {x: 200, y: 100, l: 0}, {x: 250, y: 100, l: 0},
+                {x: 50, y: 170, l: 0}, {x: 100, y: 170, l: 0}, {x: 150, y: 170, l: 0}, {x: 200, y: 170, l: 0}, {x: 250, y: 170, l: 0},
+                {x: 50, y: 240, l: 0}, {x: 100, y: 240, l: 0}, {x: 150, y: 240, l: 0}, {x: 200, y: 240, l: 0}, {x: 250, y: 240, l: 0},
+                // Kat 1
+                {x: 75, y: 65, l: 1}, {x: 125, y: 65, l: 1}, {x: 175, y: 65, l: 1}, {x: 225, y: 65, l: 1},
+                {x: 75, y: 135, l: 1}, {x: 125, y: 135, l: 1}, {x: 175, y: 135, l: 1}, {x: 225, y: 135, l: 1},
+                {x: 75, y: 205, l: 1}, {x: 125, y: 205, l: 1}, {x: 175, y: 205, l: 1}, {x: 225, y: 205, l: 1},
+                // Kat 2
+                {x: 100, y: 100, l: 2}, {x: 150, y: 100, l: 2}, {x: 100, y: 170, l: 2}, {x: 150, y: 170, l: 2}
+            ]
+        ];
+
+        let currentLevel = 0;
         let score = 0;
         let selectedTile = null;
         let remainingTiles = 0;
@@ -371,7 +396,7 @@
 
         function startTimer() {
             clearInterval(timerInterval);
-            timeLeft = Math.max(40, 120 - (currentLevel * 1.5));
+            timeLeft = Math.max(45, 120 - (currentLevel * 1.2));
             document.getElementById('timer').innerText = Math.floor(timeLeft);
             document.getElementById('urgentAlert').style.display = 'none';
 
@@ -379,7 +404,6 @@
                 timeLeft--;
                 document.getElementById('timer').innerText = Math.floor(timeLeft);
 
-                // Son 15 saniye ortada dikkat çekici uyarı
                 if (timeLeft <= 15 && timeLeft > 0) {
                     document.getElementById('urgentAlert').style.display = 'block';
                 } else {
@@ -396,16 +420,26 @@
             }, 1000);
         }
 
-        // Koordinat üretici (taş sayısına dinamik uyum sağlar)
-        function generateDynamicLayout(count) {
+        // İstenen mantık: Her 5 levelde bir çift sayısı 10 artacak şekilde şablon üretici
+        function getLayoutForLevel(levelIdx) {
+            let pairCount = 8 + Math.floor(levelIdx / 5) * 10; // 1. seviye 8 çift (16 taş), sonra 18, 28...
+            let totalNeeded = pairCount * 2;
+            if (totalNeeded > 72) totalNeeded = 72; // Ekran sınırları için max sınır
+
+            let base = layoutsPool[levelIdx % layoutsPool.length];
             let layout = [];
-            let layersCount = 3;
-            for (let i = 0; i < count; i++) {
-                let l = i < count / 3 ? 0 : (i < (count * 2) / 3 ? 1 : 2);
-                // 360x390 alan içinde rastgele güvenli koordinatlar
-                let x = 30 + (i * 19) % 290;
-                let y = 30 + (Math.floor(i / 15) * 48) + (i % 3) * 6;
-                layout.push({x: x, y: y, l: l});
+            
+            // Şablonu istenen çift sayısına uyarlamak için çoğaltıyoruz
+            for (let i = 0; i < totalNeeded; i++) {
+                let templateNode = base[i % base.length];
+                // Hafif offset vererek üst üste binme sorununu engelliyoruz
+                let offsetX = (Math.floor(i / base.length) * 10) % 40;
+                let offsetY = (Math.floor(i / base.length) * 10) % 40;
+                layout.push({
+                    x: Math.min(300, templateNode.x + offsetX),
+                    y: Math.min(340, templateNode.y + offsetY),
+                    l: templateNode.l
+                });
             }
             return layout;
         }
@@ -416,7 +450,6 @@
             document.getElementById('loseModal').style.display = 'none';
             document.getElementById('urgentAlert').style.display = 'none';
             
-            // Her level başlangıcında haklar 10'a sabitlenir
             shuffleLeft = 10;
             hintLeft = 10;
             updateControlCounts();
@@ -426,15 +459,10 @@
             selectedTile = null;
             lockBoard = false;
 
-            // Her 5 levelde bir taş çifti sayısı 10 çift (20 taş) artar. Başlangıç 14 taş (7 çift)
-            let pairCount = 7 + Math.floor(levelIdx / 5) * 10;
-            let totalTilesCount = pairCount * 2;
-            if (totalTilesCount > 110) totalTilesCount = 110; // Sınır koruması
-
-            const layout = generateDynamicLayout(totalTilesCount);
+            const layout = getLayoutForLevel(levelIdx);
             remainingTiles = layout.length;
 
-            // Her 10 levelde bir bonus etap (10, 20, 30, 40, 50 -> index 9, 19, 29, 39, 49)
+            // Her 10 levelde bir bonus etap (10, 20, 30, 40, 50) -> Hayvan simgeleri
             let isBonusStage = ((levelIdx + 1) % 10 === 0);
             let poolToUse = isBonusStage ? animalSymbols : standardSymbols;
 
@@ -523,7 +551,6 @@
                 if (hasPair) break;
             }
 
-            // Eşleşme kalmadıysa ve haklar bittiyse "Çözüm bulunamadı" uyarısı ile baştan al
             if (!hasPair) {
                 if (shuffleLeft <= 0) {
                     clearInterval(timerInterval);
@@ -532,7 +559,6 @@
                     document.getElementById('loseMessage').innerText = "Karıştırma hakların bitti ve tahtada hamle kalmadı! Level baştan başlatılıyor.";
                     document.getElementById('loseModal').style.display = 'flex';
                 } else {
-                    // Otomatik hak düşerek karıştır
                     shuffleLeft--;
                     updateControlCounts();
                     autoExecuteShuffle();
@@ -587,7 +613,6 @@
                             
                             document.getElementById('winMessage').innerText = `Bölüm Başarıyla Tamamlandı! Süre Bonusu: +${bonus} Puan`;
                             
-                            // Hafıza sözlerinden rastgele seç
                             let randomQuote = memoryQuotes[Math.floor(Math.random() * memoryQuotes.length)];
                             document.getElementById('quoteText').innerText = randomQuote;
 
@@ -701,7 +726,7 @@
         function nextLevel() {
             currentLevel++;
             if (currentLevel >= 50) {
-                currentLevel = 0; // 50 level tamamlandığında başa döner veya kutlama yapılabilir
+                currentLevel = 0;
                 alert("Tebrikler! 50 levelin tümünü başarıyla tamamladın!");
             }
             loadLevel(currentLevel);
@@ -717,4 +742,3 @@
     </script>
 </body>
 </html>
-                                   
