@@ -1,168 +1,288 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pi Mahjong Game</title>
-  <!-- Pi Network SDK -->
-  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #2c3e50;
-      color: #fff;
-      text-align: center;
-      margin: 0;
-      padding: 15px;
-    }
-    h1 { color: #f1c40f; margin-bottom: 5px; }
-    p { font-size: 14px; color: #bdc3c7; }
-    #stats {
-      margin: 15px 0;
-      font-size: 18px;
-      font-weight: bold;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      max-width: 360px;
-      margin: 0 auto;
-    }
-    .tile {
-      background: #ecf0f1;
-      color: #2c3e50;
-      height: 80px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      cursor: pointer;
-      user-select: none;
-      box-shadow: 0 4px #bdc3c7;
-      transition: transform 0.1s, background-color 0.2s;
-    }
-    .tile.active {
-      background: #3498db;
-      color: #fff;
-      transform: scale(0.95);
-    }
-    .tile.matched {
-      visibility: hidden;
-    }
-    button {
-      background-color: #8e44ad;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      font-size: 16px;
-      font-weight: bold;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-    button:hover { background-color: #9b59b6; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mahjong Master Venus</title>
+    <style>
+        :root {
+            --bg-color: #0e3b23;
+            --tile-bg: linear-gradient(145deg, #ffffff, #e6e6e6);
+            --tile-back: #2e7d32;
+            --shadow: 0 6px 12px rgba(0,0,0,0.4);
+            --selected-glow: 0 0 15px #ffd700;
+        }
+
+        body {
+            margin: 0;
+            padding: 10px;
+            background: radial-gradient(circle, #1b5e20 0%, #082816 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            margin: 5px 0;
+            color: #ffd700;
+            font-size: 26px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 15px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .stats-item span {
+            color: #ffd700;
+        }
+
+        .board-container {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tile {
+            aspect-ratio: 3 / 4;
+            background: var(--tile-bg);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            box-shadow: 0 5px 0 #b0bec5, var(--shadow);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            border: 1px solid #fff;
+        }
+
+        .tile:active {
+            transform: translateY(2px);
+            box-shadow: 0 3px 0 #b0bec5, var(--shadow);
+        }
+
+        .tile.selected {
+            transform: translateY(-6px);
+            box-shadow: var(--selected-glow), 0 8px 0 #b0bec5;
+            border: 2px solid #ffd700;
+        }
+
+        .tile.matched {
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.5);
+            transition: all 0.3s ease;
+        }
+
+        .tile .symbol {
+            font-size: 32px;
+            line-height: 1;
+        }
+
+        .tile .label {
+            font-size: 10px;
+            color: #555;
+            margin-top: 4px;
+            font-weight: bold;
+        }
+
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(180deg, #ffb300 0%, #ff8f00 100%);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            cursor: pointer;
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+        }
+
+        .win-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .win-modal h2 {
+            color: #ffd700;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
 
-  <h1>Pi Mahjong</h1>
-  <p>Aynı simgeye sahip taşları eşleştirip tahtayı temizleyin!</p>
+    <header>
+        <h1>Mahjong Master</h1>
+        <div class="stats-bar">
+            <div class="stats-item">Puan: <span id="score">0</span></div>
+            <div class="stats-item">Hamle: <span id="moves">0</span></div>
+            <div class="stats-item">Kalan: <span id="remaining">16</span></div>
+        </div>
+    </header>
 
-  <div id="stats">
-    Puan: <span id="score">0</span> | Hamle: <span id="moves">0</span>
-  </div>
+    <div class="board-container">
+        <div class="board" id="board"></div>
+    </div>
 
-  <div class="grid" id="board"></div>
+    <div class="controls">
+        <button class="btn" onclick="initGame()">Yeniden Başlat</button>
+    </div>
 
-  <button onclick="initGame()">Yeniden Başlat</button>
+    <div class="win-modal" id="winModal">
+        <h2>Tebrikler! 🎉</h2>
+        <p>Tahtayı başarıyla temizlediniz.</p>
+        <button class="btn" onclick="initGame()">Tekrar Oyna</button>
+    </div>
 
-  <script>
-    // Pi Network SDK Başlatma
-    const Pi = window.Pi;
-    if (Pi) {
-      Pi.init({ version: "2.0", sandbox: true }); // Testnet için sandbox: true
-    }
+    <script>
+        const symbols = [
+            { icon: '🀀', name: 'Doğu' },
+            { icon: '🀁', name: 'Güney' },
+            { icon: '🀂', name: 'Batı' },
+            { icon: '🀃', name: 'Kuzey' },
+            { icon: '🀄', name: 'Kırmızı' },
+            { icon: '🀅', name: 'Yeşil' },
+            { icon: '🀆', name: 'Beyaz' },
+            { icon: '🀇', name: '1 Karakter' }
+        ];
 
-    const symbols = ['🀄', '🀅', '🀆', '🀇', '🀈', '🀉', '🀊', '🀋'];
-    let deck = [...symbols, ...symbols];
-    let selectedTiles = [];
-    let moves = 0;
-    let score = 0;
+        let selectedTile = null;
+        let score = 0;
+        let moves = 0;
+        let remaining = 16;
+        let lockBoard = false;
 
-    function shuffle(array) {
-      return array.sort(() => Math.random() - 0.5);
-    }
+        function initGame() {
+            const board = document.getElementById('board');
+            document.getElementById('winModal').style.display = 'none';
+            board.innerHTML = '';
+            selectedTile = null;
+            score = 0;
+            moves = 0;
+            remaining = 16;
+            lockBoard = false;
+            
+            updateStats();
 
-    function initGame() {
-      const board = document.getElementById('board');
-      board.innerHTML = '';
-      selectedTiles = [];
-      moves = 0;
-      score = 0;
-      document.getElementById('moves').innerText = moves;
-      document.getElementById('score').innerText = score;
+            // 8 çift (toplam 16 taş) oluştur
+            let deck = [...symbols, ...symbols];
+            deck.sort(() => Math.random() - 0.5);
 
-      const shuffled = shuffle([...deck]);
-      shuffled.forEach((symbol, index) => {
-        const tile = document.createElement('div');
-        tile.classList.add('tile');
-        tile.dataset.symbol = symbol;
-        tile.dataset.index = index;
-        tile.innerText = '🀁'; // Kapalı simge
-        tile.addEventListener('click', handleTileClick);
-        board.appendChild(tile);
-      });
-    }
+            deck.forEach((data, index) => {
+                const tile = document.createElement('div');
+                tile.classList.add('tile');
+                tile.dataset.symbol = data.icon;
+                tile.dataset.index = index;
 
-    function handleTileClick(e) {
-      const tile = e.currentTarget;
-      
-      if (tile.classList.contains('active') || tile.classList.contains('matched') || selectedTiles.length === 2) {
-        return;
-      }
+                tile.innerHTML = `
+                    <div class="symbol">${data.icon}</div>
+                    <div class="label">${data.name}</div>
+                `;
 
-      tile.innerText = tile.dataset.symbol;
-      tile.classList.add('active');
-      selectedTiles.push(tile);
+                tile.addEventListener('click', () => handleTileClick(tile));
+                board.appendChild(tile);
+            });
+        }
 
-      if (selectedTiles.length === 2) {
-        moves++;
-        document.getElementById('moves').innerText = moves;
-        checkMatch();
-      }
-    }
+        function handleTileClick(tile) {
+            if (lockBoard || tile.classList.contains('matched') || tile === selectedTile) return;
 
-    function checkMatch() {
-      const [tile1, tile2] = selectedTiles;
+            tile.classList.add('selected');
 
-      if (tile1.dataset.symbol === tile2.dataset.symbol) {
-        setTimeout(() => {
-          tile1.classList.add('matched');
-          tile2.classList.add('matched');
-          selectedTiles = [];
-          score += 10;
-          document.getElementById('score').innerText = score;
+            if (!selectedTile) {
+                selectedTile = tile;
+            } else {
+                moves++;
+                if (selectedTile.dataset.symbol === tile.dataset.symbol) {
+                    // Eşleşti
+                    lockBoard = true;
+                    setTimeout(() => {
+                        selectedTile.classList.add('matched');
+                        tile.classList.add('matched');
+                        selectedTile.classList.remove('selected');
+                        tile.classList.remove('selected');
+                        selectedTile = null;
+                        score += 100;
+                        remaining -= 2;
+                        updateStats();
+                        lockBoard = false;
 
-          // Oyun bitti mi kontrol et
-          if (document.querySelectorAll('.tile.matched').length === deck.length) {
-            alert('Tebrikler! Oyunu tamamladınız. Toplam Puan: ' + score);
-          }
-        }, 500);
-      } else {
-        setTimeout(() => {
-          tile1.innerText = '🀁';
-          tile2.innerText = '🀁';
-          tile1.classList.remove('active');
-          tile2.classList.remove('active');
-          selectedTiles = [];
-        }, 800);
-      }
-    }
+                        if (remaining === 0) {
+                            document.getElementById('winModal').style.display = 'flex';
+                        }
+                    }, 300);
+                } else {
+                    // Eşleşmedi
+                    lockBoard = true;
+                    setTimeout(() => {
+                        selectedTile.classList.remove('selected');
+                        tile.classList.remove('selected');
+                        selectedTile = null;
+                        lockBoard = false;
+                        updateStats();
+                    }, 500);
+                }
+            }
+        }
 
-    // Oyunu Başlat
-    initGame();
-  </script>
+        function updateStats() {
+            document.getElementById('score').innerText = score;
+            document.getElementById('moves').innerText = moves;
+            document.getElementById('remaining').innerText = remaining;
+        }
+
+        initGame();
+    </script>
 </body>
 </html>
