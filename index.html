@@ -1,4 +1,3 @@
-                        
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -8,9 +7,8 @@
     <style>
         :root {
             --tile-w: 52px;
-            --tile-h: 68px;
-            --tile-bg: linear-gradient(145deg, #ffffff, #f0f0f0);
-            --shadow-color: rgba(0, 0, 0, 0.45);
+            --tile-h: 70px;
+            --shadow-color: rgba(0, 0, 0, 0.5);
         }
 
         body {
@@ -58,49 +56,70 @@
 
         .board-wrapper {
             position: relative;
-            width: 360px;
+            width: 350px;
             height: 480px;
             margin-top: 15px;
-            background: rgba(0, 0, 0, 0.25);
+            background: rgba(0, 0, 0, 0.2);
             border-radius: 16px;
             border: 2px solid rgba(255, 255, 255, 0.08);
             box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
         }
 
+        /* İşaretlenen özel çerçeveli taş stili */
         .tile {
             position: absolute;
             width: var(--tile-w);
             height: var(--tile-h);
-            background: var(--tile-bg);
+            background: linear-gradient(145deg, #ffffff, #f4f4f4);
             border-radius: 8px;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
             transition: transform 0.15s ease, box-shadow 0.15s ease;
-            border: 1px solid #e0e0e0;
             box-sizing: border-box;
+            border: 1px solid #dcdcdc;
         }
 
-        .tile .symbol {
-            font-size: 34px;
+        .tile-inner {
+            width: 82%;
+            height: 86%;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            background: #fafafa;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 0 3px rgba(0,0,0,0.1);
+        }
+
+        .tile .symbol-text {
+            font-size: 26px;
+            font-weight: 900;
             line-height: 1;
-            filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.3));
+            text-shadow: 1px 1px 0px rgba(0,0,0,0.15);
         }
 
-        /* Katman derinlikleri ve gölgeleri */
+        .tile .symbol-sub {
+            font-size: 10px;
+            margin-top: 2px;
+            font-weight: bold;
+            opacity: 0.85;
+        }
+
+        /* Katman derinlikleri */
         .tile[data-layer="0"] { z-index: 10; box-shadow: 2px 3px 5px var(--shadow-color), 0 4px 0 #b0bec5; }
         .tile[data-layer="1"] { z-index: 20; box-shadow: 4px 6px 8px var(--shadow-color), 0 5px 0 #90a4ae; transform: translate(-3px, -3px); }
         .tile[data-layer="2"] { z-index: 30; box-shadow: 6px 9px 12px var(--shadow-color), 0 6px 0 #78909c; transform: translate(-6px, -6px); }
 
-        /* Kilitli / Üstü kapalı taşlar */
         .tile.blocked {
-            filter: brightness(0.6) grayscale(0.3);
+            filter: brightness(0.62) grayscale(0.25);
             cursor: not-allowed;
         }
 
         .tile.selected {
-            border: 3px solid #ffd700;
+            border: 2px solid #ffd700;
             box-shadow: 0 0 15px #ffd700, 0 6px 0 #ffb300 !important;
             transform: translate(-3px, -8px) scale(1.05) !important;
             z-index: 99 !important;
@@ -172,78 +191,66 @@
 
     <div class="win-modal" id="winModal">
         <h2>Bölüm Tamamlandı! 🎉</h2>
-        <p>Harika! Sonraki seviyeye geçiyorsunuz.</p>
+        <p>Tebrikler, bir sonraki seviyeye geçiyorsunuz.</p>
         <button class="btn" onclick="nextLevel()">Sonraki Seviye</button>
     </div>
 
     <script>
+        // Çerçeveli özel Mahjong taş koleksiyonu
         const symbolsPool = [
-            { icon: '🀀', color: '#d32f2f' },
-            { icon: '🀁', color: '#1976d2' },
-            { icon: '🀂', color: '#388e3c' },
-            { icon: '🀃', color: '#f57c00' },
-            { icon: '🀄', color: '#c2185b' },
-            { icon: '🀅', color: '#2e7d32' },
-            { icon: '🀆', color: '#7b1fa2' },
-            { icon: '🀇', color: '#00796b' },
-            { icon: '🀈', color: '#d81b60' },
-            { icon: '🀉', color: '#8e24aa' }
+            { main: '中', sub: '萬', color: '#d32f2f', name: 'Red Dragon' },
+            { main: '發', sub: '萬', color: '#2e7d32', name: 'Green Dragon' },
+            { main: '東', sub: '風', color: '#d32f2f', name: 'East Wind' },
+            { main: '南', sub: '風', color: '#1976d2', name: 'South Wind' },
+            { main: '西', sub: '風', color: '#2e7d32', name: 'West Wind' },
+            { main: '北', sub: '風', color: '#f57c00', name: 'North Wind' },
+            { main: '一', sub: '萬', color: '#2e7d32', name: '1 Character' },
+            { main: '二', sub: '萬', color: '#d32f2f', name: '2 Character' },
+            { main: '三', sub: '萬', color: '#8e24aa', name: '3 Character' },
+            { main: '九', sub: '萬', color: '#00796b', name: '9 Character' }
         ];
 
-        // Rakam Büyüklüğünde Şekil Dizilimleri (X, Y, Katman)
+        // Daha kavisli ve estetik rakam dizilimleri
         const layouts = [
-            // Level 1: "1" Rakamı Şeklinde (14 Taş)
+            // Level 1: Estetik "1" Rakamı
             [
-                {x: 130, y: 70, l: 0},
-                {x: 160, y: 30, l: 0}, {x: 160, y: 90, l: 0}, {x: 160, y: 150, l: 0},
-                {x: 160, y: 210, l: 0}, {x: 160, y: 270, l: 0}, {x: 160, y: 330, l: 0},
-                {x: 100, y: 390, l: 0}, {x: 150, y: 390, l: 0}, {x: 200, y: 390, l: 0},
-                // Katman 1 (1'in Gövdesi Üstünde)
-                {x: 160, y: 90, l: 1}, {x: 160, y: 150, l: 1}, {x: 160, y: 210, l: 1}, {x: 160, y: 270, l: 1}
-            ],
-            // Level 2: "2" Rakamı Şeklinde (18 Taş)
-            [
-                {x: 100, y: 40, l: 0}, {x: 150, y: 30, l: 0}, {x: 200, y: 40, l: 0},
-                {x: 210, y: 100, l: 0}, {x: 170, y: 160, l: 0}, {x: 130, y: 220, l: 0},
-                {x: 90, y: 280, l: 0}, {x: 90, y: 350, l: 0}, {x: 140, y: 350, l: 0}, {x: 190, y: 350, l: 0}, {x: 230, y: 350, l: 0},
+                {x: 120, y: 70, l: 0}, {x: 150, y: 35, l: 0},
+                {x: 150, y: 100, l: 0}, {x: 150, y: 165, l: 0}, {x: 150, y: 230, l: 0}, {x: 150, y: 295, l: 0},
+                {x: 95, y: 360, l: 0}, {x: 150, y: 360, l: 0}, {x: 205, y: 360, l: 0},
                 // Katman 1
-                {x: 150, y: 30, l: 1}, {x: 200, y: 40, l: 1}, {x: 170, y: 160, l: 1}, {x: 130, y: 220, l: 1},
-                {x: 90, y: 350, l: 1}, {x: 190, y: 350, l: 1},
-                // Katman 2 (Kıvrım Noktası Zirvesi)
-                {x: 170, y: 160, l: 2}
+                {x: 150, y: 100, l: 1}, {x: 150, y: 165, l: 1}, {x: 150, y: 230, l: 1},
+                // Katman 2 (Tepe Noktası)
+                {x: 150, y: 165, l: 2}
             ],
-            // Level 3: "3" Rakamı Şeklinde (20 Taş)
+            // Level 2: Estetik ve Kavisli "2" Rakamı
             [
-                {x: 100, y: 40, l: 0}, {x: 150, y: 30, l: 0}, {x: 200, y: 40, l: 0},
-                {x: 210, y: 100, l: 0}, {x: 150, y: 160, l: 0}, {x: 210, y: 220, l: 0},
-                {x: 210, y: 280, l: 0}, {x: 100, y: 340, l: 0}, {x: 150, y: 350, l: 0}, {x: 200, y: 340, l: 0},
+                {x: 100, y: 40, l: 0}, {x: 150, y: 30, l: 0}, {x: 200, y: 45, l: 0},
+                {x: 210, y: 110, l: 0}, {x: 170, y: 175, l: 0}, {x: 125, y: 240, l: 0},
+                {x: 85, y: 305, l: 0}, {x: 85, y: 370, l: 0}, {x: 140, y: 370, l: 0}, {x: 195, y: 370, l: 0},
                 // Katman 1
-                {x: 150, y: 30, l: 1}, {x: 210, y: 100, l: 1}, {x: 150, y: 160, l: 1},
-                {x: 210, y: 220, l: 1}, {x: 210, y: 280, l: 1}, {x: 150, y: 350, l: 1},
+                {x: 150, y: 30, l: 1}, {x: 170, y: 175, l: 1}, {x: 125, y: 240, l: 1}, {x: 140, y: 370, l: 1},
                 // Katman 2
-                {x: 150, y: 160, l: 2}, {x: 210, y: 100, l: 2}, {x: 210, y: 220, l: 2}, {x: 210, y: 280, l: 2}
+                {x: 170, y: 175, l: 2}
             ],
-            // Level 4: "4" Rakamı Şeklinde (20 Taş)
+            // Level 3: Kıvrımlı "3" Rakamı
             [
-                {x: 180, y: 30, l: 0}, {x: 140, y: 80, l: 0}, {x: 100, y: 140, l: 0},
-                {x: 70, y: 200, l: 0}, {x: 120, y: 200, l: 0}, {x: 170, y: 200, l: 0}, {x: 220, y: 200, l: 0},
-                {x: 180, y: 110, l: 0}, {x: 180, y: 270, l: 0}, {x: 180, y: 340, l: 0},
+                {x: 100, y: 35, l: 0}, {x: 150, y: 30, l: 0}, {x: 200, y: 45, l: 0},
+                {x: 205, y: 110, l: 0}, {x: 155, y: 175, l: 0},
+                {x: 205, y: 240, l: 0}, {x: 200, y: 305, l: 0}, {x: 150, y: 360, l: 0}, {x: 100, y: 350, l: 0},
                 // Katman 1
-                {x: 140, y: 80, l: 1}, {x: 100, y: 140, l: 1}, {x: 120, y: 200, l: 1},
-                {x: 170, y: 200, l: 1}, {x: 180, y: 110, l: 1}, {x: 180, y: 270, l: 1},
+                {x: 150, y: 30, l: 1}, {x: 155, y: 175, l: 1}, {x: 205, y: 240, l: 1}, {x: 150, y: 360, l: 1},
                 // Katman 2
-                {x: 120, y: 200, l: 2}, {x: 170, y: 200, l: 2}, {x: 180, y: 110, l: 2}, {x: 180, y: 270, l: 2}
+                {x: 155, y: 175, l: 2}
             ],
-            // Level 5: "5" Rakamı Şeklinde (22 Taş)
+            // Level 4: "4" Rakamı
             [
-                {x: 90, y: 40, l: 0}, {x: 140, y: 40, l: 0}, {x: 190, y: 40, l: 0}, {x: 230, y: 40, l: 0},
-                {x: 90, y: 100, l: 0}, {x: 90, y: 160, l: 0}, {x: 140, y: 160, l: 0}, {x: 190, y: 160, l: 0},
-                {x: 210, y: 220, l: 0}, {x: 210, y: 280, l: 0}, {x: 90, y: 340, l: 0}, {x: 140, y: 350, l: 0}, {x: 190, y: 340, l: 0},
+                {x: 180, y: 30, l: 0}, {x: 135, y: 85, l: 0}, {x: 90, y: 145, l: 0},
+                {x: 65, y: 210, l: 0}, {x: 120, y: 210, l: 0}, {x: 175, y: 210, l: 0}, {x: 230, y: 210, l: 0},
+                {x: 175, y: 110, l: 0}, {x: 175, y: 275, l: 0}, {x: 175, y: 340, l: 0},
                 // Katman 1
-                {x: 140, y: 40, l: 1}, {x: 90, y: 100, l: 1}, {x: 140, y: 160, l: 1},
-                {x: 210, y: 220, l: 1}, {x: 210, y: 280, l: 1}, {x: 140, y: 350, l: 1},
+                {x: 135, y: 85, l: 1}, {x: 175, y: 210, l: 1}, {x: 175, y: 275, l: 1},
                 // Katman 2
-                {x: 140, y: 160, l: 2}, {x: 210, y: 220, l: 2}, {x: 210, y: 280, l: 2}
+                {x: 175, y: 210, l: 2}
             ]
         ];
 
@@ -264,7 +271,6 @@
             const layout = layouts[levelIdx % layouts.length];
             remainingTiles = layout.length;
 
-            // Çift simgeleri hazırlama
             let pairsCount = Math.floor(layout.length / 2);
             let activeSymbols = symbolsPool.slice(0, Math.min(pairsCount, symbolsPool.length));
             while (activeSymbols.length < pairsCount) {
@@ -272,7 +278,6 @@
             }
 
             let deck = [...activeSymbols, ...activeSymbols];
-            // Eğer tek taş kaldıysa tamamlamak için sembol ekle
             if (layout.length % 2 !== 0) {
                 deck.push(symbolsPool[0]);
             }
@@ -285,12 +290,17 @@
                 const tile = document.createElement('div');
                 tile.classList.add('tile');
                 tile.dataset.id = idx;
-                tile.dataset.icon = sym.icon;
+                tile.dataset.name = sym.name;
                 tile.dataset.layer = pos.l;
                 tile.style.left = `${pos.x}px`;
                 tile.style.top = `${pos.y}px`;
 
-                tile.innerHTML = `<div class="symbol" style="color: ${sym.color}">${sym.icon}</div>`;
+                tile.innerHTML = `
+                    <div class="tile-inner">
+                        <div class="symbol-text" style="color: ${sym.color}">${sym.main}</div>
+                        <div class="symbol-sub" style="color: ${sym.color}">${sym.sub}</div>
+                    </div>
+                `;
 
                 board.appendChild(tile);
 
@@ -314,12 +324,11 @@
             tilesData.forEach(tile => {
                 if (tile.matched) return;
 
-                // Kendisinden üst katmanda çakışan taş var mı?
                 let isBlocked = tilesData.some(other => {
                     if (other.matched) return false;
                     if (other.layer > tile.layer) {
-                        let overlapX = Math.abs(other.x - tile.x) < 42;
-                        let overlapY = Math.abs(other.y - tile.y) < 55;
+                        let overlapX = Math.abs(other.x - tile.x) < 40;
+                        let overlapY = Math.abs(other.y - tile.y) < 52;
                         return overlapX && overlapY;
                     }
                     return false;
@@ -350,8 +359,7 @@
             if (!selectedTile) {
                 selectedTile = tile;
             } else {
-                if (selectedTile.element.dataset.icon === tile.element.dataset.icon) {
-                    // Eşleşme Başarılı
+                if (selectedTile.element.dataset.name === tile.element.dataset.name) {
                     lockBoard = true;
                     setTimeout(() => {
                         selectedTile.element.classList.add('matched');
@@ -375,7 +383,6 @@
                         }
                     }, 250);
                 } else {
-                    // Yanlış Eşleşme
                     lockBoard = true;
                     setTimeout(() => {
                         selectedTile.element.classList.remove('selected');
@@ -406,5 +413,3 @@
     </script>
 </body>
 </html>
-
-    
