@@ -6,10 +6,8 @@
     <title>Mahjong Master Venus</title>
     <style>
         :root {
-            --bg-color: #0e3b23;
-            --tile-bg: linear-gradient(145deg, #ffffff, #e6e6e6);
-            --tile-back: #2e7d32;
-            --shadow: 0 6px 12px rgba(0,0,0,0.4);
+            --tile-bg: linear-gradient(145deg, #ffffff, #f0f0f0);
+            --shadow: 0 6px 10px rgba(0,0,0,0.4);
             --selected-glow: 0 0 15px #ffd700;
         }
 
@@ -29,7 +27,7 @@
 
         header {
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         h1 {
@@ -42,10 +40,10 @@
         .stats-bar {
             display: flex;
             gap: 15px;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.5);
             padding: 8px 20px;
             border-radius: 20px;
-            border: 1px solid rgba(255, 215, 0, 0.3);
+            border: 1px solid rgba(255, 215, 0, 0.4);
             font-weight: bold;
             font-size: 14px;
         }
@@ -56,7 +54,7 @@
 
         .board-container {
             width: 100%;
-            max-width: 420px;
+            max-width: 400px;
             display: flex;
             justify-content: center;
             margin-top: 10px;
@@ -67,10 +65,10 @@
             grid-template-columns: repeat(4, 1fr);
             gap: 10px;
             width: 100%;
-            background: rgba(0, 0, 0, 0.25);
+            background: rgba(0, 0, 0, 0.3);
             padding: 15px;
             border-radius: 15px;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
             border: 2px solid rgba(255, 255, 255, 0.1);
         }
 
@@ -82,12 +80,11 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-size: 28px;
             box-shadow: 0 5px 0 #b0bec5, var(--shadow);
             cursor: pointer;
             transition: all 0.2s ease;
             position: relative;
-            border: 1px solid #fff;
+            border: 1px solid #ddd;
         }
 
         .tile:active {
@@ -108,32 +105,31 @@
             transition: all 0.3s ease;
         }
 
-        .tile .symbol {
-            font-size: 32px;
+        .tile .symbol-icon {
+            font-size: 38px;
             line-height: 1;
+            filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.2));
         }
 
         .tile .label {
-            font-size: 10px;
-            color: #555;
+            font-size: 11px;
+            color: #2c3e50;
             margin-top: 4px;
-            font-weight: bold;
+            font-weight: 800;
         }
 
         .controls {
             margin-top: 20px;
-            display: flex;
-            gap: 10px;
         }
 
         .btn {
             background: linear-gradient(180deg, #ffb300 0%, #ff8f00 100%);
             color: #000;
             border: none;
-            padding: 10px 20px;
+            padding: 10px 24px;
             border-radius: 20px;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 15px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
             cursor: pointer;
         }
@@ -187,14 +183,14 @@
 
     <script>
         const symbols = [
-            { icon: '🀀', name: 'Doğu' },
-            { icon: '🀁', name: 'Güney' },
-            { icon: '🀂', name: 'Batı' },
-            { icon: '🀃', name: 'Kuzey' },
-            { icon: '🀄', name: 'Kırmızı' },
-            { icon: '🀅', name: 'Yeşil' },
-            { icon: '🀆', name: 'Beyaz' },
-            { icon: '🀇', name: '1 Karakter' }
+            { icon: '🀀', name: 'Doğu', color: '#d32f2f' },
+            { icon: '🀁', name: 'Güney', color: '#1976d2' },
+            { icon: '🀂', name: 'Batı', color: '#388e3c' },
+            { icon: '🀃', name: 'Kuzey', color: '#f57c00' },
+            { icon: '🀄', name: 'Ejder', color: '#c2185b' },
+            { icon: '🀅', name: 'Bambu', color: '#2e7d32' },
+            { icon: '🀆', name: 'Beyaz', color: '#7b1fa2' },
+            { icon: '🀇', name: '1 Karakter', color: '#00796b' }
         ];
 
         let selectedTile = null;
@@ -215,18 +211,17 @@
             
             updateStats();
 
-            // 8 çift (toplam 16 taş) oluştur
             let deck = [...symbols, ...symbols];
             deck.sort(() => Math.random() - 0.5);
 
             deck.forEach((data, index) => {
                 const tile = document.createElement('div');
                 tile.classList.add('tile');
-                tile.dataset.symbol = data.icon;
+                tile.dataset.symbol = data.name;
                 tile.dataset.index = index;
 
                 tile.innerHTML = `
-                    <div class="symbol">${data.icon}</div>
+                    <div class="symbol-icon" style="color: ${data.color}">${data.icon}</div>
                     <div class="label">${data.name}</div>
                 `;
 
@@ -245,7 +240,6 @@
             } else {
                 moves++;
                 if (selectedTile.dataset.symbol === tile.dataset.symbol) {
-                    // Eşleşti
                     lockBoard = true;
                     setTimeout(() => {
                         selectedTile.classList.add('matched');
@@ -263,7 +257,6 @@
                         }
                     }, 300);
                 } else {
-                    // Eşleşmedi
                     lockBoard = true;
                     setTimeout(() => {
                         selectedTile.classList.remove('selected');
@@ -286,3 +279,6 @@
     </script>
 </body>
 </html>
+                        
+
+    
