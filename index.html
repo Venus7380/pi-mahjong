@@ -6,8 +6,8 @@
     <title>Mahjong Master Venüs</title>
     <style>
         :root {
-            --tile-w: 48px;
-            --tile-h: 66px;
+            --tile-w: 42px;
+            --tile-h: 60px;
             --shadow-color: rgba(0, 0, 0, 0.6);
         }
 
@@ -63,18 +63,31 @@
 
         .board-wrapper {
             position: relative;
-            width: 360px;
-            height: 410px;
+            width: 355px;
+            height: 385px;
             margin-top: 5px;
             background: rgba(0, 0, 0, 0.35);
             border-radius: 15px;
             border: 3px solid rgba(241, 196, 15, 0.25);
             box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
             overflow: hidden;
+            padding: 10px;
+        }
+
+        .tiles-grid {
+            display: grid;
+            grid-template-columns: repeat(6, var(--tile-w));
+            gap: 5px;
+            justify-content: center;
+            align-content: center;
+            max-height: 100%;
+            overflow-y: auto;
         }
 
         .tile {
-            position: absolute;
             width: var(--tile-w);
             height: var(--tile-h);
             background: linear-gradient(145deg, #ffffff, #f0f0f0);
@@ -86,6 +99,7 @@
             transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.25s ease;
             box-sizing: border-box;
             border: 1px solid #dcdcdc;
+            box-shadow: 2px 3px 5px var(--shadow-color), 0 4px 0 #b0bec5;
         }
 
         .tile-inner {
@@ -102,44 +116,35 @@
         }
 
         .tile .symbol-text {
-            font-size: 22px;
+            font-size: 19px;
             font-weight: 900;
             line-height: 1;
             text-shadow: 1px 1px 0px rgba(0,0,0,0.15);
         }
 
         .tile .symbol-sub {
-            font-size: 9px;
+            font-size: 8px;
             margin-top: 2px;
             font-weight: bold;
             opacity: 0.85;
         }
 
-        .tile[data-layer="0"] { z-index: 10; box-shadow: 2px 3px 5px var(--shadow-color), 0 4px 0 #b0bec5; }
-        .tile[data-layer="1"] { z-index: 20; box-shadow: 4px 6px 8px var(--shadow-color), 0 5px 0 #90a4ae; transform: translate(-2px, -2px); }
-        .tile[data-layer="2"] { z-index: 30; box-shadow: 6px 9px 12px var(--shadow-color), 0 6px 0 #78909c; transform: translate(-4px, -4px); }
-
-        .tile.blocked {
-            filter: brightness(0.55) grayscale(0.3);
-            cursor: not-allowed;
-        }
-
         .tile.selected {
             border: 2px solid #f1c40f;
-            box-shadow: 0 0 20px #f1c40f, 0 6px 0 #d4ac0d !important;
-            transform: translate(-3px, -8px) scale(1.06) !important;
-            z-index: 99 !important;
+            box-shadow: 0 0 15px #f1c40f, 0 4px 0 #d4ac0d !important;
+            transform: translateY(-4px) scale(1.05);
+            z-index: 99;
         }
 
         .tile.hint-target {
             animation: pulseHint 0.6s infinite alternate;
             border: 2px solid #2ecc71;
-            box-shadow: 0 0 18px #2ecc71 !important;
+            box-shadow: 0 0 15px #2ecc71 !important;
         }
 
         @keyframes pulseHint {
             0% { transform: scale(1); }
-            100% { transform: scale(1.1); }
+            100% { transform: scale(1.08); }
         }
 
         .tile.matched {
@@ -162,13 +167,13 @@
         }
 
         .circle-btn {
-            width: 46px;
-            height: 46px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             border: 2px solid #f1c40f;
             background: linear-gradient(145deg, #27ae60, #1e8449);
             color: white;
-            font-size: 18px;
+            font-size: 16px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -196,21 +201,15 @@
             transform: translate(-50%, -50%);
             background: rgba(231, 76, 60, 0.95);
             color: white;
-            padding: 10px 20px;
-            border-radius: 12px;
-            font-size: 16px;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 14px;
             font-weight: bold;
-            box-shadow: 0 0 25px rgba(231, 76, 60, 0.8);
+            box-shadow: 0 0 20px rgba(231, 76, 60, 0.8);
             z-index: 150;
-            animation: urgentPulse 0.5s infinite alternate;
             text-align: center;
             border: 2px solid #fff;
-            width: 80%;
-        }
-
-        @keyframes urgentPulse {
-            0% { transform: translate(-50%, -50%) scale(1); }
-            100% { transform: translate(-50%, -50%) scale(1.08); }
+            width: 75%;
         }
 
         .modal {
@@ -228,13 +227,13 @@
 
         .modal h2 {
             color: #f1c40f;
-            font-size: 22px;
+            font-size: 20px;
             margin-bottom: 8px;
             text-align: center;
         }
 
         .modal p {
-            font-size: 13px;
+            font-size: 12px;
             margin: 5px 0 15px 0;
             color: #ecf0f1;
             text-align: center;
@@ -244,21 +243,22 @@
         .quote-box {
             background: rgba(255, 255, 255, 0.08);
             border-left: 4px solid #f1c40f;
-            padding: 10px 14px;
+            padding: 8px 12px;
             border-radius: 4px;
             font-style: italic;
-            margin-bottom: 15px;
-            max-width: 300px;
+            margin-bottom: 12px;
+            max-width: 280px;
+            font-size: 11px;
         }
 
         .btn-main {
             background: linear-gradient(180deg, #f1c40f 0%, #d4ac0d 100%);
             color: #000;
             border: none;
-            padding: 10px 24px;
+            padding: 8px 20px;
             border-radius: 20px;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 13px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.4);
             cursor: pointer;
         }
@@ -273,7 +273,7 @@
 
         @keyframes confettiFall {
             0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(600px) rotate(720deg); opacity: 0; }
+            100% { transform: translateY(500px) rotate(720deg); opacity: 0; }
         }
     </style>
 </head>
@@ -289,8 +289,9 @@
         </div>
     </header>
 
-    <div class="board-wrapper" id="board">
+    <div class="board-wrapper" id="boardWrapper">
         <div id="urgentAlert">⚠️ DİKKAT! SÜRE BİTİYOR! ⚠️</div>
+        <div class="tiles-grid" id="tilesGrid"></div>
     </div>
 
     <div class="controls">
@@ -358,30 +359,6 @@
             "\"Odaklanma ve dikkat, hafızanın kapılarını aralayan iki anahtardır.\""
         ];
 
-        // Garantili ve düzgün görünen sabit şablonlar havuzu (farklı taş sayılarına göre)
-        const layoutsPool = [
-            // Küçük şablon (16 taş / 8 çift - Seviye 1 için)
-            [
-                {x: 80, y: 50, l: 0}, {x: 130, y: 50, l: 0}, {x: 180, y: 50, l: 0}, {x: 230, y: 50, l: 0},
-                {x: 80, y: 130, l: 0}, {x: 130, y: 130, l: 0}, {x: 180, y: 130, l: 0}, {x: 230, y: 130, l: 0},
-                {x: 80, y: 210, l: 0}, {x: 130, y: 210, l: 0}, {x: 180, y: 210, l: 0}, {x: 230, y: 210, l: 0},
-                {x: 105, y: 90, l: 1}, {x: 155, y: 90, l: 1}, {x: 105, y: 170, l: 1}, {x: 155, y: 170, l: 1}
-            ],
-            // Orta şablon (36 taş / 18 çift)
-            [
-                {x: 50, y: 30, l: 0}, {x: 100, y: 30, l: 0}, {x: 150, y: 30, l: 0}, {x: 200, y: 30, l: 0}, {x: 250, y: 30, l: 0},
-                {x: 50, y: 100, l: 0}, {x: 100, y: 100, l: 0}, {x: 150, y: 100, l: 0}, {x: 200, y: 100, l: 0}, {x: 250, y: 100, l: 0},
-                {x: 50, y: 170, l: 0}, {x: 100, y: 170, l: 0}, {x: 150, y: 170, l: 0}, {x: 200, y: 170, l: 0}, {x: 250, y: 170, l: 0},
-                {x: 50, y: 240, l: 0}, {x: 100, y: 240, l: 0}, {x: 150, y: 240, l: 0}, {x: 200, y: 240, l: 0}, {x: 250, y: 240, l: 0},
-                // Kat 1
-                {x: 75, y: 65, l: 1}, {x: 125, y: 65, l: 1}, {x: 175, y: 65, l: 1}, {x: 225, y: 65, l: 1},
-                {x: 75, y: 135, l: 1}, {x: 125, y: 135, l: 1}, {x: 175, y: 135, l: 1}, {x: 225, y: 135, l: 1},
-                {x: 75, y: 205, l: 1}, {x: 125, y: 205, l: 1}, {x: 175, y: 205, l: 1}, {x: 225, y: 205, l: 1},
-                // Kat 2
-                {x: 100, y: 100, l: 2}, {x: 150, y: 100, l: 2}, {x: 100, y: 170, l: 2}, {x: 150, y: 170, l: 2}
-            ]
-        ];
-
         let currentLevel = 0;
         let score = 0;
         let selectedTile = null;
@@ -420,32 +397,8 @@
             }, 1000);
         }
 
-        // İstenen mantık: Her 5 levelde bir çift sayısı 10 artacak şekilde şablon üretici
-        function getLayoutForLevel(levelIdx) {
-            let pairCount = 8 + Math.floor(levelIdx / 5) * 10; // 1. seviye 8 çift (16 taş), sonra 18, 28...
-            let totalNeeded = pairCount * 2;
-            if (totalNeeded > 72) totalNeeded = 72; // Ekran sınırları için max sınır
-
-            let base = layoutsPool[levelIdx % layoutsPool.length];
-            let layout = [];
-            
-            // Şablonu istenen çift sayısına uyarlamak için çoğaltıyoruz
-            for (let i = 0; i < totalNeeded; i++) {
-                let templateNode = base[i % base.length];
-                // Hafif offset vererek üst üste binme sorununu engelliyoruz
-                let offsetX = (Math.floor(i / base.length) * 10) % 40;
-                let offsetY = (Math.floor(i / base.length) * 10) % 40;
-                layout.push({
-                    x: Math.min(300, templateNode.x + offsetX),
-                    y: Math.min(340, templateNode.y + offsetY),
-                    l: templateNode.l
-                });
-            }
-            return layout;
-        }
-
         function loadLevel(levelIdx) {
-            const board = document.getElementById('board');
+            const grid = document.getElementById('tilesGrid');
             document.getElementById('winModal').style.display = 'none';
             document.getElementById('loseModal').style.display = 'none';
             document.getElementById('urgentAlert').style.display = 'none';
@@ -454,20 +407,22 @@
             hintLeft = 10;
             updateControlCounts();
 
-            board.innerHTML = '';
-            board.appendChild(document.getElementById('urgentAlert'));
+            grid.innerHTML = '';
             selectedTile = null;
             lockBoard = false;
 
-            const layout = getLayoutForLevel(levelIdx);
-            remainingTiles = layout.length;
+            // Her 5 levelde bir çift sayısı 10 artar (12 taş, 22 taş, 32 taş...)
+            let pairCount = 6 + Math.floor(levelIdx / 5) * 5; 
+            let totalNeeded = pairCount * 2;
+            if (totalNeeded > 36) totalNeeded = 36; // Grid ekranına sığacak ideal max taş
 
-            // Her 10 levelde bir bonus etap (10, 20, 30, 40, 50) -> Hayvan simgeleri
+            remainingTiles = totalNeeded;
+
             let isBonusStage = ((levelIdx + 1) % 10 === 0);
             let poolToUse = isBonusStage ? animalSymbols : standardSymbols;
 
             let activeSymbols = [];
-            for (let i = 0; i < layout.length / 2; i++) {
+            for (let i = 0; i < totalNeeded / 2; i++) {
                 activeSymbols.push(poolToUse[i % poolToUse.length]);
             }
 
@@ -476,15 +431,11 @@
 
             tilesData = [];
 
-            layout.forEach((pos, idx) => {
-                const sym = deck[idx];
+            deck.forEach((sym, idx) => {
                 const tile = document.createElement('div');
                 tile.classList.add('tile');
                 tile.dataset.id = idx;
                 tile.dataset.name = sym.name;
-                tile.dataset.layer = pos.l;
-                tile.style.left = `${pos.x}px`;
-                tile.style.top = `${pos.y}px`;
 
                 tile.innerHTML = `
                     <div class="tile-inner">
@@ -493,84 +444,26 @@
                     </div>
                 `;
 
-                board.appendChild(tile);
+                grid.appendChild(tile);
 
                 tilesData.push({
                     id: idx,
                     element: tile,
-                    x: pos.x,
-                    y: pos.y,
-                    layer: pos.l,
                     matched: false
                 });
 
                 tile.addEventListener('click', () => handleTileClick(idx));
             });
 
-            updateBlockedTiles();
             updateStats();
             startTimer();
-        }
-
-        function updateBlockedTiles() {
-            tilesData.forEach(tile => {
-                if (tile.matched) return;
-
-                let isBlocked = tilesData.some(other => {
-                    if (other.matched) return false;
-                    if (other.layer > tile.layer) {
-                        let overlapX = Math.abs(other.x - tile.x) < 38;
-                        let overlapY = Math.abs(other.y - tile.y) < 50;
-                        return overlapX && overlapY;
-                    }
-                    return false;
-                });
-
-                if (isBlocked) {
-                    tile.element.classList.add('blocked');
-                } else {
-                    tile.element.classList.remove('blocked');
-                }
-            });
-
-            checkGameStuck();
-        }
-
-        function checkGameStuck() {
-            if (remainingTiles <= 0) return;
-            let activeTiles = tilesData.filter(t => !t.matched && !t.element.classList.contains('blocked'));
-            let hasPair = false;
-
-            for (let i = 0; i < activeTiles.length; i++) {
-                for (let j = i + 1; j < activeTiles.length; j++) {
-                    if (activeTiles[i].element.dataset.name === activeTiles[j].element.dataset.name) {
-                        hasPair = true;
-                        break;
-                    }
-                }
-                if (hasPair) break;
-            }
-
-            if (!hasPair) {
-                if (shuffleLeft <= 0) {
-                    clearInterval(timerInterval);
-                    document.getElementById('urgentAlert').style.display = 'none';
-                    document.getElementById('loseTitle').innerText = "Çözüm Bulunamadı! 🛑";
-                    document.getElementById('loseMessage').innerText = "Karıştırma hakların bitti ve tahtada hamle kalmadı! Level baştan başlatılıyor.";
-                    document.getElementById('loseModal').style.display = 'flex';
-                } else {
-                    shuffleLeft--;
-                    updateControlCounts();
-                    autoExecuteShuffle();
-                }
-            }
         }
 
         function handleTileClick(id) {
             if (lockBoard) return;
             const tile = tilesData[id];
             
-            if (tile.matched || tile.element.classList.contains('blocked')) return;
+            if (tile.matched) return;
 
             tilesData.forEach(t => t.element.classList.remove('hint-target'));
 
@@ -585,7 +478,7 @@
             if (!selectedTile) {
                 selectedTile = tile;
             } else {
-                if (selectedTile.element.dataset.name === tile.element.dataset.name) {
+                if (selectedTile.element.dataset.name === tile.element.dataset.name && selectedTile.id !== tile.id) {
                     lockBoard = true;
                     setTimeout(() => {
                         selectedTile.element.classList.add('matched');
@@ -600,7 +493,6 @@
                         score += 200;
                         remainingTiles -= 2;
 
-                        updateBlockedTiles();
                         updateStats();
                         lockBoard = false;
 
@@ -641,10 +533,7 @@
             }
             shuffleLeft--;
             updateControlCounts();
-            autoExecuteShuffle();
-        }
 
-        function autoExecuteShuffle() {
             let activeTiles = tilesData.filter(t => !t.matched);
             if (activeTiles.length === 0) return;
 
@@ -664,7 +553,6 @@
                 selectedTile.element.classList.remove('selected');
                 selectedTile = null;
             }
-            updateBlockedTiles();
         }
 
         function showHint() {
@@ -675,7 +563,7 @@
             hintLeft--;
             updateControlCounts();
 
-            let activeTiles = tilesData.filter(t => !t.matched && !t.element.classList.contains('blocked'));
+            let activeTiles = tilesData.filter(t => !t.matched);
             let pairFound = null;
 
             for (let i = 0; i < activeTiles.length; i++) {
@@ -696,8 +584,6 @@
                     pairFound[0].element.classList.remove('hint-target');
                     pairFound[1].element.classList.remove('hint-target');
                 }, 2000);
-            } else {
-                shuffleTiles();
             }
         }
 
