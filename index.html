@@ -1,3 +1,4 @@
+                        
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -6,15 +7,16 @@
     <title>Mahjong Master Venus</title>
     <style>
         :root {
+            --tile-w: 52px;
+            --tile-h: 68px;
             --tile-bg: linear-gradient(145deg, #ffffff, #f0f0f0);
-            --shadow: 0 6px 10px rgba(0,0,0,0.4);
-            --selected-glow: 0 0 15px #ffd700;
+            --shadow-color: rgba(0, 0, 0, 0.45);
         }
 
         body {
             margin: 0;
-            padding: 10px;
-            background: radial-gradient(circle, #1b5e20 0%, #082816 100%);
+            padding: 10px 5px;
+            background: radial-gradient(circle, #1b5e20 0%, #061c0f 100%);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #fff;
             display: flex;
@@ -23,119 +25,114 @@
             min-height: 100vh;
             user-select: none;
             -webkit-user-select: none;
+            box-sizing: border-box;
+            overflow-x: hidden;
         }
 
         header {
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
         h1 {
-            margin: 5px 0;
+            margin: 2px 0;
             color: #ffd700;
-            font-size: 26px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+            font-size: 24px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
         }
 
         .stats-bar {
             display: flex;
-            gap: 15px;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 8px 20px;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 6px 16px;
             border-radius: 20px;
             border: 1px solid rgba(255, 215, 0, 0.4);
             font-weight: bold;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .stats-item span {
             color: #ffd700;
         }
 
-        .board-container {
-            width: 100%;
-            max-width: 400px;
-            display: flex;
-            justify-content: center;
-            margin-top: 10px;
-        }
-
-        .board {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px;
-            border-radius: 15px;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
-            border: 2px solid rgba(255, 255, 255, 0.1);
+        .board-wrapper {
+            position: relative;
+            width: 360px;
+            height: 480px;
+            margin-top: 15px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
         }
 
         .tile {
-            aspect-ratio: 3 / 4;
+            position: absolute;
+            width: var(--tile-w);
+            height: var(--tile-h);
             background: var(--tile-bg);
             border-radius: 8px;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 5px 0 #b0bec5, var(--shadow);
             cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
-            border: 1px solid #ddd;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            border: 1px solid #e0e0e0;
+            box-sizing: border-box;
         }
 
-        .tile:active {
-            transform: translateY(2px);
-            box-shadow: 0 3px 0 #b0bec5, var(--shadow);
+        .tile .symbol {
+            font-size: 34px;
+            line-height: 1;
+            filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.3));
+        }
+
+        /* Katman derinlikleri ve gölgeleri */
+        .tile[data-layer="0"] { z-index: 10; box-shadow: 2px 3px 5px var(--shadow-color), 0 4px 0 #b0bec5; }
+        .tile[data-layer="1"] { z-index: 20; box-shadow: 4px 6px 8px var(--shadow-color), 0 5px 0 #90a4ae; transform: translate(-3px, -3px); }
+        .tile[data-layer="2"] { z-index: 30; box-shadow: 6px 9px 12px var(--shadow-color), 0 6px 0 #78909c; transform: translate(-6px, -6px); }
+
+        /* Kilitli / Üstü kapalı taşlar */
+        .tile.blocked {
+            filter: brightness(0.6) grayscale(0.3);
+            cursor: not-allowed;
         }
 
         .tile.selected {
-            transform: translateY(-6px);
-            box-shadow: var(--selected-glow), 0 8px 0 #b0bec5;
-            border: 2px solid #ffd700;
+            border: 3px solid #ffd700;
+            box-shadow: 0 0 15px #ffd700, 0 6px 0 #ffb300 !important;
+            transform: translate(-3px, -8px) scale(1.05) !important;
+            z-index: 99 !important;
         }
 
         .tile.matched {
             opacity: 0;
-            visibility: hidden;
-            transform: scale(0.5);
+            transform: scale(0.2) !important;
             transition: all 0.3s ease;
-        }
-
-        .tile .symbol-icon {
-            font-size: 38px;
-            line-height: 1;
-            filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.2));
-        }
-
-        .tile .label {
-            font-size: 11px;
-            color: #2c3e50;
-            margin-top: 4px;
-            font-weight: 800;
+            pointer-events: none;
         }
 
         .controls {
-            margin-top: 20px;
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
         }
 
         .btn {
             background: linear-gradient(180deg, #ffb300 0%, #ff8f00 100%);
             color: #000;
             border: none;
-            padding: 10px 24px;
+            padding: 10px 20px;
             border-radius: 20px;
             font-weight: bold;
-            font-size: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            font-size: 14px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
             cursor: pointer;
         }
 
         .btn:active {
-            transform: scale(0.96);
+            transform: scale(0.95);
         }
 
         .win-modal {
@@ -146,12 +143,12 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 100;
+            z-index: 200;
         }
 
         .win-modal h2 {
             color: #ffd700;
-            font-size: 32px;
+            font-size: 30px;
             margin-bottom: 10px;
         }
     </style>
@@ -161,124 +158,253 @@
     <header>
         <h1>Mahjong Master</h1>
         <div class="stats-bar">
+            <div class="stats-item">Seviye: <span id="level">1</span></div>
             <div class="stats-item">Puan: <span id="score">0</span></div>
-            <div class="stats-item">Hamle: <span id="moves">0</span></div>
-            <div class="stats-item">Kalan: <span id="remaining">16</span></div>
+            <div class="stats-item">Kalan: <span id="remaining">0</span></div>
         </div>
     </header>
 
-    <div class="board-container">
-        <div class="board" id="board"></div>
-    </div>
+    <div class="board-wrapper" id="board"></div>
 
     <div class="controls">
-        <button class="btn" onclick="initGame()">Yeniden Başlat</button>
+        <button class="btn" onclick="resetCurrentLevel()">Yeniden Başlat</button>
     </div>
 
     <div class="win-modal" id="winModal">
-        <h2>Tebrikler! 🎉</h2>
-        <p>Tahtayı başarıyla temizlediniz.</p>
-        <button class="btn" onclick="initGame()">Tekrar Oyna</button>
+        <h2>Bölüm Tamamlandı! 🎉</h2>
+        <p>Harika! Sonraki seviyeye geçiyorsunuz.</p>
+        <button class="btn" onclick="nextLevel()">Sonraki Seviye</button>
     </div>
 
     <script>
-        const symbols = [
-            { icon: '🀀', name: 'Doğu', color: '#d32f2f' },
-            { icon: '🀁', name: 'Güney', color: '#1976d2' },
-            { icon: '🀂', name: 'Batı', color: '#388e3c' },
-            { icon: '🀃', name: 'Kuzey', color: '#f57c00' },
-            { icon: '🀄', name: 'Ejder', color: '#c2185b' },
-            { icon: '🀅', name: 'Bambu', color: '#2e7d32' },
-            { icon: '🀆', name: 'Beyaz', color: '#7b1fa2' },
-            { icon: '🀇', name: '1 Karakter', color: '#00796b' }
+        const symbolsPool = [
+            { icon: '🀀', color: '#d32f2f' },
+            { icon: '🀁', color: '#1976d2' },
+            { icon: '🀂', color: '#388e3c' },
+            { icon: '🀃', color: '#f57c00' },
+            { icon: '🀄', color: '#c2185b' },
+            { icon: '🀅', color: '#2e7d32' },
+            { icon: '🀆', color: '#7b1fa2' },
+            { icon: '🀇', color: '#00796b' },
+            { icon: '🀈', color: '#d81b60' },
+            { icon: '🀉', color: '#8e24aa' }
         ];
 
-        let selectedTile = null;
+        // Rakam Büyüklüğünde Şekil Dizilimleri (X, Y, Katman)
+        const layouts = [
+            // Level 1: "1" Rakamı Şeklinde (14 Taş)
+            [
+                {x: 130, y: 70, l: 0},
+                {x: 160, y: 30, l: 0}, {x: 160, y: 90, l: 0}, {x: 160, y: 150, l: 0},
+                {x: 160, y: 210, l: 0}, {x: 160, y: 270, l: 0}, {x: 160, y: 330, l: 0},
+                {x: 100, y: 390, l: 0}, {x: 150, y: 390, l: 0}, {x: 200, y: 390, l: 0},
+                // Katman 1 (1'in Gövdesi Üstünde)
+                {x: 160, y: 90, l: 1}, {x: 160, y: 150, l: 1}, {x: 160, y: 210, l: 1}, {x: 160, y: 270, l: 1}
+            ],
+            // Level 2: "2" Rakamı Şeklinde (18 Taş)
+            [
+                {x: 100, y: 40, l: 0}, {x: 150, y: 30, l: 0}, {x: 200, y: 40, l: 0},
+                {x: 210, y: 100, l: 0}, {x: 170, y: 160, l: 0}, {x: 130, y: 220, l: 0},
+                {x: 90, y: 280, l: 0}, {x: 90, y: 350, l: 0}, {x: 140, y: 350, l: 0}, {x: 190, y: 350, l: 0}, {x: 230, y: 350, l: 0},
+                // Katman 1
+                {x: 150, y: 30, l: 1}, {x: 200, y: 40, l: 1}, {x: 170, y: 160, l: 1}, {x: 130, y: 220, l: 1},
+                {x: 90, y: 350, l: 1}, {x: 190, y: 350, l: 1},
+                // Katman 2 (Kıvrım Noktası Zirvesi)
+                {x: 170, y: 160, l: 2}
+            ],
+            // Level 3: "3" Rakamı Şeklinde (20 Taş)
+            [
+                {x: 100, y: 40, l: 0}, {x: 150, y: 30, l: 0}, {x: 200, y: 40, l: 0},
+                {x: 210, y: 100, l: 0}, {x: 150, y: 160, l: 0}, {x: 210, y: 220, l: 0},
+                {x: 210, y: 280, l: 0}, {x: 100, y: 340, l: 0}, {x: 150, y: 350, l: 0}, {x: 200, y: 340, l: 0},
+                // Katman 1
+                {x: 150, y: 30, l: 1}, {x: 210, y: 100, l: 1}, {x: 150, y: 160, l: 1},
+                {x: 210, y: 220, l: 1}, {x: 210, y: 280, l: 1}, {x: 150, y: 350, l: 1},
+                // Katman 2
+                {x: 150, y: 160, l: 2}, {x: 210, y: 100, l: 2}, {x: 210, y: 220, l: 2}, {x: 210, y: 280, l: 2}
+            ],
+            // Level 4: "4" Rakamı Şeklinde (20 Taş)
+            [
+                {x: 180, y: 30, l: 0}, {x: 140, y: 80, l: 0}, {x: 100, y: 140, l: 0},
+                {x: 70, y: 200, l: 0}, {x: 120, y: 200, l: 0}, {x: 170, y: 200, l: 0}, {x: 220, y: 200, l: 0},
+                {x: 180, y: 110, l: 0}, {x: 180, y: 270, l: 0}, {x: 180, y: 340, l: 0},
+                // Katman 1
+                {x: 140, y: 80, l: 1}, {x: 100, y: 140, l: 1}, {x: 120, y: 200, l: 1},
+                {x: 170, y: 200, l: 1}, {x: 180, y: 110, l: 1}, {x: 180, y: 270, l: 1},
+                // Katman 2
+                {x: 120, y: 200, l: 2}, {x: 170, y: 200, l: 2}, {x: 180, y: 110, l: 2}, {x: 180, y: 270, l: 2}
+            ],
+            // Level 5: "5" Rakamı Şeklinde (22 Taş)
+            [
+                {x: 90, y: 40, l: 0}, {x: 140, y: 40, l: 0}, {x: 190, y: 40, l: 0}, {x: 230, y: 40, l: 0},
+                {x: 90, y: 100, l: 0}, {x: 90, y: 160, l: 0}, {x: 140, y: 160, l: 0}, {x: 190, y: 160, l: 0},
+                {x: 210, y: 220, l: 0}, {x: 210, y: 280, l: 0}, {x: 90, y: 340, l: 0}, {x: 140, y: 350, l: 0}, {x: 190, y: 340, l: 0},
+                // Katman 1
+                {x: 140, y: 40, l: 1}, {x: 90, y: 100, l: 1}, {x: 140, y: 160, l: 1},
+                {x: 210, y: 220, l: 1}, {x: 210, y: 280, l: 1}, {x: 140, y: 350, l: 1},
+                // Katman 2
+                {x: 140, y: 160, l: 2}, {x: 210, y: 220, l: 2}, {x: 210, y: 280, l: 2}
+            ]
+        ];
+
+        let currentLevel = 0;
         let score = 0;
-        let moves = 0;
-        let remaining = 16;
+        let selectedTile = null;
+        let remainingTiles = 0;
+        let tilesData = [];
         let lockBoard = false;
 
-        function initGame() {
+        function loadLevel(levelIdx) {
             const board = document.getElementById('board');
             document.getElementById('winModal').style.display = 'none';
             board.innerHTML = '';
             selectedTile = null;
-            score = 0;
-            moves = 0;
-            remaining = 16;
             lockBoard = false;
-            
-            updateStats();
 
-            let deck = [...symbols, ...symbols];
+            const layout = layouts[levelIdx % layouts.length];
+            remainingTiles = layout.length;
+
+            // Çift simgeleri hazırlama
+            let pairsCount = Math.floor(layout.length / 2);
+            let activeSymbols = symbolsPool.slice(0, Math.min(pairsCount, symbolsPool.length));
+            while (activeSymbols.length < pairsCount) {
+                activeSymbols = activeSymbols.concat(symbolsPool.slice(0, pairsCount - activeSymbols.length));
+            }
+
+            let deck = [...activeSymbols, ...activeSymbols];
+            // Eğer tek taş kaldıysa tamamlamak için sembol ekle
+            if (layout.length % 2 !== 0) {
+                deck.push(symbolsPool[0]);
+            }
             deck.sort(() => Math.random() - 0.5);
 
-            deck.forEach((data, index) => {
+            tilesData = [];
+
+            layout.forEach((pos, idx) => {
+                const sym = deck[idx];
                 const tile = document.createElement('div');
                 tile.classList.add('tile');
-                tile.dataset.symbol = data.name;
-                tile.dataset.index = index;
+                tile.dataset.id = idx;
+                tile.dataset.icon = sym.icon;
+                tile.dataset.layer = pos.l;
+                tile.style.left = `${pos.x}px`;
+                tile.style.top = `${pos.y}px`;
 
-                tile.innerHTML = `
-                    <div class="symbol-icon" style="color: ${data.color}">${data.icon}</div>
-                    <div class="label">${data.name}</div>
-                `;
+                tile.innerHTML = `<div class="symbol" style="color: ${sym.color}">${sym.icon}</div>`;
 
-                tile.addEventListener('click', () => handleTileClick(tile));
                 board.appendChild(tile);
+
+                tilesData.push({
+                    id: idx,
+                    element: tile,
+                    x: pos.x,
+                    y: pos.y,
+                    layer: pos.l,
+                    matched: false
+                });
+
+                tile.addEventListener('click', () => handleTileClick(idx));
+            });
+
+            updateBlockedTiles();
+            updateStats();
+        }
+
+        function updateBlockedTiles() {
+            tilesData.forEach(tile => {
+                if (tile.matched) return;
+
+                // Kendisinden üst katmanda çakışan taş var mı?
+                let isBlocked = tilesData.some(other => {
+                    if (other.matched) return false;
+                    if (other.layer > tile.layer) {
+                        let overlapX = Math.abs(other.x - tile.x) < 42;
+                        let overlapY = Math.abs(other.y - tile.y) < 55;
+                        return overlapX && overlapY;
+                    }
+                    return false;
+                });
+
+                if (isBlocked) {
+                    tile.element.classList.add('blocked');
+                } else {
+                    tile.element.classList.remove('blocked');
+                }
             });
         }
 
-        function handleTileClick(tile) {
-            if (lockBoard || tile.classList.contains('matched') || tile === selectedTile) return;
+        function handleTileClick(id) {
+            if (lockBoard) return;
+            const tile = tilesData[id];
+            
+            if (tile.matched || tile.element.classList.contains('blocked')) return;
 
-            tile.classList.add('selected');
+            if (selectedTile === tile) {
+                tile.element.classList.remove('selected');
+                selectedTile = null;
+                return;
+            }
+
+            tile.element.classList.add('selected');
 
             if (!selectedTile) {
                 selectedTile = tile;
             } else {
-                moves++;
-                if (selectedTile.dataset.symbol === tile.dataset.symbol) {
+                if (selectedTile.element.dataset.icon === tile.element.dataset.icon) {
+                    // Eşleşme Başarılı
                     lockBoard = true;
                     setTimeout(() => {
-                        selectedTile.classList.add('matched');
-                        tile.classList.add('matched');
-                        selectedTile.classList.remove('selected');
-                        tile.classList.remove('selected');
+                        selectedTile.element.classList.add('matched');
+                        tile.element.classList.add('matched');
+                        selectedTile.matched = true;
+                        tile.matched = true;
+
+                        selectedTile.element.classList.remove('selected');
+                        tile.element.classList.remove('selected');
                         selectedTile = null;
-                        score += 100;
-                        remaining -= 2;
+
+                        score += 150;
+                        remainingTiles -= 2;
+
+                        updateBlockedTiles();
                         updateStats();
                         lockBoard = false;
 
-                        if (remaining === 0) {
+                        if (remainingTiles <= 1) {
                             document.getElementById('winModal').style.display = 'flex';
                         }
-                    }, 300);
+                    }, 250);
                 } else {
+                    // Yanlış Eşleşme
                     lockBoard = true;
                     setTimeout(() => {
-                        selectedTile.classList.remove('selected');
-                        tile.classList.remove('selected');
+                        selectedTile.element.classList.remove('selected');
+                        tile.element.classList.remove('selected');
                         selectedTile = null;
                         lockBoard = false;
-                        updateStats();
-                    }, 500);
+                    }, 400);
                 }
             }
         }
 
-        function updateStats() {
-            document.getElementById('score').innerText = score;
-            document.getElementById('moves').innerText = moves;
-            document.getElementById('remaining').innerText = remaining;
+        function resetCurrentLevel() {
+            loadLevel(currentLevel);
         }
 
-        initGame();
+        function nextLevel() {
+            currentLevel++;
+            loadLevel(currentLevel);
+        }
+
+        function updateStats() {
+            document.getElementById('level').innerText = currentLevel + 1;
+            document.getElementById('score').innerText = score;
+            document.getElementById('remaining').innerText = Math.max(0, remainingTiles);
+        }
+
+        loadLevel(currentLevel);
     </script>
 </body>
 </html>
-                        
 
     
