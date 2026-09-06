@@ -1,19 +1,19 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mahjong Master Vita Style</title>
+    <title>Mahjong Master Venüs</title>
     <style>
         :root {
-            --tile-w: 52px;
-            --tile-h: 70px;
+            --tile-w: 48px;
+            --tile-h: 66px;
             --shadow-color: rgba(0, 0, 0, 0.6);
         }
 
         body {
             margin: 0;
-            padding: 8px 5px;
+            padding: 5px;
             background: radial-gradient(circle, #1a4d2e 0%, #081c11 100%);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #fff;
@@ -27,58 +27,58 @@
             overflow: hidden;
         }
 
-        /* Vita Mahjong Tarzı Üst Bilgi Paneli */
         header {
             text-align: center;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
             width: 100%;
-            max-width: 360px;
+            max-width: 380px;
         }
 
         .brand-title {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
-            color: #a3e4d7;
-            letter-spacing: 2px;
-            margin-bottom: 4px;
+            color: #f1c40f;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
             text-transform: uppercase;
+            text-shadow: 0 0 8px rgba(241, 196, 15, 0.4);
         }
 
         .stats-bar {
             display: flex;
             justify-content: space-around;
-            background: rgba(15, 35, 20, 0.85);
-            padding: 8px 10px;
-            border-radius: 25px;
-            border: 1px solid rgba(212, 175, 55, 0.4);
+            background: rgba(15, 35, 20, 0.9);
+            padding: 6px 8px;
+            border-radius: 20px;
+            border: 1px solid rgba(241, 196, 15, 0.4);
             font-weight: bold;
-            font-size: 11px;
+            font-size: 10px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.6);
         }
 
         .stats-item span {
-            color: #f39c12;
-            font-size: 13px;
+            color: #f1c40f;
+            font-size: 12px;
         }
 
         .board-wrapper {
             position: relative;
-            width: 350px;
-            height: 440px;
-            margin-top: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 20px;
-            border: 3px solid rgba(212, 175, 55, 0.2);
+            width: 360px;
+            height: 390px;
+            margin-top: 5px;
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 15px;
+            border: 3px solid rgba(241, 196, 15, 0.25);
             box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+            overflow: hidden;
         }
 
-        /* Taş Görünümü */
         .tile {
             position: absolute;
             width: var(--tile-w);
             height: var(--tile-h);
             background: linear-gradient(145deg, #ffffff, #f0f0f0);
-            border-radius: 8px;
+            border-radius: 7px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -102,23 +102,22 @@
         }
 
         .tile .symbol-text {
-            font-size: 26px;
+            font-size: 22px;
             font-weight: 900;
             line-height: 1;
             text-shadow: 1px 1px 0px rgba(0,0,0,0.15);
         }
 
         .tile .symbol-sub {
-            font-size: 10px;
+            font-size: 9px;
             margin-top: 2px;
             font-weight: bold;
             opacity: 0.85;
         }
 
-        /* Katman Derinlikleri ve Gölgeler */
         .tile[data-layer="0"] { z-index: 10; box-shadow: 2px 3px 5px var(--shadow-color), 0 4px 0 #b0bec5; }
-        .tile[data-layer="1"] { z-index: 20; box-shadow: 4px 6px 8px var(--shadow-color), 0 5px 0 #90a4ae; transform: translate(-3px, -3px); }
-        .tile[data-layer="2"] { z-index: 30; box-shadow: 6px 9px 12px var(--shadow-color), 0 6px 0 #78909c; transform: translate(-6px, -6px); }
+        .tile[data-layer="1"] { z-index: 20; box-shadow: 4px 6px 8px var(--shadow-color), 0 5px 0 #90a4ae; transform: translate(-2px, -2px); }
+        .tile[data-layer="2"] { z-index: 30; box-shadow: 6px 9px 12px var(--shadow-color), 0 6px 0 #78909c; transform: translate(-4px, -4px); }
 
         .tile.blocked {
             filter: brightness(0.55) grayscale(0.3);
@@ -135,12 +134,12 @@
         .tile.hint-target {
             animation: pulseHint 0.6s infinite alternate;
             border: 2px solid #2ecc71;
-            box-shadow: 0 0 15px #2ecc71 !important;
+            box-shadow: 0 0 18px #2ecc71 !important;
         }
 
         @keyframes pulseHint {
             0% { transform: scale(1); }
-            100% { transform: scale(1.08); }
+            100% { transform: scale(1.1); }
         }
 
         .tile.matched {
@@ -149,27 +148,32 @@
             pointer-events: none;
         }
 
-        /* Vita Stil Alt Butonlar (Karıştır & İpucu) */
         .controls {
-            margin-top: 15px;
+            margin-top: 8px;
             display: flex;
-            gap: 20px;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .action-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .circle-btn {
-            width: 54px;
-            height: 54px;
+            width: 46px;
+            height: 46px;
             border-radius: 50%;
             border: 2px solid #f1c40f;
             background: linear-gradient(145deg, #27ae60, #1e8449);
             color: white;
-            font-size: 20px;
+            font-size: 18px;
             display: flex;
             justify-content: center;
             align-items: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             cursor: pointer;
-            position: relative;
             outline: none;
         }
 
@@ -177,46 +181,74 @@
             transform: scale(0.92);
         }
 
-        .badge-count {
-            position: absolute;
-            top: -3px;
-            right: -3px;
-            background: #e74c3c;
-            color: white;
+        .btn-text {
             font-size: 10px;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 1px solid #fff;
+            margin-top: 3px;
+            color: #f1c40f;
             font-weight: bold;
         }
 
-        /* Modallar */
+        /* Son 15 saniye ortadaki büyük uyarı */
+        #urgentAlert {
+            display: none;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(231, 76, 60, 0.95);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 0 25px rgba(231, 76, 60, 0.8);
+            z-index: 150;
+            animation: urgentPulse 0.5s infinite alternate;
+            text-align: center;
+            border: 2px solid #fff;
+        }
+
+        @keyframes urgentPulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            100% { transform: translate(-50%, -50%) scale(1.08); }
+        }
+
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0,0,0,0.88);
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 200;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         .modal h2 {
             color: #f1c40f;
-            font-size: 26px;
-            margin-bottom: 5px;
+            font-size: 22px;
+            margin-bottom: 8px;
             text-align: center;
         }
 
         .modal p {
-            font-size: 14px;
+            font-size: 13px;
             margin: 5px 0 15px 0;
             color: #ecf0f1;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .quote-box {
+            background: rgba(255, 255, 255, 0.08);
+            border-left: 4px solid #f1c40f;
+            padding: 10px 14px;
+            border-radius: 4px;
+            font-style: italic;
+            margin-bottom: 15px;
+            max-width: 300px;
         }
 
         .btn-main {
@@ -231,7 +263,6 @@
             cursor: pointer;
         }
 
-        /* Konfeti */
         .confetti {
             position: absolute;
             width: 8px;
@@ -249,44 +280,47 @@
 <body>
 
     <header>
-        <div class="brand-title">🌿 VITA MAHJONG 🌿</div>
+        <div class="brand-title">🀄 MAHJONG MASTER VENÜS 🀄</div>
         <div class="stats-bar">
-            <div class="stats-item">Seviye: <span id="level">1</span>/10</div>
+            <div class="stats-item">Seviye: <span id="level">1</span>/50</div>
             <div class="stats-item">Puan: <span id="score">0</span></div>
             <div class="stats-item">Süre: <span id="timer">120</span>s</div>
             <div class="stats-item">Kalan: <span id="remaining">0</span></div>
         </div>
     </header>
 
-    <div class="board-wrapper" id="board"></div>
-
-    <div class="controls">
-        <button class="circle-btn" onclick="shuffleTiles()" title="Karıştır">
-            🔀
-            <span class="badge-count" id="shuffleCount">2</span>
-        </button>
-        <button class="circle-btn" onclick="showHint()" title="İpucu">
-            💡
-            <span class="badge-count" id="hintCount">3</span>
-        </button>
+    <div class="board-wrapper" id="board">
+        <div id="urgentAlert">⚠️ DİKKAT! SÜRE BİTİYOR! ⚠️</div>
     </div>
 
-    <!-- Bölüm Tamamlandı Modalı -->
+    <div class="controls">
+        <div class="action-group">
+            <button class="circle-btn" onclick="shuffleTiles()">🔀</button>
+            <div class="btn-text">Karıştır (<span id="shuffleCount">10</span>)</div>
+        </div>
+        <div class="action-group">
+            <button class="circle-btn" onclick="showHint()">💡</button>
+            <div class="btn-text">İpucu (<span id="hintCount">10</span>)</div>
+        </div>
+    </div>
+
+    <!-- Seviye Geçiş / Özlü Söz Modalı -->
     <div class="modal" id="winModal">
-        <h2>Harika Hamle! 🎉</h2>
-        <p id="winMessage">Bonus Puan Ekleniyor...</p>
+        <h2>Bölüm Tamamlandı! 🎉</h2>
+        <p id="winMessage">Süre Bonusu Ekleniyor...</p>
+        <div class="quote-box" id="quoteText">"Hafıza, zekanın hazinesidir."</div>
         <button class="btn-main" onclick="nextLevel()">Sonraki Seviye ➡️</button>
     </div>
 
-    <!-- Süre Bitti Modalı -->
+    <!-- Oyun Bitiş / Süre / Sıkışma Modalı -->
     <div class="modal" id="loseModal">
-        <h2 style="color: #e74c3c;">Süre Bitti! ⏳</h2>
-        <p>Tekrar denemek ister misin?</p>
+        <h2 id="loseTitle" style="color: #e74c3c;">Süre Bitti! ⏳</h2>
+        <p id="loseMessage">Tekrar denemek ister misin?</p>
         <button class="btn-main" onclick="resetCurrentLevel()">Yeniden Başla 🔄</button>
     </div>
 
     <script>
-        const symbolsPool = [
+        const standardSymbols = [
             { main: '中', sub: '萬', color: '#c0392b', name: 'Red Dragon' },
             { main: '發', sub: '萬', color: '#27ae60', name: 'Green Dragon' },
             { main: '東', sub: '風', color: '#c0392b', name: 'East Wind' },
@@ -299,20 +333,31 @@
             { main: '九', sub: '萬', color: '#16a085', name: '9 Char' }
         ];
 
-        const layouts = [
-            [{x:120,y:70,l:0},{x:150,y:35,l:0},{x:150,y:100,l:0},{x:150,y:165,l:0},{x:150,y:230,l:0},{x:150,y:295,l:0},{x:95,y:360,l:0},{x:150,y:360,l:0},{x:205,y:360,l:0},{x:150,y:100,l:1},{x:150,y:165,l:1},{x:150,y:230,l:1},{x:150,y:100,l:2},{x:150,y:165,l:2}],
-            [{x:100,y:40,l:0},{x:150,y:30,l:0},{x:200,y:45,l:0},{x:210,y:110,l:0},{x:170,y:175,l:0},{x:125,y:240,l:0},{x:85,y:305,l:0},{x:85,y:370,l:0},{x:140,y:370,l:0},{x:195,y:370,l:0},{x:150,y:30,l:1},{x:170,y:175,l:1},{x:125,y:240,l:1},{x:140,y:370,l:1},{x:170,y:175,l:2},{x:125,y:240,l:2},{x:150,y:30,l:2},{x:140,y:370,l:2}],
-            [{x:100,y:35,l:0},{x:150,y:30,l:0},{x:200,y:45,l:0},{x:205,y:110,l:0},{x:155,y:175,l:0},{x:205,y:240,l:0},{x:200,y:305,l:0},{x:150,y:360,l:0},{x:100,y:350,l:0},{x:205,y:175,l:0},{x:150,y:30,l:1},{x:155,y:175,l:1},{x:205,y:240,l:1},{x:150,y:360,l:1},{x:200,y:45,l:1},{x:155,y:175,l:2},{x:150,y:30,l:2},{x:205,y:240,l:2},{x:150,y:360,l:2},{x:200,y:45,l:2}],
-            [{x:180,y:30,l:0},{x:135,y:85,l:0},{x:90,y:145,l:0},{x:65,y:210,l:0},{x:120,y:210,l:0},{x:175,y:210,l:0},{x:230,y:210,l:0},{x:175,y:110,l:0},{x:175,y:275,l:0},{x:175,y:340,l:0},{x:135,y:85,l:1},{x:175,y:210,l:1},{x:175,y:275,l:1},{x:175,y:110,l:1},{x:120,y:210,l:1},{x:175,y:210,l:2},{x:175,y:275,l:2},{x:135,y:85,l:2},{x:120,y:210,l:2},{x:175,y:110,l:2}],
-            [{x:90,y:40,l:0},{x:145,y:40,l:0},{x:200,y:40,l:0},{x:90,y:105,l:0},{x:90,y:170,l:0},{x:145,y:170,l:0},{x:200,y:170,l:0},{x:210,y:235,l:0},{x:210,y:300,l:0},{x:100,y:360,l:0},{x:155,y:360,l:0},{x:200,y:360,l:0},{x:145,y:40,l:1},{x:90,y:170,l:1},{x:145,y:170,l:1},{x:210,y:235,l:1},{x:155,y:360,l:1},{x:145,y:170,l:2},{x:210,y:235,l:2},{x:145,y:40,l:2},{x:90,y:170,l:2},{x:155,y:360,l:2}],
-            [{x:180,y:40,l:0},{x:130,y:60,l:0},{x:95,y:120,l:0},{x:85,y:185,l:0},{x:85,y:250,l:0},{x:85,y:315,l:0},{x:135,y:360,l:0},{x:190,y:335,l:0},{x:200,y:270,l:0},{x:190,y:205,l:0},{x:135,y:195,l:0},{x:135,y:360,l:1},{x:85,y:250,l:1},{x:85,y:315,l:1},{x:200,y:270,l:1},{x:135,y:195,l:1},{x:130,y:60,l:1},{x:85,y:250,l:2},{x:85,y:315,l:2},{x:135,y:360,l:2},{x:200,y:270,l:2},{x:135,y:195,l:2}],
-            [{x:80,y:40,l:0},{x:135,y:40,l:0},{x:190,y:40,l:0},{x:220,y:85,l:0},{x:195,y:150,l:0},{x:170,y:215,l:0},{x:145,y:280,l:0},{x:120,y:345,l:0},{x:135,y:40,l:1},{x:190,y:40,l:1},{x:195,y:150,l:1},{x:170,y:215,l:1},{x:145,y:280,l:1},{x:135,y:40,l:2},{x:195,y:150,l:2},{x:170,y:215,l:2},{x:145,y:280,l:2},{x:120,y:345,l:1}],
-            [{x:110,y:35,l:0},{x:165,y:35,l:0},{x:85,y:90,l:0},{x:190,y:90,l:0},{x:110,y:150,l:0},{x:165,y:150,l:0},{x:80,y:220,l:0},{x:195,y:220,l:0},{x:75,y:285,l:0},{x:200,y:285,l:0},{x:110,y:350,l:0},{x:165,y:350,l:0},{x:110,y:35,l:1},{x:165,y:35,l:1},{x:110,y:150,l:1},{x:165,y:150,l:1},{x:110,y:350,l:1},{x:165,y:350,l:1},{x:110,y:35,l:2},{x:165,y:35,l:2},{x:110,y:150,l:2},{x:165,y:150,l:2},{x:110,y:350,l:2},{x:165,y:350,l:2}],
-            [{x:135,y:35,l:0},{x:185,y:60,l:0},{x:195,y:125,l:0},{x:195,y:190,l:0},{x:145,y:210,l:0},{x:95,y:185,l:0},{x:85,y:120,l:0},{x:135,y:85,l:0},{x:195,y:255,l:0},{x:175,y:320,l:0},{x:120,y:360,l:0},{x:135,y:35,l:1},{x:185,y:60,l:1},{x:195,y:125,l:1},{x:145,y:210,l:1},{x:195,y:255,l:1},{x:135,y:35,l:2},{x:185,y:60,l:2},{x:195,y:125,l:2},{x:145,y:210,l:2},{x:175,y:320,l:1},{x:120,y:360,l:1}],
-            [{x:40,y:90,l:0},{x:65,y:55,l:0},{x:65,y:120,l:0},{x:65,y:185,l:0},{x:65,y:250,l:0},{x:65,y:315,l:0},{x:35,y:370,l:0},{x:65,y:370,l:0},{x:95,y:370,l:0},{x:175,y:55,l:0},{x:225,y:55,l:0},{x:150,y:120,l:0},{x:250,y:120,l:0},{x:150,y:185,l:0},{x:250,y:185,l:0},{x:150,y:250,l:0},{x:250,y:250,l:0},{x:150,y:315,l:0},{x:250,y:315,l:0},{x:175,y:370,l:0},{x:225,y:370,l:0},{x:65,y:120,l:1},{x:65,y:185,l:1},{x:175,y:55,l:1},{x:225,y:55,l:1},{x:175,y:370,l:1}]
+        // 10. Levele özel tamamen farklı hayvan simgeleri bonus seti
+        const animalSymbols = [
+            { main: '🐱', sub: 'Kedi', color: '#e67e22', name: 'Animal Cat' },
+            { main: '🐶', sub: 'Köpek', color: '#d35400', name: 'Animal Dog' },
+            { main: '🦁', sub: 'Aslan', color: '#f1c40f', name: 'Animal Lion' },
+            { main: '🐼', sub: 'Panda', color: '#2c3e50', name: 'Animal Panda' },
+            { main: '🐰', sub: 'Tavşan', color: '#e84393', name: 'Animal Rabbit' },
+            { main: '🦊', sub: 'Tilki', color: '#e17055', name: 'Animal Fox' },
+            { main: '🐸', sub: 'Kurbağa', color: '#00b894', name: 'Animal Frog' },
+            { main: '🐵', sub: 'Maymun', color: '#d63031', name: 'Animal Monkey' },
+            { main: '🐨', sub: 'Koala', color: '#636e72', name: 'Animal Koala' },
+            { main: '🐯', sub: 'Kaplan', color: '#e17055', name: 'Animal Tiger' }
         ];
 
-        let currentLevel = 0;
+        const memoryQuotes = [
+            "\"Hafıza, aklın kütüphanesidir; onu düzenli tutmak zihni berraklaştırır.\"",
+            "\"Geçmişin izlerini saklayan hafıza, geleceğin en güvenli rehberidir.\"",
+            "\"Güçlü bir hafıza, öğrenmenin ve keşfetmenin en sadık dostudur.\"",
+            "\"Zihinsel egzersizler, düşünce dünyamıza taze bir nefes kazandırır.\"",
+            "\"Her bulmaca çözümü, beyin hücreleri arasında kurulan yeni bir köprüdür.\"",
+            "\"Deneyimlerin ve anıların toplamıdır bizi biz yapan.\"",
+            "\"Odaklanma ve dikkat, hafızanın kapılarını aralayan iki anahtardır.\""
+        ];
+
+        let currentLevel = 0; // 0 ile 49 arası (Toplam 50 level)
         let score = 0;
         let selectedTile = null;
         let remainingTiles = 0;
@@ -320,42 +365,82 @@
         let lockBoard = false;
         let timerInterval = null;
         let timeLeft = 120;
-        let shuffleUses = 2;
-        let hintUses = 3;
+
+        let shuffleLeft = 10;
+        let hintLeft = 10;
 
         function startTimer() {
             clearInterval(timerInterval);
-            timeLeft = 120 - (currentLevel * 4);
-            if(timeLeft < 50) timeLeft = 50;
-            document.getElementById('timer').innerText = timeLeft;
+            timeLeft = Math.max(40, 120 - (currentLevel * 1.5));
+            document.getElementById('timer').innerText = Math.floor(timeLeft);
+            document.getElementById('urgentAlert').style.display = 'none';
 
             timerInterval = setInterval(() => {
                 timeLeft--;
-                document.getElementById('timer').innerText = timeLeft;
+                document.getElementById('timer').innerText = Math.floor(timeLeft);
+
+                // Son 15 saniye ortada dikkat çekici uyarı
+                if (timeLeft <= 15 && timeLeft > 0) {
+                    document.getElementById('urgentAlert').style.display = 'block';
+                } else {
+                    document.getElementById('urgentAlert').style.display = 'none';
+                }
+
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
+                    document.getElementById('urgentAlert').style.display = 'none';
+                    document.getElementById('loseTitle').innerText = "Süre Bitti! ⏳";
+                    document.getElementById('loseMessage').innerText = "Süren tükendi. Tekrar denemek ister misin?";
                     document.getElementById('loseModal').style.display = 'flex';
                 }
             }, 1000);
+        }
+
+        // Koordinat üretici (taş sayısına dinamik uyum sağlar)
+        function generateDynamicLayout(count) {
+            let layout = [];
+            let layersCount = 3;
+            for (let i = 0; i < count; i++) {
+                let l = i < count / 3 ? 0 : (i < (count * 2) / 3 ? 1 : 2);
+                // 360x390 alan içinde rastgele güvenli koordinatlar
+                let x = 30 + (i * 19) % 290;
+                let y = 30 + (Math.floor(i / 15) * 48) + (i % 3) * 6;
+                layout.push({x: x, y: y, l: l});
+            }
+            return layout;
         }
 
         function loadLevel(levelIdx) {
             const board = document.getElementById('board');
             document.getElementById('winModal').style.display = 'none';
             document.getElementById('loseModal').style.display = 'none';
+            document.getElementById('urgentAlert').style.display = 'none';
+            
+            // Her level başlangıcında haklar 10'a sabitlenir
+            shuffleLeft = 10;
+            hintLeft = 10;
+            updateControlCounts();
+
             board.innerHTML = '';
+            board.appendChild(document.getElementById('urgentAlert'));
             selectedTile = null;
             lockBoard = false;
-            shuffleUses = 2;
-            hintUses = 3;
 
-            const layout = layouts[levelIdx % layouts.length];
+            // Her 5 levelde bir taş çifti sayısı 10 çift (20 taş) artar. Başlangıç 14 taş (7 çift)
+            let pairCount = 7 + Math.floor(levelIdx / 5) * 10;
+            let totalTilesCount = pairCount * 2;
+            if (totalTilesCount > 110) totalTilesCount = 110; // Sınır koruması
+
+            const layout = generateDynamicLayout(totalTilesCount);
             remainingTiles = layout.length;
 
-            let pairsCount = layout.length / 2;
+            // Her 10 levelde bir bonus etap (10, 20, 30, 40, 50 -> index 9, 19, 29, 39, 49)
+            let isBonusStage = ((levelIdx + 1) % 10 === 0);
+            let poolToUse = isBonusStage ? animalSymbols : standardSymbols;
+
             let activeSymbols = [];
-            for (let i = 0; i < pairsCount; i++) {
-                activeSymbols.push(symbolsPool[i % symbolsPool.length]);
+            for (let i = 0; i < layout.length / 2; i++) {
+                activeSymbols.push(poolToUse[i % poolToUse.length]);
             }
 
             let deck = [...activeSymbols, ...activeSymbols];
@@ -406,8 +491,8 @@
                 let isBlocked = tilesData.some(other => {
                     if (other.matched) return false;
                     if (other.layer > tile.layer) {
-                        let overlapX = Math.abs(other.x - tile.x) < 40;
-                        let overlapY = Math.abs(other.y - tile.y) < 52;
+                        let overlapX = Math.abs(other.x - tile.x) < 38;
+                        let overlapY = Math.abs(other.y - tile.y) < 50;
                         return overlapX && overlapY;
                     }
                     return false;
@@ -419,6 +504,40 @@
                     tile.element.classList.remove('blocked');
                 }
             });
+
+            checkGameStuck();
+        }
+
+        function checkGameStuck() {
+            if (remainingTiles <= 0) return;
+            let activeTiles = tilesData.filter(t => !t.matched && !t.element.classList.contains('blocked'));
+            let hasPair = false;
+
+            for (let i = 0; i < activeTiles.length; i++) {
+                for (let j = i + 1; j < activeTiles.length; j++) {
+                    if (activeTiles[i].element.dataset.name === activeTiles[j].element.dataset.name) {
+                        hasPair = true;
+                        break;
+                    }
+                }
+                if (hasPair) break;
+            }
+
+            // Eşleşme kalmadıysa ve haklar bittiyse "Çözüm bulunamadı" uyarısı ile baştan al
+            if (!hasPair) {
+                if (shuffleLeft <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('urgentAlert').style.display = 'none';
+                    document.getElementById('loseTitle').innerText = "Çözüm Bulunamadı! 🛑";
+                    document.getElementById('loseMessage').innerText = "Karıştırma hakların bitti ve tahtada hamle kalmadı! Level baştan başlatılıyor.";
+                    document.getElementById('loseModal').style.display = 'flex';
+                } else {
+                    // Otomatik hak düşerek karıştır
+                    shuffleLeft--;
+                    updateControlCounts();
+                    autoExecuteShuffle();
+                }
+            }
         }
 
         function handleTileClick(id) {
@@ -427,7 +546,6 @@
             
             if (tile.matched || tile.element.classList.contains('blocked')) return;
 
-            // İpucu efektini temizle
             tilesData.forEach(t => t.element.classList.remove('hint-target'));
 
             if (selectedTile === tile) {
@@ -462,11 +580,17 @@
 
                         if (remainingTiles === 0) {
                             clearInterval(timerInterval);
-                            let bonus = timeLeft * 15;
+                            document.getElementById('urgentAlert').style.display = 'none';
+                            let bonus = Math.floor(timeLeft * 15);
                             score += bonus;
                             updateStats();
                             
-                            document.getElementById('winMessage').innerText = `Süre Bonusu: +${bonus} Puan!`;
+                            document.getElementById('winMessage').innerText = `Bölüm Başarıyla Tamamlandı! Süre Bonusu: +${bonus} Puan`;
+                            
+                            // Hafıza sözlerinden rastgele seç
+                            let randomQuote = memoryQuotes[Math.floor(Math.random() * memoryQuotes.length)];
+                            document.getElementById('quoteText').innerText = randomQuote;
+
                             createConfetti();
                             setTimeout(() => {
                                 document.getElementById('winModal').style.display = 'flex';
@@ -486,10 +610,16 @@
         }
 
         function shuffleTiles() {
-            if (shuffleUses <= 0) return;
-            shuffleUses--;
-            document.getElementById('shuffleCount').innerText = shuffleUses;
+            if (shuffleLeft <= 0) {
+                alert("Karıştırma hakkın kalmadı!");
+                return;
+            }
+            shuffleLeft--;
+            updateControlCounts();
+            autoExecuteShuffle();
+        }
 
+        function autoExecuteShuffle() {
             let activeTiles = tilesData.filter(t => !t.matched);
             if (activeTiles.length === 0) return;
 
@@ -513,9 +643,13 @@
         }
 
         function showHint() {
-            if (hintUses <= 0) return;
-            
-            // Açıkta olan eşleşebilir bir çift bul
+            if (hintLeft <= 0) {
+                alert("İpucu hakkın kalmadı!");
+                return;
+            }
+            hintLeft--;
+            updateControlCounts();
+
             let activeTiles = tilesData.filter(t => !t.matched && !t.element.classList.contains('blocked'));
             let pairFound = null;
 
@@ -530,8 +664,6 @@
             }
 
             if (pairFound) {
-                hintUses--;
-                document.getElementById('hintCount').innerText = hintUses;
                 pairFound[0].element.classList.add('hint-target');
                 pairFound[1].element.classList.add('hint-target');
 
@@ -539,12 +671,19 @@
                     pairFound[0].element.classList.remove('hint-target');
                     pairFound[1].element.classList.remove('hint-target');
                 }, 2000);
+            } else {
+                shuffleTiles();
             }
+        }
+
+        function updateControlCounts() {
+            document.getElementById('shuffleCount').innerText = shuffleLeft;
+            document.getElementById('hintCount').innerText = hintLeft;
         }
 
         function createConfetti() {
             const colors = ['#f1c40f', '#e74c3c', '#2ecc71', '#3498db', '#9b59b6'];
-            for(let i = 0; i < 45; i++) {
+            for(let i = 0; i < 40; i++) {
                 const conf = document.createElement('div');
                 conf.classList.add('confetti');
                 conf.style.left = Math.random() * 100 + 'vw';
@@ -560,7 +699,11 @@
         }
 
         function nextLevel() {
-            currentLevel = (currentLevel + 1) % layouts.length;
+            currentLevel++;
+            if (currentLevel >= 50) {
+                currentLevel = 0; // 50 level tamamlandığında başa döner veya kutlama yapılabilir
+                alert("Tebrikler! 50 levelin tümünü başarıyla tamamladın!");
+            }
             loadLevel(currentLevel);
         }
 
@@ -568,11 +711,10 @@
             document.getElementById('level').innerText = currentLevel + 1;
             document.getElementById('score').innerText = score;
             document.getElementById('remaining').innerText = Math.max(0, remainingTiles);
-            document.getElementById('shuffleCount').innerText = shuffleUses;
-            document.getElementById('hintCount').innerText = hintUses;
         }
 
         loadLevel(currentLevel);
     </script>
 </body>
 </html>
+                                   
