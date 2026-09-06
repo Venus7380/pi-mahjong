@@ -6,9 +6,9 @@
     <title>Mahjong Master Venüs</title>
     <style>
         :root {
-            --tile-w: 42px;
-            --tile-h: 60px;
-            --shadow-color: rgba(0, 0, 0, 0.6);
+            --tile-w: 44px;
+            --tile-h: 62px;
+            --shadow-color: rgba(0, 0, 0, 0.65);
         }
 
         body {
@@ -63,31 +63,18 @@
 
         .board-wrapper {
             position: relative;
-            width: 355px;
-            height: 385px;
+            width: 360px;
+            height: 390px;
             margin-top: 5px;
-            background: rgba(0, 0, 0, 0.35);
+            background: rgba(0, 0, 0, 0.4);
             border-radius: 15px;
             border: 3px solid rgba(241, 196, 15, 0.25);
             box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
             overflow: hidden;
-            padding: 10px;
-        }
-
-        .tiles-grid {
-            display: grid;
-            grid-template-columns: repeat(6, var(--tile-w));
-            gap: 5px;
-            justify-content: center;
-            align-content: center;
-            max-height: 100%;
-            overflow-y: auto;
         }
 
         .tile {
+            position: absolute;
             width: var(--tile-w);
             height: var(--tile-h);
             background: linear-gradient(145deg, #ffffff, #f0f0f0);
@@ -96,10 +83,9 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.25s ease;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.25s ease, filter 0.2s ease;
             box-sizing: border-box;
             border: 1px solid #dcdcdc;
-            box-shadow: 2px 3px 5px var(--shadow-color), 0 4px 0 #b0bec5;
         }
 
         .tile-inner {
@@ -116,7 +102,7 @@
         }
 
         .tile .symbol-text {
-            font-size: 19px;
+            font-size: 20px;
             font-weight: 900;
             line-height: 1;
             text-shadow: 1px 1px 0px rgba(0,0,0,0.15);
@@ -129,17 +115,28 @@
             opacity: 0.85;
         }
 
+        /* Katman Derinlikleri ve Gölgeleri */
+        .tile[data-layer="0"] { z-index: 10; box-shadow: 2px 3px 6px var(--shadow-color), 0 4px 0 #b0bec5; }
+        .tile[data-layer="1"] { z-index: 20; box-shadow: 4px 6px 10px var(--shadow-color), 0 5px 0 #90a4ae; }
+        .tile[data-layer="2"] { z-index: 30; box-shadow: 6px 9px 14px var(--shadow-color), 0 6px 0 #78909c; }
+        .tile[data-layer="3"] { z-index: 40; box-shadow: 8px 12px 18px var(--shadow-color), 0 7px 0 #546e7a; }
+
+        .tile.blocked {
+            filter: brightness(0.5) grayscale(0.4);
+            cursor: not-allowed;
+        }
+
         .tile.selected {
             border: 2px solid #f1c40f;
-            box-shadow: 0 0 15px #f1c40f, 0 4px 0 #d4ac0d !important;
-            transform: translateY(-4px) scale(1.05);
-            z-index: 99;
+            box-shadow: 0 0 18px #f1c40f, 0 6px 0 #d4ac0d !important;
+            transform: translateY(-6px) scale(1.06);
+            z-index: 99 !important;
         }
 
         .tile.hint-target {
             animation: pulseHint 0.6s infinite alternate;
             border: 2px solid #2ecc71;
-            box-shadow: 0 0 15px #2ecc71 !important;
+            box-shadow: 0 0 18px #2ecc71 !important;
         }
 
         @keyframes pulseHint {
@@ -289,9 +286,8 @@
         </div>
     </header>
 
-    <div class="board-wrapper" id="boardWrapper">
+    <div class="board-wrapper" id="board">
         <div id="urgentAlert">⚠️ DİKKAT! SÜRE BİTİYOR! ⚠️</div>
-        <div class="tiles-grid" id="tilesGrid"></div>
     </div>
 
     <div class="controls">
@@ -397,8 +393,56 @@
             }, 1000);
         }
 
+        // Seviyelere göre katmanlı ve geometrik şablon üretici
+        function generateLayout(levelIdx) {
+            let layout = [];
+            let totalPairs = 8 + Math.floor(levelIdx / 3) * 4; // Seviyeye göre artan taş çifti
+            if (totalPairs > 32) totalPairs = 32;
+            let totalTiles = totalPairs * 2;
+
+            // İlk 10 seviye için daha düzenli, sonraki seviyelerde daha karmaşık geometrik katmanlar
+            let startX = 40;
+            let startY = 30;
+            let stepX = 48;
+            let stepY = 66;
+
+            let idx = 0;
+            // Katman katman taş yerleştirme (Üst üste binme mantığı)
+            for (let l = 0; l < 3; l++) {
+                let rows = 3 - l;
+                let cols = 5 - l;
+                let lStartX = startX + (l * 24);
+                let lStartY = startY + (l * 30);
+
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        if (idx >= totalTiles) break;
+                        layout.push({
+                            x: lStartX + (c * stepX),
+                            y: lStartY + (r * stepY),
+                            l: l
+                        });
+                        idx++;
+                    }
+                    if (idx >= totalTiles) break;
+                }
+                if (idx >= totalTiles) break;
+            }
+
+            // Eğer taş sayısı tam dolmadıysa kalanları tabana (kat 0) ekle
+            while (layout.length < totalTiles) {
+                layout.push({
+                    x: 35 + ((layout.length * 15) % 280),
+                    y: 250 + ((layout.length * 10) % 80),
+                    l: 0
+                });
+            }
+
+            return layout;
+        }
+
         function loadLevel(levelIdx) {
-            const grid = document.getElementById('tilesGrid');
+            const board = document.getElementById('board');
             document.getElementById('winModal').style.display = 'none';
             document.getElementById('loseModal').style.display = 'none';
             document.getElementById('urgentAlert').style.display = 'none';
@@ -407,22 +451,19 @@
             hintLeft = 10;
             updateControlCounts();
 
-            grid.innerHTML = '';
+            board.innerHTML = '';
+            board.appendChild(document.getElementById('urgentAlert'));
             selectedTile = null;
             lockBoard = false;
 
-            // Her 5 levelde bir çift sayısı 10 artar (12 taş, 22 taş, 32 taş...)
-            let pairCount = 6 + Math.floor(levelIdx / 5) * 5; 
-            let totalNeeded = pairCount * 2;
-            if (totalNeeded > 36) totalNeeded = 36; // Grid ekranına sığacak ideal max taş
-
-            remainingTiles = totalNeeded;
+            const layout = generateLayout(levelIdx);
+            remainingTiles = layout.length;
 
             let isBonusStage = ((levelIdx + 1) % 10 === 0);
             let poolToUse = isBonusStage ? animalSymbols : standardSymbols;
 
             let activeSymbols = [];
-            for (let i = 0; i < totalNeeded / 2; i++) {
+            for (let i = 0; i < layout.length / 2; i++) {
                 activeSymbols.push(poolToUse[i % poolToUse.length]);
             }
 
@@ -431,11 +472,15 @@
 
             tilesData = [];
 
-            deck.forEach((sym, idx) => {
+            layout.forEach((pos, idx) => {
+                const sym = deck[idx];
                 const tile = document.createElement('div');
                 tile.classList.add('tile');
                 tile.dataset.id = idx;
                 tile.dataset.name = sym.name;
+                tile.dataset.layer = pos.l;
+                tile.style.left = `${pos.x}px`;
+                tile.style.top = `${pos.y}px`;
 
                 tile.innerHTML = `
                     <div class="tile-inner">
@@ -444,26 +489,85 @@
                     </div>
                 `;
 
-                grid.appendChild(tile);
+                board.appendChild(tile);
 
                 tilesData.push({
                     id: idx,
                     element: tile,
+                    x: pos.x,
+                    y: pos.y,
+                    layer: pos.l,
                     matched: false
                 });
 
                 tile.addEventListener('click', () => handleTileClick(idx));
             });
 
+            updateBlockedTiles();
             updateStats();
             startTimer();
+        }
+
+        // Mahjong Kilitlenme Kuralı: Üstünde başka taş olan taş tıklanamaz
+        function updateBlockedTiles() {
+            tilesData.forEach(tile => {
+                if (tile.matched) return;
+
+                let isBlocked = tilesData.some(other => {
+                    if (other.matched) return false;
+                    if (other.layer > tile.layer) {
+                        let overlapX = Math.abs(other.x - tile.x) < 38;
+                        let overlapY = Math.abs(other.y - tile.y) < 54;
+                        return overlapX && overlapY;
+                    }
+                    return false;
+                });
+
+                if (isBlocked) {
+                    tile.element.classList.add('blocked');
+                } else {
+                    tile.element.classList.remove('blocked');
+                }
+            });
+
+            checkGameStuck();
+        }
+
+        function checkGameStuck() {
+            if (remainingTiles <= 0) return;
+            let activeTiles = tilesData.filter(t => !t.matched && !t.element.classList.contains('blocked'));
+            let hasPair = false;
+
+            for (let i = 0; i < activeTiles.length; i++) {
+                for (let j = i + 1; j < activeTiles.length; j++) {
+                    if (activeTiles[i].element.dataset.name === activeTiles[j].element.dataset.name) {
+                        hasPair = true;
+                        break;
+                    }
+                }
+                if (hasPair) break;
+            }
+
+            if (!hasPair) {
+                if (shuffleLeft <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('urgentAlert').style.display = 'none';
+                    document.getElementById('loseTitle').innerText = "Çözüm Bulunamadı! 🛑";
+                    document.getElementById('loseMessage').innerText = "Karıştırma hakların bitti ve tahtada hamle kalmadı! Bölüm yeniden başlatılıyor.";
+                    document.getElementById('loseModal').style.display = 'flex';
+                } else {
+                    shuffleLeft--;
+                    updateControlCounts();
+                    autoExecuteShuffle();
+                }
+            }
         }
 
         function handleTileClick(id) {
             if (lockBoard) return;
             const tile = tilesData[id];
             
-            if (tile.matched) return;
+            if (tile.matched || tile.element.classList.contains('blocked')) return;
 
             tilesData.forEach(t => t.element.classList.remove('hint-target'));
 
@@ -493,6 +597,7 @@
                         score += 200;
                         remainingTiles -= 2;
 
+                        updateBlockedTiles();
                         updateStats();
                         lockBoard = false;
 
@@ -533,7 +638,10 @@
             }
             shuffleLeft--;
             updateControlCounts();
+            autoExecuteShuffle();
+        }
 
+        function autoExecuteShuffle() {
             let activeTiles = tilesData.filter(t => !t.matched);
             if (activeTiles.length === 0) return;
 
@@ -553,6 +661,7 @@
                 selectedTile.element.classList.remove('selected');
                 selectedTile = null;
             }
+            updateBlockedTiles();
         }
 
         function showHint() {
@@ -563,7 +672,7 @@
             hintLeft--;
             updateControlCounts();
 
-            let activeTiles = tilesData.filter(t => !t.matched);
+            let activeTiles = tilesData.filter(t => !t.matched && !t.element.classList.contains('blocked'));
             let pairFound = null;
 
             for (let i = 0; i < activeTiles.length; i++) {
@@ -584,6 +693,8 @@
                     pairFound[0].element.classList.remove('hint-target');
                     pairFound[1].element.classList.remove('hint-target');
                 }, 2000);
+            } else {
+                shuffleTiles();
             }
         }
 
