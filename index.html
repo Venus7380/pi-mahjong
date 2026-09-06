@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
@@ -8,13 +8,13 @@
         :root {
             --tile-w: 52px;
             --tile-h: 70px;
-            --shadow-color: rgba(0, 0, 0, 0.5);
+            --shadow-color: rgba(0, 0, 0, 0.55);
         }
 
         body {
             margin: 0;
-            padding: 10px 5px;
-            background: radial-gradient(circle, #1b5e20 0%, #061c0f 100%);
+            padding: 8px 5px;
+            background: radial-gradient(circle, #1e6b27 0%, #051a0d 100%);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #fff;
             display: flex;
@@ -24,7 +24,7 @@
             user-select: none;
             -webkit-user-select: none;
             box-sizing: border-box;
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
         header {
@@ -35,19 +35,20 @@
         h1 {
             margin: 2px 0;
             color: #ffd700;
-            font-size: 24px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+            font-size: 22px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5), 2px 2px 4px rgba(0,0,0,0.7);
         }
 
         .stats-bar {
             display: flex;
-            gap: 12px;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 6px 16px;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.65);
+            padding: 6px 14px;
             border-radius: 20px;
             border: 1px solid rgba(255, 215, 0, 0.4);
             font-weight: bold;
-            font-size: 13px;
+            font-size: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
         .stats-item span {
@@ -57,25 +58,26 @@
         .board-wrapper {
             position: relative;
             width: 350px;
-            height: 470px;
-            margin-top: 15px;
-            background: rgba(0, 0, 0, 0.2);
+            height: 480px;
+            margin-top: 10px;
+            background: rgba(0, 0, 0, 0.25);
             border-radius: 16px;
             border: 2px solid rgba(255, 255, 255, 0.08);
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+            box-shadow: inset 0 0 25px rgba(0,0,0,0.7);
         }
 
+        /* İşaretlenen Özel Taş Stili */
         .tile {
             position: absolute;
             width: var(--tile-w);
             height: var(--tile-h);
-            background: linear-gradient(145deg, #ffffff, #f4f4f4);
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
             border-radius: 8px;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.2s ease;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.25s ease;
             box-sizing: border-box;
             border: 1px solid #dcdcdc;
         }
@@ -90,7 +92,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            box-shadow: inset 0 0 3px rgba(0,0,0,0.1);
+            box-shadow: inset 0 0 4px rgba(0,0,0,0.08);
         }
 
         .tile .symbol-text {
@@ -113,25 +115,25 @@
         .tile[data-layer="2"] { z-index: 30; box-shadow: 6px 9px 12px var(--shadow-color), 0 6px 0 #78909c; transform: translate(-6px, -6px); }
 
         .tile.blocked {
-            filter: brightness(0.62) grayscale(0.25);
+            filter: brightness(0.6) grayscale(0.25);
             cursor: not-allowed;
         }
 
         .tile.selected {
             border: 2px solid #ffd700;
-            box-shadow: 0 0 15px #ffd700, 0 6px 0 #ffb300 !important;
-            transform: translate(-3px, -8px) scale(1.05) !important;
+            box-shadow: 0 0 18px #ffd700, 0 6px 0 #ffb300 !important;
+            transform: translate(-3px, -8px) scale(1.06) !important;
             z-index: 99 !important;
         }
 
         .tile.matched {
             opacity: 0;
-            transform: scale(0.1) !important;
+            transform: scale(0.0) rotate(15deg) !important;
             pointer-events: none;
         }
 
         .controls {
-            margin-top: 15px;
+            margin-top: 12px;
             display: flex;
             gap: 12px;
         }
@@ -143,8 +145,8 @@
             padding: 10px 18px;
             border-radius: 20px;
             font-weight: bold;
-            font-size: 14px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+            font-size: 13px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
             cursor: pointer;
         }
 
@@ -157,21 +159,48 @@
             transform: scale(0.95);
         }
 
-        .win-modal {
+        .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0,0,0,0.88);
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 200;
+            animation: fadeIn 0.3s ease;
         }
 
-        .win-modal h2 {
+        .modal h2 {
             color: #ffd700;
-            font-size: 30px;
-            margin-bottom: 10px;
+            font-size: 28px;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .modal p {
+            font-size: 15px;
+            margin: 5px 0 15px 0;
+            color: #e0e0e0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Konfeti parçacığı efekti */
+        .confetti {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: confettiFall 2.5s ease-out infinite;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(600px) rotate(720deg); opacity: 0; }
         }
     </style>
 </head>
@@ -182,6 +211,7 @@
         <div class="stats-bar">
             <div class="stats-item">Seviye: <span id="level">1</span></div>
             <div class="stats-item">Puan: <span id="score">0</span></div>
+            <div class="stats-item">Süre: <span id="timer">120</span>s</div>
             <div class="stats-item">Kalan: <span id="remaining">0</span></div>
         </div>
     </header>
@@ -193,10 +223,18 @@
         <button class="btn" onclick="resetCurrentLevel()">Yeniden Başlat 🔄</button>
     </div>
 
-    <div class="win-modal" id="winModal">
+    <!-- Seviye Tamamlandı Modalı -->
+    <div class="modal" id="winModal">
         <h2>Bölüm Tamamlandı! 🎉</h2>
-        <p>Harika! Bir sonraki seviyeye geçiyorsunuz.</p>
+        <p id="winMessage">Bonus Puan Ekleniyor...</p>
         <button class="btn" onclick="nextLevel()">Sonraki Seviye ➡️</button>
+    </div>
+
+    <!-- Süre Bitti Modalı -->
+    <div class="modal" id="loseModal">
+        <h2 style="color: #ff5252;">Süre Doldu! ⏳</h2>
+        <p>Maalesef zamanında tamamlayamadınız.</p>
+        <button class="btn" onclick="resetCurrentLevel()">Tekrar Dene 🔄</button>
     </div>
 
     <script>
@@ -213,32 +251,28 @@
             { main: '九', sub: '萬', color: '#00796b', name: '9 Character' }
         ];
 
-        // HER DİZİLİM MUTLAKA ÇİFT SAYIDA TAŞ İÇERİR (14, 18, 20, 20)
+        // 10 SEVİYE İÇİN TÜM DİZİLİMLER (HER BİRİ KESİN OLARAK ÇİFT SAYIDA TAŞ İÇERİR)
         const layouts = [
-            // Level 1: "1" Rakamı (Tam 14 Taş)
-            [
-                {x: 120, y: 70, l: 0}, {x: 150, y: 35, l: 0},
-                {x: 150, y: 100, l: 0}, {x: 150, y: 165, l: 0}, {x: 150, y: 230, l: 0}, {x: 150, y: 295, l: 0},
-                {x: 95, y: 360, l: 0}, {x: 150, y: 360, l: 0}, {x: 205, y: 360, l: 0},
-                {x: 150, y: 100, l: 1}, {x: 150, y: 165, l: 1}, {x: 150, y: 230, l: 1},
-                {x: 150, y: 100, l: 2}, {x: 150, y: 165, l: 2}
-            ],
-            // Level 2: "2" Rakamı (Tam 18 Taş)
-            [
-                {x: 100, y: 40, l: 0}, {x: 150, y: 30, l: 0}, {x: 200, y: 45, l: 0},
-                {x: 210, y: 110, l: 0}, {x: 170, y: 175, l: 0}, {x: 125, y: 240, l: 0},
-                {x: 85, y: 305, l: 0}, {x: 85, y: 370, l: 0}, {x: 140, y: 370, l: 0}, {x: 195, y: 370, l: 0},
-                {x: 150, y: 30, l: 1}, {x: 170, y: 175, l: 1}, {x: 125, y: 240, l: 1}, {x: 140, y: 370, l: 1},
-                {x: 170, y: 175, l: 2}, {x: 125, y: 240, l: 2}, {x: 150, y: 30, l: 2}, {x: 140, y: 370, l: 2}
-            ],
-            // Level 3: "3" Rakamı (Tam 20 Taş)
-            [
-                {x: 100, y: 35, l: 0}, {x: 150, y: 30, l: 0}, {x: 200, y: 45, l: 0},
-                {x: 205, y: 110, l: 0}, {x: 155, y: 175, l: 0},
-                {x: 205, y: 240, l: 0}, {x: 200, y: 305, l: 0}, {x: 150, y: 360, l: 0}, {x: 100, y: 350, l: 0}, {x: 205, y: 175, l: 0},
-                {x: 150, y: 30, l: 1}, {x: 155, y: 175, l: 1}, {x: 205, y: 240, l: 1}, {x: 150, y: 360, l: 1}, {x: 200, y: 45, l: 1},
-                {x: 155, y: 175, l: 2}, {x: 150, y: 30, l: 2}, {x: 205, y: 240, l: 2}, {x: 150, y: 360, l: 2}, {x: 200, y: 45, l: 2}
-            ]
+            // Level 1: "1" (14 Taş)
+            [{x:120,y:70,l:0},{x:150,y:35,l:0},{x:150,y:100,l:0},{x:150,y:165,l:0},{x:150,y:230,l:0},{x:150,y:295,l:0},{x:95,y:360,l:0},{x:150,y:360,l:0},{x:205,y:360,l:0},{x:150,y:100,l:1},{x:150,y:165,l:1},{x:150,y:230,l:1},{x:150,y:100,l:2},{x:150,y:165,l:2}],
+            // Level 2: "2" (18 Taş)
+            [{x:100,y:40,l:0},{x:150,y:30,l:0},{x:200,y:45,l:0},{x:210,y:110,l:0},{x:170,y:175,l:0},{x:125,y:240,l:0},{x:85,y:305,l:0},{x:85,y:370,l:0},{x:140,y:370,l:0},{x:195,y:370,l:0},{x:150,y:30,l:1},{x:170,y:175,l:1},{x:125,y:240,l:1},{x:140,y:370,l:1},{x:170,y:175,l:2},{x:125,y:240,l:2},{x:150,y:30,l:2},{x:140,y:370,l:2}],
+            // Level 3: "3" (20 Taş)
+            [{x:100,y:35,l:0},{x:150,y:30,l:0},{x:200,y:45,l:0},{x:205,y:110,l:0},{x:155,y:175,l:0},{x:205,y:240,l:0},{x:200,y:305,l:0},{x:150,y:360,l:0},{x:100,y:350,l:0},{x:205,y:175,l:0},{x:150,y:30,l:1},{x:155,y:175,l:1},{x:205,y:240,l:1},{x:150,y:360,l:1},{x:200,y:45,l:1},{x:155,y:175,l:2},{x:150,y:30,l:2},{x:205,y:240,l:2},{x:150,y:360,l:2},{x:200,y:45,l:2}],
+            // Level 4: "4" (20 Taş)
+            [{x:180,y:30,l:0},{x:135,y:85,l:0},{x:90,y:145,l:0},{x:65,y:210,l:0},{x:120,y:210,l:0},{x:175,y:210,l:0},{x:230,y:210,l:0},{x:175,y:110,l:0},{x:175,y:275,l:0},{x:175,y:340,l:0},{x:135,y:85,l:1},{x:175,y:210,l:1},{x:175,y:275,l:1},{x:175,y:110,l:1},{x:120,y:210,l:1},{x:175,y:210,l:2},{x:175,y:275,l:2},{x:135,y:85,l:2},{x:120,y:210,l:2},{x:175,y:110,l:2}],
+            // Level 5: "5" (22 Taş)
+            [{x:90,y:40,l:0},{x:145,y:40,l:0},{x:200,y:40,l:0},{x:90,y:105,l:0},{x:90,y:170,l:0},{x:145,y:170,l:0},{x:200,y:170,l:0},{x:210,y:235,l:0},{x:210,y:300,l:0},{x:100,y:360,l:0},{x:155,y:360,l:0},{x:200,y:360,l:0},{x:145,y:40,l:1},{x:90,y:170,l:1},{x:145,y:170,l:1},{x:210,y:235,l:1},{x:155,y:360,l:1},{x:145,y:170,l:2},{x:210,y:235,l:2},{x:145,y:40,l:2},{x:90,y:170,l:2},{x:155,y:360,l:2}],
+            // Level 6: "6" (22 Taş)
+            [{x:180,y:40,l:0},{x:130,y:60,l:0},{x:95,y:120,l:0},{x:85,y:185,l:0},{x:85,y:250,l:0},{x:85,y:315,l:0},{x:135,y:360,l:0},{x:190,y:335,l:0},{x:200,y:270,l:0},{x:190,y:205,l:0},{x:135,y:195,l:0},{x:135,y:360,l:1},{x:85,y:250,l:1},{x:85,y:315,l:1},{x:200,y:270,l:1},{x:135,y:195,l:1},{x:130,y:60,l:1},{x:85,y:250,l:2},{x:85,y:315,l:2},{x:135,y:360,l:2},{x:200,y:270,l:2},{x:135,y:195,l:2}],
+            // Level 7: "7" (18 Taş)
+            [{x:80,y:40,l:0},{x:135,y:40,l:0},{x:190,y:40,l:0},{x:220,y:85,l:0},{x:195,y:150,l:0},{x:170,y:215,l:0},{x:145,y:280,l:0},{x:120,y:345,l:0},{x:135,y:40,l:1},{x:190,y:40,l:1},{x:195,y:150,l:1},{x:170,y:215,l:1},{x:145,y:280,l:1},{x:135,y:40,l:2},{x:195,y:150,l:2},{x:170,y:215,l:2},{x:145,y:280,l:2},{x:120,y:345,l:1}],
+            // Level 8: "8" (24 Taş)
+            [{x:110,y:35,l:0},{x:165,y:35,l:0},{x:85,y:90,l:0},{x:190,y:90,l:0},{x:110,y:150,l:0},{x:165,y:150,l:0},{x:80,y:220,l:0},{x:195,y:220,l:0},{x:75,y:285,l:0},{x:200,y:285,l:0},{x:110,y:350,l:0},{x:165,y:350,l:0},{x:110,y:35,l:1},{x:165,y:35,l:1},{x:110,y:150,l:1},{x:165,y:150,l:1},{x:110,y:350,l:1},{x:165,y:350,l:1},{x:110,y:35,l:2},{x:165,y:35,l:2},{x:110,y:150,l:2},{x:165,y:150,l:2},{x:110,y:350,l:2},{x:165,y:350,l:2}],
+            // Level 9: "9" (22 Taş)
+            [{x:135,y:35,l:0},{x:185,y:60,l:0},{x:195,y:125,l:0},{x:195,y:190,l:0},{x:145,y:210,l:0},{x:95,y:185,l:0},{x:85,y:120,l:0},{x:135,y:85,l:0},{x:195,y:255,l:0},{x:175,y:320,l:0},{x:120,y:360,l:0},{x:135,y:35,l:1},{x:185,y:60,l:1},{x:195,y:125,l:1},{x:145,y:210,l:1},{x:195,y:255,l:1},{x:135,y:35,l:2},{x:185,y:60,l:2},{x:195,y:125,l:2},{x:145,y:210,l:2},{x:175,y:320,l:1},{x:120,y:360,l:1}],
+            // Level 10: "10" (26 Taş)
+            [{x:40,y:90,l:0},{x:65,y:55,l:0},{x:65,y:120,l:0},{x:65,y:185,l:0},{x:65,y:250,l:0},{x:65,y:315,l:0},{x:35,y:370,l:0},{x:65,y:370,l:0},{x:95,y:370,l:0},{x:175,y:55,l:0},{x:225,y:55,l:0},{x:150,y:120,l:0},{x:250,y:120,l:0},{x:150,y:185,l:0},{x:250,y:185,l:0},{x:150,y:250,l:0},{x:250,y:250,l:0},{x:150,y:315,l:0},{x:250,y:315,l:0},{x:175,y:370,l:0},{x:225,y:370,l:0},{x:65,y:120,l:1},{x:65,y:185,l:1},{x:175,y:55,l:1},{x:225,y:55,l:1},{x:175,y:370,l:1}]
         ];
 
         let currentLevel = 0;
@@ -247,10 +281,29 @@
         let remainingTiles = 0;
         let tilesData = [];
         let lockBoard = false;
+        let timerInterval = null;
+        let timeLeft = 120;
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 120 - (currentLevel * 5); // Üst seviyelerde süre hafif azalır
+            if(timeLeft < 60) timeLeft = 60;
+            document.getElementById('timer').innerText = timeLeft;
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('loseModal').style.display = 'flex';
+                }
+            }, 1000);
+        }
 
         function loadLevel(levelIdx) {
             const board = document.getElementById('board');
             document.getElementById('winModal').style.display = 'none';
+            document.getElementById('loseModal').style.display = 'none';
             board.innerHTML = '';
             selectedTile = null;
             lockBoard = false;
@@ -258,7 +311,6 @@
             const layout = layouts[levelIdx % layouts.length];
             remainingTiles = layout.length;
 
-            // Çift sayı garantisi
             let pairsCount = layout.length / 2;
             let activeSymbols = [];
             
@@ -266,7 +318,6 @@
                 activeSymbols.push(symbolsPool[i % symbolsPool.length]);
             }
 
-            // Tam çiftli güverte
             let deck = [...activeSymbols, ...activeSymbols];
             deck.sort(() => Math.random() - 0.5);
 
@@ -305,6 +356,7 @@
 
             updateBlockedTiles();
             updateStats();
+            startTimer();
         }
 
         function updateBlockedTiles() {
@@ -365,8 +417,14 @@
                         updateStats();
                         lockBoard = false;
 
-                        // Kalan taş 0 olduğunda bölüm BİTER
                         if (remainingTiles === 0) {
+                            clearInterval(timerInterval);
+                            let bonus = timeLeft * 10;
+                            score += bonus;
+                            updateStats();
+                            
+                            document.getElementById('winMessage').innerText = `Kalan Süre Bonusu: +${bonus} Puan!`;
+                            createConfetti();
                             setTimeout(() => {
                                 document.getElementById('winModal').style.display = 'flex';
                             }, 300);
@@ -409,6 +467,19 @@
             updateBlockedTiles();
         }
 
+        function createConfetti() {
+            const colors = ['#ffd700', '#ff4081', '#00e676', '#29b6f6', '#ab47bc'];
+            for(let i = 0; i < 40; i++) {
+                const conf = document.createElement('div');
+                conf.classList.add('confetti');
+                conf.style.left = Math.random() * 100 + 'vw';
+                conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                conf.style.animationDelay = Math.random() * 1.5 + 's';
+                document.body.appendChild(conf);
+                setTimeout(() => conf.remove(), 2500);
+            }
+        }
+
         function resetCurrentLevel() {
             loadLevel(currentLevel);
         }
@@ -428,3 +499,4 @@
     </script>
 </body>
 </html>
+    
