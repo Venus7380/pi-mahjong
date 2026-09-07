@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mahjong Eşleştirme Oyunu - Geometrik Katmanlar</title>
+    <title>Mahjong Eşleştirme Oyunu - Zen Manzaraları</title>
     <style>
         * {
             box-sizing: border-box;
@@ -13,7 +13,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #1b4332, #2d6a4f);
+            background: linear-gradient(135deg, #0f251a, #1b4332);
             color: #fff;
             min-height: 100vh;
             display: flex;
@@ -32,31 +32,44 @@
         h1 {
             font-size: 1.3rem;
             margin-bottom: 2px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
 
         .scoreboard {
             display: flex;
             gap: 8px;
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.4);
             padding: 4px 8px;
             border-radius: 6px;
             font-size: 0.8rem;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
             justify-content: space-around;
+            backdrop-filter: blur(4px);
         }
 
+        /* Arka plan manzarası ve cam efekti eklenmiş oyun alanı */
         .game-container {
             position: relative;
             width: 100%;
             max-width: 380px;
             height: 380px;
-            background: rgba(8, 28, 18, 0.5);
+            background-size: cover;
+            background-position: center;
             border-radius: 12px;
             border: 2px solid #52b788;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
             overflow: hidden;
             margin-bottom: 10px;
+            transition: background-image 0.5s ease-in-out;
+        }
+
+        /* Taşların rahat okunması için hafif karartma katmanı */
+        .game-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 30, 20, 0.65);
+            z-index: 1;
         }
 
         .tile {
@@ -76,6 +89,7 @@
             cursor: pointer;
             user-select: none;
             transition: transform 0.1s, background-color 0.2s;
+            z-index: 2; /* Karartma katmanının üstünde kalır */
         }
 
         .tile:hover:not(.locked) {
@@ -137,7 +151,7 @@
             font-weight: bold;
             border-radius: 6px;
             cursor: pointer;
-            box-shadow: 0 3px 5px rgba(0,0,0,0.2);
+            box-shadow: 0 3px 5px rgba(0,0,0,0.3);
             flex: 1;
         }
 
@@ -152,33 +166,50 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.75);
+            background: rgba(0,0,0,0.8);
             display: flex;
             align-items: center;
             justify-content: center;
             display: none;
             z-index: 100;
+            backdrop-filter: blur(5px);
         }
 
         .modal-content {
-            background: #1b4332;
-            padding: 20px;
-            border-radius: 12px;
+            background: linear-gradient(145deg, #1b4332, #0f251a);
+            padding: 22px;
+            border-radius: 14px;
             text-align: center;
             border: 2px solid #52b788;
-            max-width: 320px;
+            max-width: 330px;
             width: 90%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
 
         .modal-content h2 {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-size: 1.2rem;
             color: #52b788;
         }
 
-        .modal-content p {
-            margin-bottom: 12px;
+        /* Estetik Hafıza Sözleri Tasarımı */
+        .quote-box {
+            font-family: 'Georgia', serif;
+            font-style: italic;
             font-size: 0.9rem;
+            line-height: 1.4;
+            color: #e9edc9;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 14px;
+            border-left: 3px solid #e76f51;
+        }
+
+        .modal-score {
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            color: #a3b18a;
         }
     </style>
 </head>
@@ -203,12 +234,36 @@
     <div class="modal" id="modal">
         <div class="modal-content">
             <h2 id="modalTitle">Tebrikler!</h2>
-            <p id="modalText">Bölüm başarıyla tamamlandı.</p>
+            <div class="quote-box" id="quoteText">"Zihin kasları gibidir; ne kadar çok çalıştırırsanız, o kadar güçlenir."</div>
+            <div class="modal-score" id="modalText">Skor: 0</div>
             <button class="btn" id="nextLevelBtn">Sonraki Seviye</button>
         </div>
     </div>
 
     <script>
+        // Göz yormayan, yüksek kaliteli ve şık manzaraların listesi (Unsplash görsel havuzu)
+        const wallpapers = [
+            "https://images.unsplash.com/photo-1518495973542-4542c06a5843?q=80&w=600&auto=format&fit=crop", // Orman yaprakları yeşil
+            "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600&auto=format&fit=crop", // Sakin huzurlu sahil/doğa
+            "https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=600&auto=format&fit=crop", // Sisli orman manzarası
+            "https://images.unsplash.com/photo-1511497584788-876761142212?q=80&w=600&auto=format&fit=crop", // Bambu yeşil doğa
+            "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=600&auto=format&fit=crop"  // Dağ ve doğa manzarası
+        ];
+
+        // Her seviye bitişi için hafıza ve zihin konulu estetik özlü sözler
+        const memoryQuotes = [
+            "\"Zihin, kaslar gibidir; ne kadar çok çalıştırırsanız, o kadar güçlenir ve keskinleşir.\"",
+            "\"Güçlü bir hafıza, geçmişin tecrübesiyle bugünün farkındalığını birleştiren en büyük hazinedir.\"",
+            "\"Bulmacalar ve zihin egzersizleri, beynin gizli kalmış yollarını aydınlatan birer meşaledir.\"",
+            "\"Öğrenmek ve hatırlamak, beynimizin bize sunduğu en güzel mucizelerden biridir.\"",
+            "\"Her bulmaca çözümü, zihinsel bahçemizde açan yeni ve taze bir çiçek gibidir.\"",
+            "\"Odaklanma yeteneği, dikkati yönetebilme ve anı yakalayabilme sanatıdır.\"",
+            "\"Zihinsel aktif kalmak, yaş sınırı tanımayan en keyifli ve dinamik yaşam tarzıdır.\"",
+            "\"Küçük adımlar ve düzenli egzersizler, hafızada büyük ve kalıcı izler bırakır.\"",
+            "\"Her eşleşen parça, zihninizdeki karmaşayı düzenleyen huzurlu bir adımdır.\"",
+            "\"Bilgi ve hafıza, paylaştıkça ve kullandıkça parlayan nadide mücevherlerdir.\""
+        ];
+
         const normalSymbols = [
             { id: 1, icon: "⭐", label: "Yıldız" },
             { id: 2, icon: "🌙", label: "Ay" },
@@ -265,8 +320,14 @@
         const hintCountSpan = document.getElementById('hintCount');
         const modal = document.getElementById('modal');
         const modalTitle = document.getElementById('modalTitle');
+        const quoteText = document.getElementById('quoteText');
         const modalText = document.getElementById('modalText');
         const nextLevelBtn = document.getElementById('nextLevelBtn');
+
+        function setBackgroundWallpaper() {
+            let bgIndex = (currentLevel - 1) % wallpapers.length;
+            gameContainer.style.backgroundImage = `url('${wallpapers[bgIndex]}')`;
+        }
 
         function startTimer() {
             clearInterval(timerInterval);
@@ -298,6 +359,7 @@
             shuffleUses = 10;
             hintUses = 10;
             updateButtonsState();
+            setBackgroundWallpaper();
             startTimer();
 
             let pairCount;
@@ -331,7 +393,6 @@
                 });
             });
 
-            // Seviyeye göre farklı geometrik şekil ve üst üste katmanlar üret
             let positions = generateGeometricLayout(tilePairs.length, currentLevel);
 
             tiles = tilePairs.map((item, index) => ({
@@ -345,16 +406,14 @@
             renderTiles();
         }
 
-        // Geometrik Formasyon Üreteci (Piramit, Elmas, Çember, Kare vb.)
         function generateGeometricLayout(count, level) {
             let posList = [];
-            let shapeType = level % 4; // Her 4 seviyede bir farklı geometri döngüsü
+            let shapeType = level % 4;
 
             for (let i = 0; i < count; i++) {
                 let x = 35, y = 35, layer = 0;
 
                 if (shapeType === 0) {
-                    // 1. Şekil: Klasik Piramit / Üçgen Formasyonu
                     layer = i < count * 0.4 ? 0 : (i < count * 0.8 ? 1 : 2);
                     let row = Math.floor(Math.sqrt(i * 2));
                     let col = i - (row * (row + 1)) / 2;
@@ -362,7 +421,6 @@
                     y = 15 + (row * 14) + (layer * 3);
                 } 
                 else if (shapeType === 1) {
-                    // 2. Şekil: Elmas / Baklava Dilimi Formasyonu
                     layer = i % 3;
                     let angle = (i / count) * Math.PI * 2;
                     let radius = 25 - (layer * 5);
@@ -370,7 +428,6 @@
                     y = 40 + Math.sin(angle) * (radius * 0.8);
                 } 
                 else if (shapeType === 2) {
-                    // 3. Şekil: İç içe Çift Kare / Izgara Katman
                     layer = Math.floor(i / 14);
                     let localIdx = i % 14;
                     let col = localIdx % 5;
@@ -379,14 +436,12 @@
                     y = 20 + (row * 14) + (layer * 4);
                 } 
                 else {
-                    // 4. Şekil: X Haç / Çarpı Formasyonu
                     layer = i < count / 2 ? 0 : 1;
                     let t = (i % (count / 2)) / (count / 2) * Math.PI * 2;
                     x = 40 + Math.sin(t) * 25;
                     y = 40 + Math.cos(t) * 20 + (layer * 4);
                 }
 
-                // Sınırları güvenli yüzde aralığında tut
                 x = Math.max(2, Math.min(82, x));
                 y = Math.max(5, Math.min(78, y));
 
@@ -399,13 +454,15 @@
             if (tile.removed) return true;
             return tiles.some(other => {
                 if (other.removed || other.layer <= tile.layer) return false;
-                // Üstteki taş alttakini kapatıyor mu kontrolü
                 return Math.abs(other.x - tile.x) < 9 && Math.abs(other.y - tile.y) < 12;
             });
         }
 
         function renderTiles() {
-            gameContainer.innerHTML = '';
+            // Eski taşları temizle ama arka plan katmanını koru
+            const existingTiles = gameContainer.querySelectorAll('.tile');
+            existingTiles.forEach(t => t.remove());
+
             let sortedTiles = [...tiles].sort((a, b) => a.layer - b.layer);
 
             sortedTiles.forEach(tile => {
@@ -414,7 +471,7 @@
                 el.className = 'tile';
                 el.style.left = `${tile.x}%`;
                 el.style.top = `${tile.y}%`;
-                el.style.zIndex = tile.layer * 10;
+                el.style.zIndex = (tile.layer * 10) + 2;
 
                 const locked = isTileLocked(tile);
                 if (locked) el.classList.add('locked');
@@ -459,13 +516,18 @@
             if (remaining === 0) {
                 gameActive = false;
                 clearInterval(timerInterval);
+                
+                // Rastgele veya sıradan bir hafıza sözü seç
+                let randomQuote = memoryQuotes[(currentLevel - 1) % memoryQuotes.length];
+                quoteText.textContent = randomQuote;
+
                 if (currentLevel >= 100) {
                     modalTitle.textContent = "🏆 Tebrikler!";
-                    modalText.textContent = `100 Seviyeyi Tamamladın! Skor: ${score}`;
+                    modalText.textContent = `100 Seviyeyi Tamamladın! Toplam Skor: ${score}`;
                     nextLevelBtn.style.display = 'none';
                 } else {
-                    modalTitle.textContent = currentLevel % 10 === 0 ? "🌟 Bonus Seviye Bitti!" : `Seviye ${currentLevel} Tamamlandı!`;
-                    modalText.textContent = `Skor: ${score}`;
+                    modalTitle.textContent = currentLevel % 10 === 0 ? "🌟 Bonus Seviye Tamamlandı!" : `Seviye ${currentLevel} Tamamlandı!`;
+                    modalText.textContent = `Güncel Skor: ${score}`;
                     nextLevelBtn.style.display = 'inline-block';
                 }
                 modal.style.display = 'flex';
@@ -475,6 +537,7 @@
         function gameOver(msg) {
             gameActive = false;
             modalTitle.textContent = "Süre Bitti!";
+            quoteText.textContent = "\"Unutmayın, her deneme zihninizi bir sonraki zafer için daha da güçlendirir.\"";
             modalText.textContent = msg;
             nextLevelBtn.textContent = "Tekrar Dene";
             nextLevelBtn.onclick = () => initLevel();
