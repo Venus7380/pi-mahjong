@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+      <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
@@ -6,9 +6,9 @@
     <title>Mahjong Master Venüs</title>
     <style>
         :root {
-            --tile-w: 38px;
-            --tile-h: 54px;
-            --shadow-color: rgba(0, 0, 0, 0.65);
+            --tile-w: 40px;
+            --tile-h: 58px;
+            --shadow-color: rgba(0, 0, 0, 0.6);
         }
 
         body {
@@ -24,12 +24,11 @@
             user-select: none;
             -webkit-user-select: none;
             box-sizing: border-box;
-            overflow: hidden;
         }
 
         header {
             text-align: center;
-            margin-bottom: 2px;
+            margin-bottom: 4px;
             width: 100%;
             max-width: 380px;
         }
@@ -66,24 +65,23 @@
             width: 350px;
             height: 380px;
             margin-top: 5px;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.5);
             border-radius: 15px;
-            border: 3px solid rgba(241, 196, 15, 0.25);
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
-            overflow: hidden;
+            border: 3px solid rgba(241, 196, 15, 0.3);
+            box-shadow: inset 0 0 25px rgba(0,0,0,0.8);
         }
 
         .tile {
             position: absolute;
             width: var(--tile-w);
             height: var(--tile-h);
-            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            background: linear-gradient(145deg, #ffffff, #eaeaea);
             border-radius: 6px;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.25s ease, filter 0.2s ease;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.2s ease, filter 0.2s ease;
             box-sizing: border-box;
             border: 1px solid #dcdcdc;
         }
@@ -91,18 +89,18 @@
         .tile-inner {
             width: 82%;
             height: 86%;
-            border: 2px solid #e0e0e0;
+            border: 2px solid #dedede;
             border-radius: 4px;
             background: #fafafa;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            box-shadow: inset 0 0 4px rgba(0,0,0,0.08);
+            box-shadow: inset 0 0 4px rgba(0,0,0,0.06);
         }
 
         .tile .symbol-text {
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 900;
             line-height: 1;
             text-shadow: 1px 1px 0px rgba(0,0,0,0.15);
@@ -115,13 +113,13 @@
             opacity: 0.85;
         }
 
-        /* Katman Derinlikleri ve Gölgeleri */
+        /* Katman Derinlikleri */
         .tile[data-layer="0"] { z-index: 10; box-shadow: 2px 3px 5px var(--shadow-color), 0 3px 0 #b0bec5; }
-        .tile[data-layer="1"] { z-index: 20; box-shadow: 3px 5px 8px var(--shadow-color), 0 4px 0 #90a4ae; }
-        .tile[data-layer="2"] { z-index: 30; box-shadow: 5px 7px 11px var(--shadow-color), 0 5px 0 #78909c; }
+        .tile[data-layer="1"] { z-index: 20; box-shadow: 4px 5px 8px var(--shadow-color), 0 4px 0 #90a4ae; }
+        .tile[data-layer="2"] { z-index: 30; box-shadow: 6px 8px 12px var(--shadow-color), 0 5px 0 #78909c; }
 
         .tile.blocked {
-            filter: brightness(0.5) grayscale(0.4);
+            filter: brightness(0.45) grayscale(0.5);
             cursor: not-allowed;
         }
 
@@ -145,14 +143,14 @@
 
         .tile.matched {
             opacity: 0;
-            transform: scale(0.0) rotate(15deg) !important;
+            transform: scale(0) rotate(15deg) !important;
             pointer-events: none;
         }
 
         .controls {
             margin-top: 8px;
             display: flex;
-            gap: 15px;
+            gap: 20px;
             align-items: center;
         }
 
@@ -175,7 +173,6 @@
             align-items: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             cursor: pointer;
-            outline: none;
         }
 
         .circle-btn:active {
@@ -199,7 +196,7 @@
             color: white;
             padding: 8px 16px;
             border-radius: 10px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             box-shadow: 0 0 20px rgba(231, 76, 60, 0.8);
             z-index: 150;
@@ -212,7 +209,7 @@
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.88);
+            background: rgba(0,0,0,0.85);
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -257,19 +254,6 @@
             font-size: 13px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.4);
             cursor: pointer;
-        }
-
-        .confetti {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            animation: confettiFall 2.5s ease-out infinite;
-        }
-
-        @keyframes confettiFall {
-            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(500px) rotate(720deg); opacity: 0; }
         }
     </style>
 </head>
@@ -349,9 +333,7 @@
             "\"Geçmişin izlerini saklayan hafıza, geleceğin en güvenli rehberidir.\"",
             "\"Güçlü bir hafıza, öğrenmenin ve keşfetmenin en sadık dostudur.\"",
             "\"Zihinsel egzersizler, düşünce dünyamıza taze bir nefes kazandırır.\"",
-            "\"Her bulmaca çözümü, beyin hücreleri arasında kurulan yeni bir köprüdür.\"",
-            "\"Deneyimlerin ve anıların toplamıdır bizi biz yapan.\"",
-            "\"Odaklanma ve dikkat, hafızanın kapılarını aralayan iki anahtardır.\""
+            "\"Her bulmaca çözümü, beyin hücreleri arasında kurulan yeni bir köprüdür.\""
         ];
 
         let currentLevel = 0;
@@ -362,7 +344,6 @@
         let lockBoard = false;
         let timerInterval = null;
         let timeLeft = 120;
-
         let shuffleLeft = 10;
         let hintLeft = 10;
 
@@ -370,7 +351,6 @@
             clearInterval(timerInterval);
             timeLeft = Math.max(45, 120 - (currentLevel * 1.2));
             document.getElementById('timer').innerText = Math.floor(timeLeft);
-            document.getElementById('urgentAlert').style.display = 'none';
 
             timerInterval = setInterval(() => {
                 timeLeft--;
@@ -392,25 +372,24 @@
             }, 1000);
         }
 
-        // Güvenli ve kutunun dışına taşmayan katmanlı yerleşim algoritması
+        // Garanti çalışan, kutu dışına taşmayan katmanlı yerleşim
         function generateLayout(levelIdx) {
             let layout = [];
-            let totalPairs = 8 + Math.floor(levelIdx / 3) * 4; 
-            if (totalPairs > 28) totalPairs = 28; // 56 taş güvenli sınır
+            let totalPairs = 12 + Math.floor(levelIdx / 2) * 2; 
+            if (totalPairs > 24) totalPairs = 24; // Toplam 48 taş (ekrana tam sığar)
             let totalTiles = totalPairs * 2;
 
-            // Kutu boyutları (350x380) içine tam oturan güvenli başlangıç ve adım mesafeleri
-            let startX = 25;
+            let startX = 20;
             let startY = 15;
-            let stepX = 42;
-            let stepY = 58;
+            let stepX = 43;
+            let stepY = 60;
 
             let idx = 0;
             // 3 Katmanlı yapı
             for (let l = 0; l < 3; l++) {
                 let rows = 3 - l;
                 let cols = 6 - l;
-                let lStartX = startX + (l * 21);
+                let lStartX = startX + (l * 22);
                 let lStartY = startY + (l * 25);
 
                 for (let r = 0; r < rows; r++) {
@@ -428,11 +407,11 @@
                 if (idx >= totalTiles) break;
             }
 
-            // Kalan taşlar varsa alt tabana ekle
+            // Kalan taşları merkeze güvenli yerleştir
             while (layout.length < totalTiles) {
                 layout.push({
-                    x: 20 + ((layout.length * 20) % 270),
-                    y: 220 + ((layout.length * 12) % 90),
+                    x: 30 + ((layout.length * 18) % 230),
+                    y: 200 + ((layout.length * 10) % 80),
                     l: 0
                 });
             }
@@ -507,7 +486,7 @@
             startTimer();
         }
 
-        // Mahjong Kilitlenme Kuralı
+        // Kilitlenme Kuralı (Üstteki taş alttakini kilitler)
         function updateBlockedTiles() {
             tilesData.forEach(tile => {
                 if (tile.matched) return;
@@ -515,8 +494,8 @@
                 let isBlocked = tilesData.some(other => {
                     if (other.matched) return false;
                     if (other.layer > tile.layer) {
-                        let overlapX = Math.abs(other.x - tile.x) < 34;
-                        let overlapY = Math.abs(other.y - tile.y) < 48;
+                        let overlapX = Math.abs(other.x - tile.x) < 35;
+                        let overlapY = Math.abs(other.y - tile.y) < 50;
                         return overlapX && overlapY;
                     }
                     return false;
@@ -552,7 +531,7 @@
                     clearInterval(timerInterval);
                     document.getElementById('urgentAlert').style.display = 'none';
                     document.getElementById('loseTitle').innerText = "Çözüm Bulunamadı! 🛑";
-                    document.getElementById('loseMessage').innerText = "Karıştırma hakların bitti ve tahtada hamle kalmadı! Bölüm yeniden başlatılıyor.";
+                    document.getElementById('loseMessage').innerText = "Hamle kalmadı! Bölüm yeniden başlatılıyor.";
                     document.getElementById('loseModal').style.display = 'flex';
                 } else {
                     shuffleLeft--;
@@ -607,15 +586,9 @@
                             score += bonus;
                             updateStats();
                             
-                            document.getElementById('winMessage').innerText = `Bölüm Başarıyla Tamamlandı! Süre Bonusu: +${bonus} Puan`;
-                            
-                            let randomQuote = memoryQuotes[Math.floor(Math.random() * memoryQuotes.length)];
-                            document.getElementById('quoteText').innerText = randomQuote;
-
-                            createConfetti();
-                            setTimeout(() => {
-                                document.getElementById('winModal').style.display = 'flex';
-                            }, 300);
+                            document.getElementById('winMessage').innerText = `Bölüm Tamamlandı! Süre Bonusu: +${bonus} Puan`;
+                            document.getElementById('quoteText').innerText = memoryQuotes[Math.floor(Math.random() * memoryQuotes.length)];
+                            document.getElementById('winModal').style.display = 'flex';
                         }
                     }, 200);
                 } else {
@@ -702,29 +675,13 @@
             document.getElementById('hintCount').innerText = hintLeft;
         }
 
-        function createConfetti() {
-            const colors = ['#f1c40f', '#e74c3c', '#2ecc71', '#3498db', '#9b59b6'];
-            for(let i = 0; i < 40; i++) {
-                const conf = document.createElement('div');
-                conf.classList.add('confetti');
-                conf.style.left = Math.random() * 100 + 'vw';
-                conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                conf.style.animationDelay = Math.random() * 1.5 + 's';
-                document.body.appendChild(conf);
-                setTimeout(() => conf.remove(), 2500);
-            }
-        }
-
         function resetCurrentLevel() {
             loadLevel(currentLevel);
         }
 
         function nextLevel() {
             currentLevel++;
-            if (currentLevel >= 50) {
-                currentLevel = 0;
-                alert("Tebrikler! 50 levelin tümünü başarıyla tamamladın!");
-            }
+            if (currentLevel >= 50) currentLevel = 0;
             loadLevel(currentLevel);
         }
 
@@ -738,3 +695,4 @@
     </script>
 </body>
 </html>
+              
