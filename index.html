@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mahjong Eşleştirme Oyunu - Tam Uyumlu</title>
+    <title>Mahjong Eşleştirme Oyunu - Geometrik Katmanlar</title>
     <style>
         * {
             box-sizing: border-box;
@@ -51,7 +51,7 @@
             width: 100%;
             max-width: 380px;
             height: 380px;
-            background: rgba(8, 28, 18, 0.4);
+            background: rgba(8, 28, 18, 0.5);
             border-radius: 12px;
             border: 2px solid #52b788;
             box-shadow: 0 8px 16px rgba(0,0,0,0.4);
@@ -61,13 +61,13 @@
 
         .tile {
             position: absolute;
-            width: 13%; /* Kutunun genişliğine göre yüzde olarak esner */
-            height: 18%; /* Kutunun yüksekliğine göre yüzde olarak esner */
+            width: 14%;
+            height: 19%;
             background: #f4f1de;
             color: #2b2b2b;
             border-radius: 5px;
             border: 1.5px solid #d4d0c7;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.4);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -87,7 +87,7 @@
             border-color: #e76f51;
             background: #faedcd;
             transform: translateY(-3px);
-            box-shadow: 0 4px 6px rgba(231, 111, 81, 0.4);
+            box-shadow: 0 5px 8px rgba(231, 111, 81, 0.5);
         }
 
         .tile.locked {
@@ -331,7 +331,8 @@
                 });
             });
 
-            let positions = generateLayoutPositions(tilePairs.length);
+            // Seviyeye göre farklı geometrik şekil ve üst üste katmanlar üret
+            let positions = generateGeometricLayout(tilePairs.length, currentLevel);
 
             tiles = tilePairs.map((item, index) => ({
                 ...item,
@@ -344,28 +345,52 @@
             renderTiles();
         }
 
-        // Yüzde (%) bazlı esnek konumlandırma (Ekrandan asla taşmaz)
-        function generateLayoutPositions(count) {
+        // Geometrik Formasyon Üreteci (Piramit, Elmas, Çember, Kare vb.)
+        function generateGeometricLayout(count, level) {
             let posList = [];
-            let startX = 3;
-            let startY = 3;
-            let stepX = 11;
-            let stepY = 14;
-            let maxCols = 8;
+            let shapeType = level % 4; // Her 4 seviyede bir farklı geometri döngüsü
 
             for (let i = 0; i < count; i++) {
-                let layer = 0;
-                if (i >= 16 && i < 28) layer = 1;
-                if (i >= 28) layer = 2;
+                let x = 35, y = 35, layer = 0;
 
-                let col = i % maxCols;
-                let row = Math.floor(i / maxCols);
+                if (shapeType === 0) {
+                    // 1. Şekil: Klasik Piramit / Üçgen Formasyonu
+                    layer = i < count * 0.4 ? 0 : (i < count * 0.8 ? 1 : 2);
+                    let row = Math.floor(Math.sqrt(i * 2));
+                    let col = i - (row * (row + 1)) / 2;
+                    x = 25 + (row * 4) + (col * 11);
+                    y = 15 + (row * 14) + (layer * 3);
+                } 
+                else if (shapeType === 1) {
+                    // 2. Şekil: Elmas / Baklava Dilimi Formasyonu
+                    layer = i % 3;
+                    let angle = (i / count) * Math.PI * 2;
+                    let radius = 25 - (layer * 5);
+                    x = 42 + Math.cos(angle) * radius;
+                    y = 40 + Math.sin(angle) * (radius * 0.8);
+                } 
+                else if (shapeType === 2) {
+                    // 3. Şekil: İç içe Çift Kare / Izgara Katman
+                    layer = Math.floor(i / 14);
+                    let localIdx = i % 14;
+                    let col = localIdx % 5;
+                    let row = Math.floor(localIdx / 5);
+                    x = 15 + (col * 14) + (layer * 4);
+                    y = 20 + (row * 14) + (layer * 4);
+                } 
+                else {
+                    // 4. Şekil: X Haç / Çarpı Formasyonu
+                    layer = i < count / 2 ? 0 : 1;
+                    let t = (i % (count / 2)) / (count / 2) * Math.PI * 2;
+                    x = 40 + Math.sin(t) * 25;
+                    y = 40 + Math.cos(t) * 20 + (layer * 4);
+                }
 
-                posList.push({
-                    x: startX + (col * stepX) + (layer * 1.5),
-                    y: startY + (row * stepY) + (layer * 1.5),
-                    layer: layer
-                });
+                // Sınırları güvenli yüzde aralığında tut
+                x = Math.max(2, Math.min(82, x));
+                y = Math.max(5, Math.min(78, y));
+
+                posList.push({ x, y, layer });
             }
             return posList;
         }
@@ -374,7 +399,8 @@
             if (tile.removed) return true;
             return tiles.some(other => {
                 if (other.removed || other.layer <= tile.layer) return false;
-                return Math.abs(other.x - tile.x) < 8 && Math.abs(other.y - tile.y) < 10;
+                // Üstteki taş alttakini kapatıyor mu kontrolü
+                return Math.abs(other.x - tile.x) < 9 && Math.abs(other.y - tile.y) < 12;
             });
         }
 
