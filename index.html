@@ -1,9 +1,9 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mahjong Eşleştirme Oyunu</title>
+    <title>Mahjong Eşleştirme Oyunu - 100 Seviye</title>
     <style>
         * {
             box-sizing: border-box;
@@ -19,46 +19,48 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
+            padding: 15px;
         }
 
         header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         h1 {
-            font-size: 2rem;
-            margin-bottom: 10px;
+            font-size: 1.8rem;
+            margin-bottom: 5px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
         .scoreboard {
             display: flex;
-            gap: 20px;
+            gap: 15px;
             background: rgba(0, 0, 0, 0.2);
-            padding: 10px 20px;
+            padding: 8px 15px;
             border-radius: 10px;
-            font-size: 1.1rem;
+            font-size: 1rem;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .game-container {
             position: relative;
-            width: 600px;
-            height: 450px;
+            width: 700px;
+            height: 480px;
             background: rgba(8, 28, 18, 0.4);
             border-radius: 15px;
             border: 3px solid #52b788;
             box-shadow: 0 8px 16px rgba(0,0,0,0.4);
             overflow: hidden;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .tile {
             position: absolute;
-            width: 70px;
-            height: 90px;
+            width: 65px;
+            height: 85px;
             background: #f4f1de;
             color: #2b2b2b;
             border-radius: 8px;
@@ -68,7 +70,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: space-around;
-            padding: 6px 4px;
+            padding: 5px 2px;
             cursor: pointer;
             user-select: none;
             transition: transform 0.1s, background-color 0.2s, box-shadow 0.2s;
@@ -95,34 +97,42 @@
         }
 
         .tile-number {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: bold;
             color: #e76f51;
         }
 
         .tile-icon {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
         }
 
         .tile-label {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             text-transform: uppercase;
             font-weight: bold;
             letter-spacing: 0.5px;
             color: #40916c;
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 100%;
         }
 
         .controls {
             display: flex;
             gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         button.btn {
             background-color: #52b788;
             color: white;
             border: none;
-            padding: 10px 20px;
-            font-size: 1rem;
+            padding: 8px 16px;
+            font-size: 0.95rem;
             font-weight: bold;
             border-radius: 8px;
             cursor: pointer;
@@ -130,13 +140,16 @@
             transition: background 0.2s, transform 0.1s;
         }
 
-        button.btn:hover {
+        button.btn:hover:not(:disabled) {
             background-color: #40916c;
             transform: translateY(-2px);
         }
 
-        button.btn:active {
-            transform: translateY(0);
+        button.btn:disabled {
+            background-color: #475569;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
         .modal {
@@ -145,7 +158,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.75);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -160,16 +173,20 @@
             text-align: center;
             border: 2px solid #52b788;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            max-width: 400px;
+            width: 90%;
         }
 
         .modal-content h2 {
             margin-bottom: 15px;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
+            color: #52b788;
         }
 
         .modal-content p {
             margin-bottom: 20px;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -178,80 +195,162 @@
     <header>
         <h1>Mahjong Eşleştirme</h1>
         <div class="scoreboard">
+            <div>Seviye: <span id="levelDisplay">1</span>/100</div>
             <div>Skor: <span id="score">0</span></div>
-            <div>Süre: <span id="timer">00:00</span></div>
+            <div>Kalan Süre: <span id="timer">03:00</span></div>
         </div>
     </header>
 
     <div class="game-container" id="gameContainer"></div>
 
     <div class="controls">
-        <button class="btn" id="shuffleBtn">Karıştır</button>
-        <button class="btn" id="hintBtn">İpucu</button>
+        <button class="btn" id="shuffleBtn">Karıştır (<span id="shuffleCount">10</span>)</button>
+        <button class="btn" id="hintBtn">İpucu (<span id="hintCount">10</span>)</button>
     </div>
 
     <div class="modal" id="modal">
         <div class="modal-content">
             <h2 id="modalTitle">Tebrikler!</h2>
-            <p id="modalText">Bütün taşları başarıyla eşleştirdin.</p>
-            <button class="btn" id="restartBtn">Yeniden Oyna</button>
+            <p id="modalText">Bölüm başarıyla tamamlandı.</p>
+            <button class="btn" id="nextLevelBtn">Sonraki Seviye</button>
         </div>
     </div>
 
     <script>
-        const symbols = [
+        // Normal Temalar (Semboller)
+        const normalSymbols = [
             { id: 1, icon: "⭐", label: "Yıldız" },
             { id: 2, icon: "🌙", label: "Ay" },
             { id: 3, icon: "🔥", label: "Ateş" },
             { id: 4, icon: "💧", label: "Su" },
             { id: 5, icon: "🍀", label: "Yonca" },
-            { id: 6, icon: "💎", label: "Elmas" }
+            { id: 6, icon: "💎", label: "Elmas" },
+            { id: 7, icon: "⚡", label: "Yıldırım" },
+            { id: 8, icon: "🍎", label: "Elma" },
+            { id: 9, icon: "🌸", label: "Çiçek" },
+            { id: 10, icon: "🎵", label: "Nota" },
+            { id: 11, icon: "🚀", label: "Roket" },
+            { id: 12, icon: "🎯", label: "Hedef" },
+            { id: 13, icon: "👑", label: "Taç" },
+            { id: 14, icon: "🎨", label: "Palet" },
+            { id: 15, icon: "🔮", label: "Küre" },
+            { id: 16, icon: "🦋", label: "Kelebek" },
+            { id: 17, icon: "🍕", label: "Pizza" },
+            { id: 18, icon: "🌵", label: "Kaktüs" }
         ];
 
+        // Bonus Seviye Temaları (Farklı Desenler / Uzay-Teknoloji veya Kozmik Tema)
+        const bonusSymbols = [
+            { id: 101, icon: "🛸", label: "Ufo" },
+            { id: 102, icon: "👾", label: "Uzaylı" },
+            { id: 103, icon: "🪐", label: "Satürn" },
+            { id: 104, icon: "🤖", label: "Robot" },
+            { id: 105, icon: "🧬", label: "DNA" },
+            { id: 106, icon: "🧪", label: "İksir" },
+            { id: 107, icon: "💻", label: "Laptop" },
+            { id: 108, icon: "⚡", label: "Enerji" },
+            { id: 109, icon: "🔭", label: "Teleskop" },
+            { id: 110, icon: "⚙️", label: "Dişli" },
+            { id: 111, icon: "💡", label: "Ampul" },
+            { id: 112, icon: "🛰️", label: "Uydu" }
+        ];
+
+        let currentLevel = 1;
+        let score = 0;
         let tiles = [];
         let selectedTile = null;
-        let score = 0;
-        let seconds = 0;
-        let timerInterval = null;
         let gameActive = true;
+        
+        let shuffleUses = 10;
+        let hintUses = 10;
+        
+        let timeLeft = 180; // Her level için 3 dakika süre
+        let timerInterval = null;
 
         const gameContainer = document.getElementById('gameContainer');
         const scoreDisplay = document.getElementById('score');
+        const levelDisplay = document.getElementById('levelDisplay');
         const timerDisplay = document.getElementById('timer');
+        const shuffleBtn = document.getElementById('shuffleBtn');
+        const hintBtn = document.getElementById('hintBtn');
+        const shuffleCountSpan = document.getElementById('shuffleCount');
+        const hintCountSpan = document.getElementById('hintCount');
+        
         const modal = document.getElementById('modal');
-        const modalTitle = id('modalTitle');
-        const modalText = id('modalText');
-
-        function id(elementId) { return document.getElementById(elementId); }
+        const modalTitle = document.getElementById('modalTitle');
+        const modalText = document.getElementById('modalText');
+        const nextLevelBtn = document.getElementById('nextLevelBtn');
 
         function startTimer() {
             clearInterval(timerInterval);
-            seconds = 0;
+            timeLeft = 180;
+            updateTimerDisplay();
+            
             timerInterval = setInterval(() => {
                 if (!gameActive) return;
-                seconds++;
-                let mins = Math.floor(seconds / 60).toString().padStart(2, '0');
-                let secs = (seconds % 60).toString().padStart(2, '0');
-                timerDisplay.textContent = `${mins}:${secs}`;
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    gameOver("Süre bitti! Tekrar denemek ister misin?");
+                }
             }, 1000);
         }
 
-        function initGame() {
+        function updateTimerDisplay() {
+            let mins = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+            let secs = (timeLeft % 60).toString().padStart(2, '0');
+            timerDisplay.textContent = `${mins}:${secs}`;
+        }
+
+        function initLevel() {
             gameContainer.innerHTML = '';
-            score = 0;
-            scoreDisplay.textContent = score;
+            selectedTile = null;
             gameActive = true;
             modal.style.display = 'none';
-            selectedTile = null;
+            levelDisplay.textContent = currentLevel;
+            
+            // Hakları her level başında 10'a sabitle
+            shuffleUses = 10;
+            hintUses = 10;
+            updateButtonsState();
             startTimer();
 
-            // 4 çift (toplam 24 taş, 3 katman yapısı için uygun)
+            // Taş Çifti Hesaplama: İlk 10 levelde her levelde 2 çift (4 taş) artar.
+            // Level 1: 4 çift (8 taş), Level 2: 6 çift (12 taş) ... Level 10: 22 çift (44 taş).
+            // Level 10'dan sonra sabit veya katman yoğunluğuna göre devam eder.
+            let pairCount;
+            if (currentLevel <= 10) {
+                pairCount = 4 + (currentLevel - 1) * 2;
+            } else {
+                pairCount = Math.min(26, 22 + Math.floor((currentLevel - 10) / 5) * 2);
+            }
+
+            // Bonus Seviye Kontrolü (Her 10 levelden sonra örn: 10, 20, 30... 100)
+            let isBonusLevel = (currentLevel % 10 === 0);
+            let activePool = isBonusLevel ? bonusSymbols : normalSymbols;
+
+            if (isBonusLevel) {
+                modalTitle.textContent = `🎁 Bonus Seviye (${currentLevel}. Seviye)!`;
+            }
+
+            // Havuzdan rastgele çiftler seç
+            let poolCopy = [...activePool];
+            // Havuz yetmezse çoğalt
+            while (poolCopy.length < pairCount) {
+                poolCopy = poolCopy.concat(activePool);
+            }
+            poolCopy.sort(() => Math.random() - 0.5);
+            let selectedPool = poolCopy.slice(0, pairCount);
+
             let tilePairs = [];
-            let symbolPool = [...symbols, ...symbols, ...symbols, ...symbols]; // 24 adet
-            
-            symbolPool.forEach((sym, index) => {
+            let totalTiles = selectedPool.concat(selectedPool); // Çift yap
+            totalTiles.sort(() => Math.random() - 0.5);
+
+            totalTiles.forEach((sym, index) => {
                 tilePairs.push({
-                    uuid: Math.random(),
+                    uuid: Math.random() + "_" + index,
                     symbolId: sym.id,
                     icon: sym.icon,
                     label: sym.label,
@@ -259,22 +358,8 @@
                 });
             });
 
-            // Katman koordinatları (Basit bir Mahjong piramit/katman düzeni)
-            // layer: 0 (alt), 1 (orta), 2 (üst)
-            let positions = [
-                // Katman 0 (Alt - 10 taş)
-                {x: 100, y: 100, layer: 0}, {x: 180, y: 100, layer: 0}, {x: 260, y: 100, layer: 0}, {x: 340, y: 100, layer: 0},
-                {x: 140, y: 220, layer: 0}, {x: 220, y: 220, layer: 0}, {x: 300, y: 220, layer: 0}, {x: 380, y: 220, layer: 0},
-                {x: 180, y: 320, layer: 0}, {x: 260, y: 320, layer: 0},
-                // Katman 1 (Orta - 8 taş)
-                {x: 150, y: 140, layer: 1}, {x: 230, y: 140, layer: 1}, {x: 310, y: 140, layer: 1},
-                {x: 150, y: 240, layer: 1}, {x: 230, y: 240, layer: 1}, {x: 310, y: 240, layer: 1},
-                {x: 190, y: 190, layer: 1}, {x: 270, y: 190, layer: 1},
-                // Katman 2 (Üst - 6 taş)
-                {x: 200, y: 160, layer: 2}, {x: 280, y: 160, layer: 2},
-                {x: 220, y: 200, layer: 2}, {x: 260, y: 200, layer: 2},
-                {x: 240, y: 130, layer: 2}, {x: 240, y: 230, layer: 2}
-            ];
+            // Dinamik Katman ve Koordinat Üretimi (Taş sayısına göre esnek yerleşim)
+            let positions = generateLayoutPositions(tilePairs.length);
 
             tiles = tilePairs.map((item, index) => ({
                 ...item,
@@ -287,25 +372,53 @@
             renderTiles();
         }
 
-        // Kilit mekaniği kontrolü: Üst katmanında aynı X/Y koordinat alanını kapatan başka bir taş var mı?
+        // Taş sayısına göre üst üste binen katmanlı koordinat üreteci
+        function generateLayoutPositions(count) {
+            let posList = [];
+            // Merkez alan koordinatları
+            let startX = 60;
+            let startY = 40;
+            let stepX = 55;
+            let stepY = 70;
+            let maxCols = 10;
+
+            for (let i = 0; i < count; i++) {
+                let layer = 0;
+                // Taş sayısı arttıkça üst katmanları devreye sok
+                if (i >= 16 && i < 32) layer = 1;
+                if (i >= 32) layer = 2;
+
+                let col = i % maxCols;
+                let row = Math.floor(i / maxCols);
+
+                // Katmanlara göre hafif kaydırma (Mahjong efekti)
+                let offsetX = layer * 12;
+                let offsetY = layer * 12;
+
+                posList.push({
+                    x: startX + (col * stepX) + offsetX + (Math.random() * 6 - 3),
+                    y: startY + (row * stepY) + offsetY + (Math.random() * 6 - 3),
+                    layer: layer
+                });
+            }
+            return posList;
+        }
+
+        // Kilit mekaniği: Üstünde başka taş olan alt taşlar tıklanamaz
         function isTileLocked(tile) {
             if (tile.removed) return true;
             
             return tiles.some(other => {
                 if (other.removed || other.layer <= tile.layer) return false;
                 
-                // Basit çarpışma / üstte kalma kontrolü
-                let overlapX = Math.abs(other.x - tile.x) < 45;
-                let overlapY = Math.abs(other.y - tile.y) < 60;
+                let overlapX = Math.abs(other.x - tile.x) < 40;
+                let overlapY = Math.abs(other.y - tile.y) < 55;
                 return overlapX && overlapY;
             });
         }
 
         function renderTiles() {
-            // Katman sırasına göre render et (alttan üste)
             gameContainer.innerHTML = '';
-            
-            // Z-index düzeni için katmanlara göre sırala
             let sortedTiles = [...tiles].sort((a, b) => a.layer - b.layer);
 
             sortedTiles.forEach(tile => {
@@ -318,13 +431,8 @@
                 el.style.zIndex = tile.layer * 10;
 
                 const locked = isTileLocked(tile);
-                if (locked) {
-                    el.classList.add('locked');
-                }
-
-                if (selectedTile && selectedTile.uuid === tile.uuid) {
-                    el.classList.add('selected');
-                }
+                if (locked) el.classList.add('locked');
+                if (selectedTile && selectedTile.uuid === tile.uuid) el.classList.add('selected');
 
                 el.innerHTML = `
                     <span class="tile-number">#${tile.number}</span>
@@ -345,25 +453,22 @@
 
             if (selectedTile) {
                 if (selectedTile.uuid === tile.uuid) {
-                    // Aynı taşa tıklandıysa seçimi kaldır
                     selectedTile = null;
                 } else if (selectedTile.symbolId === tile.symbolId) {
                     // Eşleşme başarılı!
                     selectedTile.removed = true;
                     tile.removed = true;
                     selectedTile = null;
-                    score += 20;
+                    score += 15;
                     scoreDisplay.textContent = score;
 
                     checkWinCondition();
                 } else {
-                    // Eşleşmedi, yeni seçilen taş aktif olsun
                     selectedTile = tile;
                 }
             } else {
                 selectedTile = tile;
             }
-
             renderTiles();
         }
 
@@ -372,20 +477,37 @@
             if (remaining === 0) {
                 gameActive = false;
                 clearInterval(timerInterval);
-                modalTitle.textContent = "Tebrikler, Kazandın! 🎉";
-                modalText.textContent = `Süre: ${timerDisplay.textContent} | Skor: ${score}`;
+                
+                if (currentLevel >= 100) {
+                    modalTitle.textContent = "🏆 OYUNU BİTİRDİNİZ! MÜKEMMEL!";
+                    modalText.textContent = `Toplam Skorun: ${score}. Tüm 100 seviyeyi başarıyla tamamladın!`;
+                    nextLevelBtn.style.display = 'none';
+                } else {
+                    modalTitle.textContent = currentLevel % 10 === 0 ? "🌟 Bonus Seviye Tamamlandı!" : `Seviye ${currentLevel} Tamamlandı!`;
+                    modalText.textContent = `Harika iş! Skor: ${score}. Sonraki seviyeye geçmeye hazırsın.`;
+                    nextLevelBtn.style.display = 'inline-block';
+                }
                 modal.style.display = 'flex';
             }
         }
 
-        // Karıştır Butonu
-        document.getElementById('shuffleBtn').addEventListener('click', () => {
-            if (!gameActive) return;
-            // Sadece tahtada kalan taşların konumlarını veya sembollerini karıştırabiliriz
+        function gameOver(msg) {
+            gameActive = false;
+            modalTitle.textContent = "Süre Bitti! ⌛";
+            modalText.textContent = msg;
+            nextLevelBtn.textContent = "Yeniden Dene";
+            nextLevelBtn.onclick = () => { initLevel(); };
+            modal.style.display = 'flex';
+        }
+
+        // Karıştır Butonu (10 Hak Sınırı)
+        shuffleBtn.addEventListener('click', () => {
+            if (!gameActive || shuffleUses <= 0) return;
+            shuffleUses--;
+            updateButtonsState();
+
             let activeTiles = tiles.filter(t => !t.removed);
             let symbolsList = activeTiles.map(t => ({ id: t.symbolId, icon: t.icon, label: t.label }));
-            
-            // Sembolleri rastgele karıştır
             symbolsList.sort(() => Math.random() - 0.5);
             
             activeTiles.forEach((t, i) => {
@@ -398,29 +520,47 @@
             renderTiles();
         });
 
-        // İpucu Butonu
-        document.getElementById('hintBtn').addEventListener('click', () => {
-            if (!gameActive) return;
-            let activeTiles = tiles.filter(t => !t.removed && !isTileLocked(t));
+        // İpucu Butonu (10 Hak Sınırı)
+        hintBtn.addEventListener('click', () => {
+            if (!gameActive || hintUses <= 0) return;
             
-            // Eşleşen açık bir çift bul
+            let activeTiles = tiles.filter(t => !t.removed && !isTileLocked(t));
             for (let i = 0; i < activeTiles.length; i++) {
                 for (let j = i + 1; j < activeTiles.length; j++) {
                     if (activeTiles[i].symbolId === activeTiles[j].symbolId) {
+                        hintUses--;
+                        updateButtonsState();
                         selectedTile = activeTiles[i];
                         renderTiles();
                         return;
                     }
                 }
             }
-            alert("Şu an hamle yapılabilir eşleşme kalmadı, taşları karıştırmayı dene!");
+            alert("Açıkta eşleşen taş kalmadı! Karıştır butonunu kullanmayı dene.");
         });
 
-        document.getElementById('restartBtn').addEventListener('click', initGame);
+        function updateButtonsState() {
+            shuffleCountSpan.textContent = shuffleUses;
+            hintCountSpan.textContent = hintUses;
+            shuffleBtn.disabled = (shuffleUses <= 0);
+            hintBtn.disabled = (hintUses <= 0);
+        }
 
-        // Oyunu başlat
-        initGame();
+        nextLevelBtn.addEventListener('click', () => {
+            if (currentLevel < 100) {
+                currentLevel++;
+                nextLevelBtn.textContent = "Sonraki Seviye";
+                nextLevelBtn.onclick = () => { initLevel(); };
+                initLevel();
+            } else {
+                currentLevel = 1;
+                score = 0;
+                initLevel();
+            }
+        });
+
+        // Oyunu ilk başlatma
+        initLevel();
     </script>
 </body>
 </html>
-  
