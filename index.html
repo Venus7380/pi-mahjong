@@ -1,4 +1,4 @@
-      <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
@@ -6,8 +6,8 @@
     <title>Mahjong Master Venüs</title>
     <style>
         :root {
-            --tile-w: 40px;
-            --tile-h: 58px;
+            --tile-w: 42px;
+            --tile-h: 60px;
             --shadow-color: rgba(0, 0, 0, 0.6);
         }
 
@@ -298,6 +298,20 @@
     </div>
 
     <script>
+        // İlk 10 level için 1'den 10'a sayı sembolleri
+        const numberSymbols = [
+            { main: '1', sub: 'Bir', color: '#c0392b', name: 'Num 1' },
+            { main: '2', sub: 'İki', color: '#e67e22', name: 'Num 2' },
+            { main: '3', sub: 'Üç', color: '#f1c40f', name: 'Num 3' },
+            { main: '4', sub: 'Dört', color: '#27ae60', name: 'Num 4' },
+            { main: '5', sub: 'Beş', color: '#2980b9', name: 'Num 5' },
+            { main: '6', sub: 'Altı', color: '#8e44ad', name: 'Num 6' },
+            { main: '7', sub: 'Yedi', color: '#16a085', name: 'Num 7' },
+            { main: '8', sub: 'Sekiz', color: '#d35400', name: 'Num 8' },
+            { main: '9', sub: 'Dokuz', color: '#c0392b', name: 'Num 9' },
+            { main: '10', sub: 'On', color: '#2c3e50', name: 'Num 10' }
+        ];
+
         const standardSymbols = [
             { main: '中', sub: '萬', color: '#c0392b', name: 'Red Dragon' },
             { main: '發', sub: '萬', color: '#27ae60', name: 'Green Dragon' },
@@ -308,9 +322,7 @@
             { main: '一', sub: '萬', color: '#27ae60', name: '1 Char' },
             { main: '二', sub: '萬', color: '#c0392b', name: '2 Char' },
             { main: '三', sub: '萬', color: '#8e44ad', name: '3 Char' },
-            { main: '九', sub: '萬', color: '#16a085', name: '9 Char' },
-            { main: '四', sub: '萬', color: '#e67e22', name: '4 Char' },
-            { main: '五', sub: '萬', color: '#2980b9', name: '5 Char' }
+            { main: '四', sub: '萬', color: '#e67e22', name: '4 Char' }
         ];
 
         const animalSymbols = [
@@ -319,13 +331,7 @@
             { main: '🦁', sub: 'Aslan', color: '#f1c40f', name: 'Animal Lion' },
             { main: '🐼', sub: 'Panda', color: '#2c3e50', name: 'Animal Panda' },
             { main: '🐰', sub: 'Tavşan', color: '#e84393', name: 'Animal Rabbit' },
-            { main: '🦊', sub: 'Tilki', color: '#e17055', name: 'Animal Fox' },
-            { main: '🐸', sub: 'Kurbağa', color: '#00b894', name: 'Animal Frog' },
-            { main: '🐵', sub: 'Maymun', color: '#d63031', name: 'Animal Monkey' },
-            { main: '🐨', sub: 'Koala', color: '#636e72', name: 'Animal Koala' },
-            { main: '🐯', sub: 'Kaplan', color: '#e17055', name: 'Animal Tiger' },
-            { main: '🐧', sub: 'Penguen', color: '#0984e3', name: 'Animal Penguin' },
-            { main: '🦉', sub: 'Baykuş', color: '#6c5ce7', name: 'Animal Owl' }
+            { main: '🦊', sub: 'Tilki', color: '#e17055', name: 'Animal Fox' }
         ];
 
         const memoryQuotes = [
@@ -372,25 +378,26 @@
             }, 1000);
         }
 
-        // Garanti çalışan, kutu dışına taşmayan katmanlı yerleşim
+        // Katmanlı ve garantili yerleşim algoritması
         function generateLayout(levelIdx) {
             let layout = [];
-            let totalPairs = 12 + Math.floor(levelIdx / 2) * 2; 
-            if (totalPairs > 24) totalPairs = 24; // Toplam 48 taş (ekrana tam sığar)
+            // İlk 10 level tam 20 taş (10 çift: 1'den 10'a sayılar)
+            let totalPairs = (levelIdx < 10) ? 10 : (12 + Math.floor((levelIdx - 10) / 3) * 2);
+            if (totalPairs > 24) totalPairs = 24; 
             let totalTiles = totalPairs * 2;
 
-            let startX = 20;
-            let startY = 15;
-            let stepX = 43;
-            let stepY = 60;
+            let startX = 35;
+            let startY = 25;
+            let stepX = 46;
+            let stepY = 64;
 
             let idx = 0;
-            // 3 Katmanlı yapı
+            // 3 Katmanlı yapı (Üst üste binme)
             for (let l = 0; l < 3; l++) {
                 let rows = 3 - l;
-                let cols = 6 - l;
-                let lStartX = startX + (l * 22);
-                let lStartY = startY + (l * 25);
+                let cols = 5 - l;
+                let lStartX = startX + (l * 20);
+                let lStartY = startY + (l * 22);
 
                 for (let r = 0; r < rows; r++) {
                     for (let c = 0; c < cols; c++) {
@@ -407,11 +414,11 @@
                 if (idx >= totalTiles) break;
             }
 
-            // Kalan taşları merkeze güvenli yerleştir
+            // Kalan taşları alt katmana güvenli ekle
             while (layout.length < totalTiles) {
                 layout.push({
-                    x: 30 + ((layout.length * 18) % 230),
-                    y: 200 + ((layout.length * 10) % 80),
+                    x: 25 + ((layout.length * 22) % 250),
+                    y: 230 + ((layout.length * 10) % 70),
                     l: 0
                 });
             }
@@ -437,8 +444,15 @@
             const layout = generateLayout(levelIdx);
             remainingTiles = layout.length;
 
-            let isBonusStage = ((levelIdx + 1) % 10 === 0);
-            let poolToUse = isBonusStage ? animalSymbols : standardSymbols;
+            // Sembol havuzu seçimi (İlk 10 level 1'den 10'a sayılar)
+            let poolToUse;
+            if (levelIdx < 10) {
+                poolToUse = numberSymbols;
+            } else if ((levelIdx + 1) % 10 === 0) {
+                poolToUse = animalSymbols;
+            } else {
+                poolToUse = standardSymbols;
+            }
 
             let activeSymbols = [];
             for (let i = 0; i < layout.length / 2; i++) {
@@ -494,8 +508,8 @@
                 let isBlocked = tilesData.some(other => {
                     if (other.matched) return false;
                     if (other.layer > tile.layer) {
-                        let overlapX = Math.abs(other.x - tile.x) < 35;
-                        let overlapY = Math.abs(other.y - tile.y) < 50;
+                        let overlapX = Math.abs(other.x - tile.x) < 38;
+                        let overlapY = Math.abs(other.y - tile.y) < 52;
                         return overlapX && overlapY;
                     }
                     return false;
@@ -695,4 +709,3 @@
     </script>
 </body>
 </html>
-              
