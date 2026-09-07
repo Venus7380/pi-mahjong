@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mahjong Eşleştirme Oyunu - Mobil Uyumlu</title>
+    <title>Mahjong Eşleştirme Oyunu - Tam Uyumlu</title>
     <style>
         * {
             box-sizing: border-box;
@@ -19,29 +19,29 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 10px;
+            padding: 8px;
         }
 
         header {
             text-align: center;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             width: 100%;
-            max-width: 450px;
+            max-width: 400px;
         }
 
         h1 {
-            font-size: 1.5rem;
-            margin-bottom: 4px;
+            font-size: 1.3rem;
+            margin-bottom: 2px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
         .scoreboard {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             background: rgba(0, 0, 0, 0.2);
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-size: 0.9rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
             justify-content: space-around;
         }
@@ -49,30 +49,30 @@
         .game-container {
             position: relative;
             width: 100%;
-            max-width: 450px;
-            height: 420px;
+            max-width: 380px;
+            height: 380px;
             background: rgba(8, 28, 18, 0.4);
             border-radius: 12px;
             border: 2px solid #52b788;
             box-shadow: 0 8px 16px rgba(0,0,0,0.4);
             overflow: hidden;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .tile {
             position: absolute;
-            width: 50px;
-            height: 68px;
+            width: 13%; /* Kutunun genişliğine göre yüzde olarak esner */
+            height: 18%; /* Kutunun yüksekliğine göre yüzde olarak esner */
             background: #f4f1de;
             color: #2b2b2b;
-            border-radius: 6px;
-            border: 2px solid #d4d0c7;
-            box-shadow: 0 3px 5px rgba(0,0,0,0.3);
+            border-radius: 5px;
+            border: 1.5px solid #d4d0c7;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-around;
-            padding: 3px 2px;
+            padding: 2px 1px;
             cursor: pointer;
             user-select: none;
             transition: transform 0.1s, background-color 0.2s;
@@ -86,8 +86,8 @@
         .tile.selected {
             border-color: #e76f51;
             background: #faedcd;
-            transform: translateY(-4px);
-            box-shadow: 0 5px 8px rgba(231, 111, 81, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 6px rgba(231, 111, 81, 0.4);
         }
 
         .tile.locked {
@@ -98,17 +98,17 @@
         }
 
         .tile-number {
-            font-size: 0.6rem;
+            font-size: 0.5rem;
             font-weight: bold;
             color: #e76f51;
         }
 
         .tile-icon {
-            font-size: 1.2rem;
+            font-size: 1rem;
         }
 
         .tile-label {
-            font-size: 0.5rem;
+            font-size: 0.45rem;
             text-transform: uppercase;
             font-weight: bold;
             color: #40916c;
@@ -121,23 +121,23 @@
 
         .controls {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
             justify-content: center;
             width: 100%;
-            max-width: 450px;
+            max-width: 380px;
         }
 
         button.btn {
             background-color: #52b788;
             color: white;
             border: none;
-            padding: 8px 14px;
-            font-size: 0.9rem;
+            padding: 7px 12px;
+            font-size: 0.85rem;
             font-weight: bold;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            box-shadow: 0 3px 5px rgba(0,0,0,0.2);
             flex: 1;
         }
 
@@ -162,23 +162,23 @@
 
         .modal-content {
             background: #1b4332;
-            padding: 25px;
+            padding: 20px;
             border-radius: 12px;
             text-align: center;
             border: 2px solid #52b788;
-            max-width: 350px;
+            max-width: 320px;
             width: 90%;
         }
 
         .modal-content h2 {
-            margin-bottom: 12px;
-            font-size: 1.4rem;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
             color: #52b788;
         }
 
         .modal-content p {
-            margin-bottom: 15px;
-            font-size: 0.95rem;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -304,7 +304,7 @@
             if (currentLevel <= 10) {
                 pairCount = 4 + (currentLevel - 1) * 2;
             } else {
-                pairCount = Math.min(22, 20 + Math.floor((currentLevel - 10) / 5) * 2);
+                pairCount = Math.min(20, 18 + Math.floor((currentLevel - 10) / 5) * 2);
             }
 
             let isBonusLevel = (currentLevel % 10 === 0);
@@ -344,25 +344,26 @@
             renderTiles();
         }
 
+        // Yüzde (%) bazlı esnek konumlandırma (Ekrandan asla taşmaz)
         function generateLayoutPositions(count) {
             let posList = [];
-            let startX = 15;
-            let startY = 15;
-            let stepX = 42;
-            let stepY = 56;
-            let maxCols = 9;
+            let startX = 3;
+            let startY = 3;
+            let stepX = 11;
+            let stepY = 14;
+            let maxCols = 8;
 
             for (let i = 0; i < count; i++) {
                 let layer = 0;
-                if (i >= 18 && i < 32) layer = 1;
-                if (i >= 32) layer = 2;
+                if (i >= 16 && i < 28) layer = 1;
+                if (i >= 28) layer = 2;
 
                 let col = i % maxCols;
                 let row = Math.floor(i / maxCols);
 
                 posList.push({
-                    x: startX + (col * stepX) + (layer * 8),
-                    y: startY + (row * stepY) + (layer * 8),
+                    x: startX + (col * stepX) + (layer * 1.5),
+                    y: startY + (row * stepY) + (layer * 1.5),
                     layer: layer
                 });
             }
@@ -373,7 +374,7 @@
             if (tile.removed) return true;
             return tiles.some(other => {
                 if (other.removed || other.layer <= tile.layer) return false;
-                return Math.abs(other.x - tile.x) < 35 && Math.abs(other.y - tile.y) < 45;
+                return Math.abs(other.x - tile.x) < 8 && Math.abs(other.y - tile.y) < 10;
             });
         }
 
@@ -385,8 +386,8 @@
                 if (tile.removed) return;
                 const el = document.createElement('div');
                 el.className = 'tile';
-                el.style.left = `${tile.x}px`;
-                el.style.top = `${tile.y}px`;
+                el.style.left = `${tile.x}%`;
+                el.style.top = `${tile.y}%`;
                 el.style.zIndex = tile.layer * 10;
 
                 const locked = isTileLocked(tile);
