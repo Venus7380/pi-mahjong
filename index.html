@@ -1,322 +1,426 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mahjong Master Venüs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahjong Eşleştirme Oyunu</title>
     <style>
-        body {
+        * {
+            box-sizing: border-box;
             margin: 0;
-            padding: 10px;
-            background: #113822;
-            font-family: Tahoma, sans-serif;
-            color: #ffffff;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1b4332, #2d6a4f);
+            color: #fff;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            min-height: 100vh;
-            box-sizing: border-box;
-            user-select: none;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
         }
 
         h1 {
-            font-size: 16px;
-            color: #f1c40f;
-            margin: 5px 0 10px 0;
-            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
-        .stats {
+        .scoreboard {
             display: flex;
-            gap: 15px;
-            background: #1b5e36;
-            padding: 8px 15px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: bold;
-            margin-bottom: 12px;
-            border: 1px solid #f1c40f;
+            gap: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
         }
 
-        .board {
-            display: grid;
-            grid-template-columns: repeat(5, 60px);
-            gap: 8px;
-            background: #0d2818;
-            padding: 15px;
-            border-radius: 12px;
-            border: 3px solid #f1c40f;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.7);
+        .game-container {
+            position: relative;
+            width: 600px;
+            height: 450px;
+            background: rgba(8, 28, 18, 0.4);
+            border-radius: 15px;
+            border: 3px solid #52b788;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+            overflow: hidden;
+            margin-bottom: 20px;
         }
 
         .tile {
-            width: 60px;
-            height: 80px;
-            background: #fdfdfd;
-            border-radius: 6px;
+            position: absolute;
+            width: 70px;
+            height: 90px;
+            background: #f4f1de;
+            color: #2b2b2b;
+            border-radius: 8px;
+            border: 2px solid #d4d0c7;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3), inset 0 2px 3px rgba(255,255,255,0.8);
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
+            justify-content: space-around;
+            padding: 6px 4px;
             cursor: pointer;
-            border: 2px solid #ccc;
-            box-shadow: 0 4px 0 #999;
-            color: #333;
-            font-weight: bold;
+            user-select: none;
+            transition: transform 0.1s, background-color 0.2s, box-shadow 0.2s;
+        }
+
+        .tile:hover:not(.locked) {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 10px rgba(0,0,0,0.4);
+            background: #fff;
         }
 
         .tile.selected {
-            border-color: #f1c40f;
-            background: #fff9c4;
-            transform: translateY(-3px);
-            box-shadow: 0 7px 0 #d4ac0d;
+            border-color: #e76f51;
+            background: #faedcd;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(231, 111, 81, 0.4);
         }
 
-        .tile.matched {
-            visibility: hidden;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .tile.blocked {
-            filter: brightness(0.4);
+        .tile.locked {
+            background: #cbd5e1;
+            color: #64748b;
             cursor: not-allowed;
+            filter: brightness(0.7);
         }
 
-        .symbol {
-            font-size: 22px;
-            line-height: 1;
+        .tile-number {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #e76f51;
         }
 
-        .sub {
-            font-size: 9px;
-            margin-top: 4px;
+        .tile-icon {
+            font-size: 1.8rem;
+        }
+
+        .tile-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            color: #40916c;
         }
 
         .controls {
-            margin-top: 15px;
             display: flex;
-            gap: 20px;
+            gap: 15px;
         }
 
-        button {
-            background: #f1c40f;
-            color: #000;
+        button.btn {
+            background-color: #52b788;
+            color: white;
             border: none;
-            padding: 10px 18px;
-            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 1rem;
             font-weight: bold;
+            border-radius: 8px;
             cursor: pointer;
-            box-shadow: 0 4px 0 #b7950b;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: background 0.2s, transform 0.1s;
         }
 
-        button:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 #b7950b;
+        button.btn:hover {
+            background-color: #40916c;
+            transform: translateY(-2px);
+        }
+
+        button.btn:active {
+            transform: translateY(0);
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            display: none;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: #1b4332;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid #52b788;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+
+        .modal-content p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
         }
     </style>
 </head>
 <body>
 
-    <h1>🀄 MAHJONG MASTER VENÜS 🀄</h1>
-    
-    <div class="stats">
-        <div>Seviye: <span id="level">1</span></div>
-        <div>Puan: <span id="score">0</span></div>
-        <div>Süre: <span id="timer">120</span>s</div>
-    </div>
+    <header>
+        <h1>Mahjong Eşleştirme</h1>
+        <div class="scoreboard">
+            <div>Skor: <span id="score">0</span></div>
+            <div>Süre: <span id="timer">00:00</span></div>
+        </div>
+    </header>
 
-    <div class="board" id="board"></div>
+    <div class="game-container" id="gameContainer"></div>
 
     <div class="controls">
-        <button onclick="shuffleTiles()">Karıştır</button>
-        <button onclick="showHint()">İpucu</button>
+        <button class="btn" id="shuffleBtn">Karıştır</button>
+        <button class="btn" id="hintBtn">İpucu</button>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Tebrikler!</h2>
+            <p id="modalText">Bütün taşları başarıyla eşleştirdin.</p>
+            <button class="btn" id="restartBtn">Yeniden Oyna</button>
+        </div>
     </div>
 
     <script>
         const symbols = [
-            { main: '1', sub: 'Bir', color: '#c0392b' },
-            { main: '2', sub: 'İki', color: '#e67e22' },
-            { main: '3', sub: 'Üç', color: '#f1c40f' },
-            { main: '4', sub: 'Dört', color: '#27ae60' },
-            { main: '5', sub: 'Beş', color: '#2980b9' },
-            { main: '6', sub: 'Altı', color: '#8e44ad' },
-            { main: '7', sub: 'Yedi', color: '#16a085' },
-            { main: '8', sub: 'Sekiz', color: '#d35400' },
-            { main: '9', sub: 'Dokuz', color: '#c0392b' },
-            { main: '10', sub: 'On', color: '#2c3e50' }
+            { id: 1, icon: "⭐", label: "Yıldız" },
+            { id: 2, icon: "🌙", label: "Ay" },
+            { id: 3, icon: "🔥", label: "Ateş" },
+            { id: 4, icon: "💧", label: "Su" },
+            { id: 5, icon: "🍀", label: "Yonca" },
+            { id: 6, icon: "💎", label: "Elmas" }
         ];
 
-        let currentLevel = 1;
-        let score = 0;
-        let timeLeft = 120;
-        let timerInterval = null;
-        let tilesData = [];
+        let tiles = [];
         let selectedTile = null;
-        let lockBoard = false;
+        let score = 0;
+        let seconds = 0;
+        let timerInterval = null;
+        let gameActive = true;
 
-        function startGame() {
-            const board = document.getElementById('board');
-            board.innerHTML = '';
-            selectedTile = null;
-            lockBoard = false;
+        const gameContainer = document.getElementById('gameContainer');
+        const scoreDisplay = document.getElementById('score');
+        const timerDisplay = document.getElementById('timer');
+        const modal = document.getElementById('modal');
+        const modalTitle = id('modalTitle');
+        const modalText = id('modalText');
 
-            // 10 çift = 20 taş (5 sütun x 4 satırlık kusursuz grid)
-            let deckSymbols = [...symbols, ...symbols];
-            deckSymbols.sort(() => Math.random() - 0.5);
-
-            tilesData = [];
-
-            deckSymbols.forEach((sym, idx) => {
-                const tile = document.createElement('div');
-                tile.className = 'tile';
-                // İlk 10 taş üst katman, sonrakiler alt katman simülasyonu
-                tile.dataset.layer = idx < 10 ? 1 : 0;
-                tile.dataset.symbol = sym.main;
-
-                tile.innerHTML = `
-                    <div class="symbol" style="color: ${sym.color}">${sym.main}</div>
-                    <div class="sub">${sym.sub}</div>
-                `;
-
-                tile.addEventListener('click', () => handleTileClick(idx));
-                board.appendChild(tile);
-
-                tilesData.push({
-                    id: idx,
-                    element: tile,
-                    symbol: sym.main,
-                    layer: parseInt(tile.dataset.layer),
-                    matched: false
-                });
-            });
-
-            updateBlocked();
-            startTimer();
-        }
+        function id(elementId) { return document.getElementById(elementId); }
 
         function startTimer() {
             clearInterval(timerInterval);
-            timeLeft = 120;
-            document.getElementById('timer').innerText = timeLeft;
-
+            seconds = 0;
             timerInterval = setInterval(() => {
-                timeLeft--;
-                document.getElementById('timer').innerText = timeLeft;
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    alert("Süre bitti! Yeniden başlatılıyor.");
-                    startGame();
-                }
+                if (!gameActive) return;
+                seconds++;
+                let mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+                let secs = (seconds % 60).toString().padStart(2, '0');
+                timerDisplay.textContent = `${mins}:${secs}`;
             }, 1000);
         }
 
-        function updateBlocked() {
-            // Alt katmandaki taşlar (idx 10-19), üst katmandaki eşleri (idx 0-9) silinene kadar kilitli
-            tilesData.forEach((tile, idx) => {
-                if (tile.matched) return;
-                if (idx >= 10) {
-                    let upperIdx = idx - 10;
-                    if (!tilesData[upperIdx].matched) {
-                        tile.element.classList.add('blocked');
-                    } else {
-                        tile.element.classList.remove('blocked');
-                    }
-                } else {
-                    tile.element.classList.remove('blocked');
-                }
+        function initGame() {
+            gameContainer.innerHTML = '';
+            score = 0;
+            scoreDisplay.textContent = score;
+            gameActive = true;
+            modal.style.display = 'none';
+            selectedTile = null;
+            startTimer();
+
+            // 4 çift (toplam 24 taş, 3 katman yapısı için uygun)
+            let tilePairs = [];
+            let symbolPool = [...symbols, ...symbols, ...symbols, ...symbols]; // 24 adet
+            
+            symbolPool.forEach((sym, index) => {
+                tilePairs.push({
+                    uuid: Math.random(),
+                    symbolId: sym.id,
+                    icon: sym.icon,
+                    label: sym.label,
+                    number: index + 1
+                });
+            });
+
+            // Katman koordinatları (Basit bir Mahjong piramit/katman düzeni)
+            // layer: 0 (alt), 1 (orta), 2 (üst)
+            let positions = [
+                // Katman 0 (Alt - 10 taş)
+                {x: 100, y: 100, layer: 0}, {x: 180, y: 100, layer: 0}, {x: 260, y: 100, layer: 0}, {x: 340, y: 100, layer: 0},
+                {x: 140, y: 220, layer: 0}, {x: 220, y: 220, layer: 0}, {x: 300, y: 220, layer: 0}, {x: 380, y: 220, layer: 0},
+                {x: 180, y: 320, layer: 0}, {x: 260, y: 320, layer: 0},
+                // Katman 1 (Orta - 8 taş)
+                {x: 150, y: 140, layer: 1}, {x: 230, y: 140, layer: 1}, {x: 310, y: 140, layer: 1},
+                {x: 150, y: 240, layer: 1}, {x: 230, y: 240, layer: 1}, {x: 310, y: 240, layer: 1},
+                {x: 190, y: 190, layer: 1}, {x: 270, y: 190, layer: 1},
+                // Katman 2 (Üst - 6 taş)
+                {x: 200, y: 160, layer: 2}, {x: 280, y: 160, layer: 2},
+                {x: 220, y: 200, layer: 2}, {x: 260, y: 200, layer: 2},
+                {x: 240, y: 130, layer: 2}, {x: 240, y: 230, layer: 2}
+            ];
+
+            tiles = tilePairs.map((item, index) => ({
+                ...item,
+                x: positions[index].x,
+                y: positions[index].y,
+                layer: positions[index].layer,
+                removed: false
+            }));
+
+            renderTiles();
+        }
+
+        // Kilit mekaniği kontrolü: Üst katmanında aynı X/Y koordinat alanını kapatan başka bir taş var mı?
+        function isTileLocked(tile) {
+            if (tile.removed) return true;
+            
+            return tiles.some(other => {
+                if (other.removed || other.layer <= tile.layer) return false;
+                
+                // Basit çarpışma / üstte kalma kontrolü
+                let overlapX = Math.abs(other.x - tile.x) < 45;
+                let overlapY = Math.abs(other.y - tile.y) < 60;
+                return overlapX && overlapY;
             });
         }
 
-        function handleTileClick(idx) {
-            if (lockBoard) return;
-            let tileObj = tilesData[idx];
+        function renderTiles() {
+            // Katman sırasına göre render et (alttan üste)
+            gameContainer.innerHTML = '';
+            
+            // Z-index düzeni için katmanlara göre sırala
+            let sortedTiles = [...tiles].sort((a, b) => a.layer - b.layer);
 
-            if (tileObj.matched || tileObj.element.classList.contains('blocked')) return;
+            sortedTiles.forEach(tile => {
+                if (tile.removed) return;
 
-            if (selectedTile === tileObj) {
-                tileObj.element.classList.remove('selected');
-                selectedTile = null;
-                return;
-            }
+                const el = document.createElement('div');
+                el.className = 'tile';
+                el.style.left = `${tile.x}px`;
+                el.style.top = `${tile.y}px`;
+                el.style.zIndex = tile.layer * 10;
 
-            tileObj.element.classList.add('selected');
-
-            if (!selectedTile) {
-                selectedTile = tileObj;
-            } else {
-                if (selectedTile.symbol === tileObj.symbol && selectedTile.id !== tileObj.id) {
-                    lockBoard = true;
-                    setTimeout(() => {
-                        selectedTile.element.classList.add('matched');
-                        tileObj.element.classList.add('matched');
-                        selectedTile.matched = true;
-                        tileObj.matched = true;
-
-                        selectedTile.element.classList.remove('selected');
-                        tileObj.element.classList.remove('selected');
-                        selectedTile = null;
-
-                        score += 100;
-                        document.getElementById('score').innerText = score;
-
-                        updateBlocked();
-                        lockBoard = false;
-
-                        // Kazanma kontrolü
-                        if (tilesData.every(t => t.matched)) {
-                            clearInterval(timerInterval);
-                            alert("Tebrikler Bölümü Tamamladın! 🎉");
-                            currentLevel++;
-                            document.getElementById('level').innerText = currentLevel;
-                            startGame();
-                        }
-                    }, 200);
-                } else {
-                    lockBoard = true;
-                    setTimeout(() => {
-                        selectedTile.element.classList.remove('selected');
-                        tileObj.element.classList.remove('selected');
-                        selectedTile = null;
-                        lockBoard = false;
-                    }, 300);
+                const locked = isTileLocked(tile);
+                if (locked) {
+                    el.classList.add('locked');
                 }
-            }
+
+                if (selectedTile && selectedTile.uuid === tile.uuid) {
+                    el.classList.add('selected');
+                }
+
+                el.innerHTML = `
+                    <span class="tile-number">#${tile.number}</span>
+                    <span class="tile-icon">${tile.icon}</span>
+                    <span class="tile-label">${tile.label}</span>
+                `;
+
+                if (!locked) {
+                    el.addEventListener('click', () => handleTileClick(tile));
+                }
+
+                gameContainer.appendChild(el);
+            });
         }
 
-        function shuffleTiles() {
-            let activeTiles = tilesData.filter(t => !t.matched);
-            let symbolsList = activeTiles.map(t => t.symbol);
-            symbolsList.sort(() => Math.random() - 0.5);
-
-            activeTiles.forEach((t, i) => {
-                t.symbol = symbolsList[i];
-                t.element.dataset.symbol = symbolsList[i];
-                t.element.querySelector('.symbol').innerText = symbolsList[i];
-                t.element.querySelector('.sub').innerText = 'Num ' + symbolsList[i];
-            });
+        function handleTileClick(tile) {
+            if (!gameActive) return;
 
             if (selectedTile) {
-                selectedTile.element.classList.remove('selected');
-                selectedTile = null;
+                if (selectedTile.uuid === tile.uuid) {
+                    // Aynı taşa tıklandıysa seçimi kaldır
+                    selectedTile = null;
+                } else if (selectedTile.symbolId === tile.symbolId) {
+                    // Eşleşme başarılı!
+                    selectedTile.removed = true;
+                    tile.removed = true;
+                    selectedTile = null;
+                    score += 20;
+                    scoreDisplay.textContent = score;
+
+                    checkWinCondition();
+                } else {
+                    // Eşleşmedi, yeni seçilen taş aktif olsun
+                    selectedTile = tile;
+                }
+            } else {
+                selectedTile = tile;
+            }
+
+            renderTiles();
+        }
+
+        function checkWinCondition() {
+            let remaining = tiles.filter(t => !t.removed).length;
+            if (remaining === 0) {
+                gameActive = false;
+                clearInterval(timerInterval);
+                modalTitle.textContent = "Tebrikler, Kazandın! 🎉";
+                modalText.textContent = `Süre: ${timerDisplay.textContent} | Skor: ${score}`;
+                modal.style.display = 'flex';
             }
         }
 
-        function showHint() {
-            let active = tilesData.filter(t => !t.matched && !t.element.classList.contains('blocked'));
-            for (let i = 0; i < active.length; i++) {
-                for (let j = i + 1; j < active.label?.length || active.length; j++) {
-                    if (active[i] && active[j] && active[i].symbol === active[j].symbol) {
-                        alert(`İpucu: ${active[i].symbol} taşları eşleşmeye hazır!`);
+        // Karıştır Butonu
+        document.getElementById('shuffleBtn').addEventListener('click', () => {
+            if (!gameActive) return;
+            // Sadece tahtada kalan taşların konumlarını veya sembollerini karıştırabiliriz
+            let activeTiles = tiles.filter(t => !t.removed);
+            let symbolsList = activeTiles.map(t => ({ id: t.symbolId, icon: t.icon, label: t.label }));
+            
+            // Sembolleri rastgele karıştır
+            symbolsList.sort(() => Math.random() - 0.5);
+            
+            activeTiles.forEach((t, i) => {
+                t.symbolId = symbolsList[i].id;
+                t.icon = symbolsList[i].icon;
+                t.label = symbolsList[i].label;
+            });
+
+            selectedTile = null;
+            renderTiles();
+        });
+
+        // İpucu Butonu
+        document.getElementById('hintBtn').addEventListener('click', () => {
+            if (!gameActive) return;
+            let activeTiles = tiles.filter(t => !t.removed && !isTileLocked(t));
+            
+            // Eşleşen açık bir çift bul
+            for (let i = 0; i < activeTiles.length; i++) {
+                for (let j = i + 1; j < activeTiles.length; j++) {
+                    if (activeTiles[i].symbolId === activeTiles[j].symbolId) {
+                        selectedTile = activeTiles[i];
+                        renderTiles();
                         return;
                     }
                 }
             }
-        }
+            alert("Şu an hamle yapılabilir eşleşme kalmadı, taşları karıştırmayı dene!");
+        });
 
-        // Oyunu Başlat
-        startGame();
+        document.getElementById('restartBtn').addEventListener('click', initGame);
+
+        // Oyunu başlat
+        initGame();
     </script>
 </body>
 </html>
+  
