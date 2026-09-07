@@ -71,15 +71,20 @@
             z-index: 1;
         }
 
+        /* 3D Mahjong Taşı Tasarımı (Orhan Nal Tarzı ve Belirgin Derinlik) */
         .tile {
             position: absolute;
             width: 13%;
             height: 15%;
-            background: #f4f1de;
+            background: linear-gradient(135deg, #fffaed 0%, #f4f1de 60%, #e3dec9 100%);
             color: #2b2b2b;
-            border-radius: 5px;
-            border: 1.5px solid #d4d0c7;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+            border-radius: 6px;
+            /* 3D hacim hissi veren çok katmanlı gölgeler ve kalın kenarlar */
+            border-top: 2px solid #ffffff;
+            border-left: 2px solid #ffffff;
+            border-right: 2.5px solid #b8b29f;
+            border-bottom: 3.5px solid #8c8570;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.6), 0 2px 4px rgba(0,0,0,0.4);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -87,27 +92,33 @@
             padding: 2px 1px;
             cursor: pointer;
             user-select: none;
-            transition: transform 0.1s, background-color 0.2s;
+            transition: transform 0.1s, background 0.2s, box-shadow 0.2s;
             z-index: 2;
         }
 
         .tile:hover:not(.locked) {
-            transform: translateY(-2px);
-            background: #fff;
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, #ffffff 0%, #faf6e8 60%, #eae3cc 100%);
+            box-shadow: 0 9px 16px rgba(0,0,0,0.7), 0 3px 6px rgba(0,0,0,0.4);
         }
 
         .tile.selected {
             border-color: #e76f51;
-            background: #faedcd;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 8px rgba(231, 111, 81, 0.5);
+            background: linear-gradient(135deg, #fffcf0 0%, #faedcd 60%, #f5dbb3 100%);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 18px rgba(231, 111, 81, 0.6), 0 3px 6px rgba(0,0,0,0.4);
         }
 
         .tile.locked {
-            background: #cbd5e1;
+            background: linear-gradient(135deg, #d8dee4 0%, #cbd5e1 60%, #94a3b8 100%);
             color: #64748b;
+            border-top-color: #edf2f7;
+            border-left-color: #edf2f7;
+            border-right-color: #64748b;
+            border-bottom-color: #475569;
             cursor: not-allowed;
-            filter: brightness(0.7);
+            filter: brightness(0.85);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
 
         .tile-number {
@@ -118,6 +129,7 @@
 
         .tile-icon {
             font-size: 0.9rem;
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));
         }
 
         .tile-label {
@@ -394,7 +406,8 @@
                 });
             });
 
-            let positions = generateGeometricLayout(tilePairs.length, currentLevel);
+            // Tıkanmaları önlemek için daha seyrek, üst üste binme oranı dengelenmiş yerleşim
+            let positions = generateBalancedLayout(tilePairs.length, currentLevel);
 
             tiles = tilePairs.map((item, index) => ({
                 ...item,
@@ -407,7 +420,7 @@
             renderTiles();
         }
 
-        function generateGeometricLayout(count, level) {
+        function generateBalancedLayout(count, level) {
             let posList = [];
             let shapeType = level % 4;
 
@@ -415,32 +428,36 @@
                 let x = 35, y = 35, layer = 0;
 
                 if (shapeType === 0) {
-                    layer = i < count * 0.4 ? 0 : (i < count * 0.8 ? 1 : 2);
-                    let row = Math.floor(Math.sqrt(i * 2));
-                    let col = i - (row * (row + 1)) / 2;
-                    x = 22 + (row * 4) + (col * 11);
-                    y = 10 + (row * 13) + (layer * 3);
+                    // Piramit ama daha açık aralıklı
+                    layer = i < count * 0.5 ? 0 : (i < count * 0.85 ? 1 : 2);
+                    let row = Math.floor(Math.sqrt(i * 1.5));
+                    let col = i - (row * row);
+                    x = 15 + (row * 3) + (col * 12);
+                    y = 12 + (row * 14) + (layer * 2);
                 } 
                 else if (shapeType === 1) {
-                    layer = i % 3;
+                    // Çember / Oval Dağılım (Az kilitlenme)
+                    layer = i % 2;
                     let angle = (i / count) * Math.PI * 2;
-                    let radius = 30 - (layer * 5);
+                    let radius = 28 - (layer * 4);
                     x = 42 + Math.cos(angle) * radius;
-                    y = 42 + Math.sin(angle) * (radius * 0.8);
+                    y = 40 + Math.sin(angle) * (radius * 0.75);
                 } 
                 else if (shapeType === 2) {
-                    layer = Math.floor(i / 14);
-                    let localIdx = i % 14;
-                    let col = localIdx % 5;
-                    let row = Math.floor(localIdx / 5);
-                    x = 12 + (col * 15) + (layer * 4);
-                    y = 15 + (row * 15) + (layer * 4);
+                    // Izgara / Grid Yapı (Minimum üst üste binme)
+                    layer = Math.floor(i / 16);
+                    let localIdx = i % 16;
+                    let col = localIdx % 6;
+                    let row = Math.floor(localIdx / 6);
+                    x = 10 + (col * 13.5) + (layer * 3);
+                    y = 12 + (row * 16) + (layer * 3);
                 } 
                 else {
+                    // Çift Katmanlı Geniş Yayılım
                     layer = i < count / 2 ? 0 : 1;
                     let t = (i % (count / 2)) / (count / 2) * Math.PI * 2;
-                    x = 40 + Math.sin(t) * 28;
-                    y = 40 + Math.cos(t) * 22 + (layer * 4);
+                    x = 42 + Math.sin(t) * 30;
+                    y = 42 + Math.cos(t) * 24 + (layer * 3);
                 }
 
                 x = Math.max(2, Math.min(84, x));
@@ -455,7 +472,8 @@
             if (tile.removed) return true;
             return tiles.some(other => {
                 if (other.removed || other.layer <= tile.layer) return false;
-                return Math.abs(other.x - tile.x) < 9 && Math.abs(other.y - tile.y) < 12;
+                // Çakışma toleransını biraz darleterek kilitlenme oranını azalttık
+                return Math.abs(other.x - tile.x) < 8.5 && Math.abs(other.y - tile.y) < 11;
             });
         }
 
