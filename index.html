@@ -71,19 +71,19 @@
             z-index: 1;
         }
 
-        /* Klasik ve dengeli Mahjong Taşı Tasarımı (Ne aşırı uzun ne kare, ideal kemik formu) */
+        /* Klasik ve dengeli Mahjong Taşı Tasarımı (Daha kısa, oturaklı ve kompakt oran) */
         .tile {
             position: absolute;
-            width: 14%;
-            height: 13.5%;
+            width: 13.5%;
+            height: 11.5%;
             background: linear-gradient(135deg, #fffef9 0%, #f6f0dc 60%, #ded6bd 100%);
-            border-radius: 6px;
-            /* Klasik derinlik veren yan ve alt duvarlar */
+            border-radius: 5px;
+            /* Derinlik veren duvar efektleri */
             border-top: 1px solid #ffffff;
             border-left: 1px solid #ffffff;
             border-right: 3px solid #9c1c1c;
             border-bottom: 5px solid #6b1010;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.6), 0 3px 6px rgba(0,0,0,0.3), inset 0 1px 3px rgba(255,255,255,0.9);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.6), 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.9);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -95,7 +95,7 @@
 
         .tile:hover:not(.locked) {
             transform: translateY(-3px);
-            box-shadow: 0 12px 20px rgba(0,0,0,0.7), 0 4px 8px rgba(0,0,0,0.3), inset 0 1px 3px rgba(255,255,255,1);
+            box-shadow: 0 10px 18px rgba(0,0,0,0.7), 0 3px 6px rgba(0,0,0,0.3), inset 0 1px 3px rgba(255,255,255,1);
         }
 
         .tile.selected {
@@ -103,7 +103,7 @@
             border-bottom-color: #bc3908;
             background: linear-gradient(135deg, #fffcf0 0%, #faedcd 60%, #f5dbb3 100%);
             transform: translateY(-5px);
-            box-shadow: 0 14px 22px rgba(231, 111, 81, 0.6), 0 4px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 12px 20px rgba(231, 111, 81, 0.6), 0 4px 8px rgba(0,0,0,0.3);
         }
 
         .tile.locked {
@@ -117,7 +117,6 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
-        /* Simgelerin taşla tamamen bütünleşmesini sağlayan iç alan */
         .tile-inner {
             width: 100%;
             height: 100%;
@@ -125,15 +124,13 @@
             align-items: center;
             justify-content: center;
             background: transparent;
-            padding: 0;
         }
 
-        /* Çince sembollerin taşın boyutuyla tam uyumlu, doğal ve şık duruşu */
+        /* Modern ve taşla bütünleşen evrensel simgeler */
         .tile-icon {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             line-height: 1;
-            font-weight: bold;
-            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
         }
 
         .controls {
@@ -268,40 +265,41 @@
             "\"Bilgi ve hafıza, paylaştıkça ve kullandıkça parlayan nadide mücevherlerdir.\""
         ];
 
+        // Çin sembolleri yerine estetik, evrensel ve modern simgeler havuzu
         const normalSymbols = [
-            { id: 1, icon: "🀄", color: "#c0392b" },
-            { id: 2, icon: "🀆", color: "#2980b9" },
-            { id: 3, icon: "🀅", color: "#27ae60" },
-            { id: 4, icon: "🀇", color: "#c0392b" },
-            { id: 5, icon: "🀈", color: "#2980b9" },
-            { id: 6, icon: "🀉", color: "#27ae60" },
-            { id: 7, icon: "🀊", color: "#d35400" },
-            { id: 8, icon: "🀋", color: "#8e44ad" },
-            { id: 9, icon: "🀌", color: "#16a085" },
-            { id: 10, icon: "🀍", color: "#c0392b" },
-            { id: 11, icon: "🀎", color: "#2980b9" },
-            { id: 12, icon: "🀏", color: "#27ae60" },
-            { id: 13, icon: "🀙", color: "#2980b9" },
-            { id: 14, icon: "🀚", color: "#c0392b" },
-            { id: 15, icon: "🀛", color: "#27ae60" },
-            { id: 16, icon: "🀜", color: "#d35400" },
-            { id: 17, icon: "🀝", color: "#8e44ad" },
-            { id: 18, icon: "🀞", color: "#16a085" }
+            { id: 1, icon: "⭐", color: "#d4ac0d" },
+            { id: 2, icon: "🌙", color: "#2980b9" },
+            { id: 3, icon: "🌸", color: "#e84393" },
+            { id: 4, icon: "🍀", color: "#27ae60" },
+            { id: 5, icon: "🔥", color: "#d35400" },
+            { id: 6, icon: "💧", color: "#00cec9" },
+            { id: 7, icon: "💎", color: "#0984e3" },
+            { id: 8, icon: "🍎", color: "#c0392b" },
+            { id: 9, icon: "⚡", color: "#f1c40f" },
+            { id: 10, icon: "🍁", color: "#e67e22" },
+            { id: 11, icon: "🍄", color: "#e74c3c" },
+            { id: 12, icon: "🐚", color: "#fab1a0" },
+            { id: 13, icon: "🔮", color: "#8e44ad" },
+            { id: 14, icon: "🌻", color: "#f39c12" },
+            { id: 15, icon: "🦋", color: "#00b894" },
+            { id: 16, icon: "🎨", color: "#fd79a8" },
+            { id: 17, icon: "🎵", color: "#6c5ce7" },
+            { id: 18, icon: "🪐", color: "#2d3436" }
         ];
 
         const bonusSymbols = [
-            { id: 101, icon: "🀀", color: "#c0392b" },
-            { id: 102, icon: "🀁", color: "#2980b9" },
-            { id: 103, icon: "🀂", color: "#27ae60" },
-            { id: 104, icon: "🀃", color: "#d35400" },
-            { id: 105, icon: "🀟", color: "#c0392b" },
-            { id: 106, icon: "🀠", color: "#2980b9" },
-            { id: 107, icon: "🀡", color: "#27ae60" },
-            { id: 108, icon: "🀢", color: "#27ae60" },
-            { id: 109, icon: "🀣", color: "#2980b9" },
-            { id: 110, icon: "🀤", color: "#c0392b" },
-            { id: 111, icon: "🀥", color: "#d35400" },
-            { id: 112, icon: "🀦", color: "#8e44ad" }
+            { id: 101, icon: "👑", color: "#f1c40f" },
+            { id: 102, icon: "🦊", color: "#e67e22" },
+            { id: 103, icon: "🐬", color: "#0984e3" },
+            { id: 104, icon: "🌵", color: "#27ae60" },
+            { id: 105, icon: "🎯", color: "#c0392b" },
+            { id: 106, icon: "🚀", color: "#6c5ce7" },
+            { id: 107, icon: "🍉", color: "#e84393" },
+            { id: 108, icon: "🐝", color: "#f39c12" },
+            { id: 109, icon: "🥑", color: "#2ecc71" },
+            { id: 110, icon: "⛵", color: "#3498db" },
+            { id: 111, icon: "🥝", color: "#1abc9c" },
+            { id: 112, icon: "🦄", color: "#9b59b6" }
         ];
 
         let currentLevel = 1;
@@ -483,7 +481,7 @@
 
                 el.innerHTML = `
                     <div class="tile-inner">
-                        <span class="tile-icon" style="color: ${locked ? '#64748b' : tile.color};">${tile.icon}</span>
+                        <span class="tile-icon">${tile.icon}</span>
                     </div>
                 `;
 
