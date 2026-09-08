@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+       <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mahjong Master Venüs</title>
+    <title>Galactic Mahjong Odyssey</title>
     <style>
         * {
             box-sizing: border-box;
@@ -13,7 +13,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #12281e, #091811);
+            background: linear-gradient(135deg, #0b0f19, #05070a);
             color: #fff;
             min-height: 100vh;
             display: flex;
@@ -22,44 +22,43 @@
             padding: 6px;
         }
 
-        /* Referans görsellere uygun üst ahşap çerçeve ve başlık alanı */
         header {
             text-align: center;
             margin-bottom: 4px;
             width: 100%;
             max-width: 420px;
-            background: linear-gradient(to bottom, #8B4513, #5c2c16);
+            background: linear-gradient(to bottom, #1b263b, #0d1b2a);
             padding: 8px;
             border-radius: 8px;
-            border: 2px solid #a45a2a;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            border: 2px solid #415a77;
+            box-shadow: 0 4px 15px rgba(0,255,255,0.15);
         }
 
         h1 {
             font-size: 1.1rem;
             margin-bottom: 2px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-            color: #fffae6;
+            text-shadow: 0 0 8px rgba(100,200,255,0.6);
+            color: #e0fbfc;
         }
 
         .scoreboard {
             display: flex;
             gap: 6px;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
             padding: 3px 6px;
             border-radius: 5px;
             font-size: 0.7rem;
             justify-content: space-around;
-            color: #e9edc9;
+            color: #8ecae6;
         }
 
-        /* Referanslardaki Üst Toplama Tepsisi (Match Tray) */
+        /* Videodaki gibi Üst Toplama Tepsisi (Match Tray) */
         .match-tray {
             display: flex;
             justify-content: center;
             gap: 4px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 2px solid #52b788;
+            background: rgba(13, 27, 42, 0.7);
+            border: 2px solid #48cae4;
             border-radius: 8px;
             padding: 4px;
             margin-bottom: 6px;
@@ -67,13 +66,14 @@
             max-width: 420px;
             min-height: 48px;
             align-items: center;
+            box-shadow: inset 0 0 10px rgba(72,202,228,0.3);
         }
 
         .tray-slot {
             width: 38px;
             height: 44px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px dashed rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
             border-radius: 4px;
             display: flex;
             align-items: center;
@@ -87,21 +87,22 @@
             top: auto !important;
             left: auto !important;
             transform: none !important;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+            box-shadow: 0 2px 8px rgba(0,255,255,0.4);
         }
 
-        /* Oyun Tahtası Alanı ve Çuka Efekti */
+        /* Oyun Tahtası Alanı (Uzay / Galaksi Temalı Arkaplan) */
         .game-container {
             position: relative;
             width: 100%;
             max-width: 420px;
             flex: 1;
             min-height: 380px;
+            background-image: url('https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=600&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
             border-radius: 8px;
-            border: 4px solid #5c2c16;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.7);
+            border: 4px solid #1b263b;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.8);
             overflow: hidden;
             margin-bottom: 8px;
         }
@@ -110,22 +111,22 @@
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(14, 40, 26, 0.7);
+            background: rgba(11, 15, 25, 0.65);
             z-index: 1;
         }
 
-        /* Klasik ve dengeli Mahjong Taşı Tasarımı */
+        /* Zarif 3D Mahjong Taşı Tasarımı */
         .tile {
             position: absolute;
             width: 13.5%;
             height: 11.5%;
-            background: linear-gradient(135deg, #fffef9 0%, #f6f0dc 60%, #ded6bd 100%);
-            border-radius: 4px;
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 60%, #cbd5e1 100%);
+            border-radius: 5px;
             border-top: 1px solid #ffffff;
             border-left: 1px solid #ffffff;
-            border-right: 3px solid #9c1c1c;
-            border-bottom: 5px solid #6b1010;
-            box-shadow: 0 5px 12px rgba(0,0,0,0.6), inset 0 1px 2px rgba(255,255,255,0.9);
+            border-right: 3px solid #334155;
+            border-bottom: 5px solid #1e293b;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.6);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -137,26 +138,26 @@
 
         .tile:hover:not(.locked) {
             transform: translateY(-2px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.7);
+            box-shadow: 0 8px 18px rgba(72,202,228,0.5);
         }
 
         .tile.selected {
-            border-right-color: #e76f51;
-            border-bottom-color: #bc3908;
-            background: linear-gradient(135deg, #fffcf0 0%, #faedcd 60%, #f5dbb3 100%);
+            border-right-color: #00b4d8;
+            border-bottom-color: #0077b6;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 60%, #bbf7d0 100%);
             transform: translateY(-4px);
-            box-shadow: 0 10px 18px rgba(231, 111, 81, 0.6);
+            box-shadow: 0 10px 20px rgba(0, 180, 216, 0.7);
         }
 
         .tile.locked {
-            background: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 60%, #64748b 100%);
-            border-top-color: #e2e8f0;
-            border-left-color: #e2e8f0;
-            border-right-color: #334155;
-            border-bottom-color: #1e293b;
+            background: linear-gradient(135deg, #475569 0%, #334155 60%, #1e293b 100%);
+            border-top-color: #64748b;
+            border-left-color: #64748b;
+            border-right-color: #0f172a;
+            border-bottom-color: #090d16;
             cursor: not-allowed;
-            filter: brightness(0.85);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            filter: brightness(0.75);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
         }
 
         .tile-inner {
@@ -170,13 +171,13 @@
         .tile-icon {
             font-size: 1.3rem;
             line-height: 1;
-            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
         }
 
-        /* Alt Buton Paneli (Görsellerdeki dizayna birebir uyumlu) */
+        /* Alt Buton Paneli ve Özel Güçler */
         .controls {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             align-items: center;
             justify-content: center;
             width: 100%;
@@ -185,11 +186,11 @@
         }
 
         button.btn {
-            background: linear-gradient(to bottom, #52b788, #2d6a4f);
+            background: linear-gradient(to bottom, #0077b6, #03045e);
             color: white;
-            border: 1px solid #74c69d;
-            padding: 6px 10px;
-            font-size: 0.75rem;
+            border: 1px solid #00b4d8;
+            padding: 6px 8px;
+            font-size: 0.7rem;
             font-weight: bold;
             border-radius: 6px;
             cursor: pointer;
@@ -199,32 +200,33 @@
         }
 
         button.btn.action-btn {
-            background: linear-gradient(to bottom, #2a9d8f, #218380);
-            flex: 0 0 45px;
+            background: linear-gradient(to bottom, #7209b7, #3a0ca3);
+            flex: 0 0 40px;
             height: 35px;
-            font-size: 1rem;
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 0;
+            border-color: #b5179e;
         }
 
-        button.btn.restart-btn {
-            background: linear-gradient(to bottom, #e76f51, #bc3908);
-            border-color: #f4a261;
+        button.btn.powerup-btn {
+            background: linear-gradient(to bottom, #f77f00, #d62828);
+            border-color: #fcbf49;
         }
 
         button.btn:disabled {
-            background: #475569;
-            border-color: #64748b;
+            background: #2b2d42;
+            border-color: #4a4e69;
             cursor: not-allowed;
-            opacity: 0.6;
+            opacity: 0.5;
         }
 
         .modal {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.85);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -234,20 +236,20 @@
         }
 
         .modal-content {
-            background: linear-gradient(145deg, #1b4332, #0f251a);
+            background: linear-gradient(145deg, #1b263b, #0d1b2a);
             padding: 20px;
             border-radius: 12px;
             text-align: center;
-            border: 2px solid #52b788;
+            border: 2px solid #48cae4;
             max-width: 320px;
             width: 90%;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            box-shadow: 0 10px 30px rgba(72,202,228,0.3);
         }
 
         .modal-content h2 {
             margin-bottom: 8px;
             font-size: 1.1rem;
-            color: #52b788;
+            color: #90e0ef;
         }
 
         .quote-box {
@@ -255,33 +257,32 @@
             font-style: italic;
             font-size: 0.85rem;
             line-height: 1.4;
-            color: #e9edc9;
-            background: rgba(0, 0, 0, 0.3);
+            color: #caf0f8;
+            background: rgba(0, 0, 0, 0.4);
             padding: 10px;
             border-radius: 6px;
             margin-bottom: 12px;
-            border-left: 3px solid #e76f51;
+            border-left: 3px solid #f77f00;
         }
 
         .modal-score {
             font-size: 0.8rem;
             margin-bottom: 10px;
-            color: #a3b18a;
+            color: #ade8f4;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Mahjong Master Venüs</h1>
+        <h1>Galactic Mahjong</h1>
         <div class="scoreboard">
-            <div>Seviye: <span id="levelDisplay">1</span>/100</div>
+            <div>Sistem: <span id="levelDisplay">1</span>/50</div>
             <div>Skor: <span id="score">0</span></div>
-            <div>Süre: <span id="timer">03:00</span></div>
+            <div>Zaman: <span id="timer">03:00</span></div>
         </div>
     </header>
 
-    <!-- Referans fotolardaki 3'lü / 4'lü üst eşleştirme tepsisi -->
     <div class="match-tray" id="matchTray">
         <div class="tray-slot"></div>
         <div class="tray-slot"></div>
@@ -292,51 +293,43 @@
 
     <div class="controls">
         <button class="btn action-btn" id="undoBtn" title="Geri Al">↩</button>
-        <button class="btn" id="shuffleBtn">Karıştır (<span id="shuffleCount">10</span>)</button>
-        <button class="btn" id="hintBtn">İpucu (<span id="hintCount">10</span>)</button>
-        <button class="btn restart-btn" id="restartBtn">Yeniden Başlat</button>
+        <button class="btn" id="shuffleBtn">Karıştır (<span id="shuffleCount">5</span>)</button>
+        <button class="btn powerup-btn" id="bombBtn">Bomba (<span id="bombCount">2</span>)</button>
+        <button class="btn" id="hintBtn">İpucu</button>
+        <button class="btn" id="restartBtn" style="flex: 0 0 50px; background:#374151; border-color:#6b7280;">🔄</button>
     </div>
 
     <div class="modal" id="modal">
         <div class="modal-content">
-            <h2 id="modalTitle">Tebrikler!</h2>
-            <div class="quote-box" id="quoteText">"Zihin kasları gibidir..."</div>
+            <h2 id="modalTitle">Sistem Temizlendi!</h2>
+            <div class="quote-box" id="quoteText">"Kozmik zihnin sınırlarını aştın..."</div>
             <div class="modal-score" id="modalText">Skor: 0</div>
-            <button class="btn" id="nextLevelBtn" style="width:100%;">Sonraki Seviye</button>
+            <button class="btn" id="nextLevelBtn" style="width:100%; padding:8px;">Sonraki Galaksiye Geç</button>
         </div>
     </div>
 
     <script>
-        const wallpapers = [
-            "https://images.unsplash.com/photo-1518495973542-4542c06a5843?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1511497584788-876761142212?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=600&auto=format&fit=crop"
+        // Fantastik Gezegenler ve Galaksi Simgeleri
+        const spaceSymbols = [
+            { id: 1, icon: "🌍", name: "Dünya" },
+            { id: 2, icon: "🪐", name: "Satürn" },
+            { id: 3, icon: "🔴", name: "Mars" },
+            { id: 4, icon: "🌕", name: "Ay" },
+            { id: 5, icon: "☀️", name: "Güneş" },
+            { id: 6, icon: "🌀", name: "Galaksi" },
+            { id: 7, icon: "💫", name: "Pulsar" },
+            { id: 8, icon: "☄️", name: "Kuyruklu Yıldız" },
+            { id: 9, icon: "🕳️", name: "Kara Delik" },
+            { id: 10, icon: "🛸", name: "UFO" },
+            { id: 11, icon: "⭐", name: "Süpernova" },
+            { id: 12, icon: "🚀", name: "Roket" }
         ];
 
-        const memoryQuotes = [
-            "\"Zihin, kaslar gibidir; ne kadar çok çalıştırırsanız, o kadar güçlenir ve keskinleşir.\"",
-            "\"Güçlü bir hafıza, geçmişin tecrübesiyle bugünün farkındalığını birleştiren en büyük hazinedir.\"",
-            "\"Bulmacalar ve zihin egzersizleri, beynin gizli kalmış yollarını aydınlatan birer meşaledir.\"",
-            "\"Öğrenmek ve hatırlamak, beynimizin bize sunduğu en güzel mucizelerden biridir.\"",
-            "\"Her bulmaca çözümü, zihinsel bahçemizde açan yeni ve taze bir çiçek gibidir.\""
-        ];
-
-        // Normal simgeler + Görsellerdeki özel fayanslar (Örn: Çarpı 2, Fener, Dinamit vb.)
-        const normalSymbols = [
-            { id: 1, icon: "⭐", color: "#d4ac0d" },
-            { id: 2, icon: "🌙", color: "#2980b9" },
-            { id: 3, icon: "🌸", color: "#e84393" },
-            { id: 4, icon: "🍀", color: "#27ae60" },
-            { id: 5, icon: "🔥", color: "#d35400" },
-            { id: 6, icon: "💧", color: "#00cec9" },
-            { id: 7, icon: "💎", color: "#0984e3" },
-            { id: 8, icon: "⚡", color: "#f1c40f" },
-            { id: 9, icon: "🏮", color: "#8e44ad" }, // Fener (Özel Fayans)
-            { id: 10, icon: "🧨", color: "#c0392b" }, // Dinamit (Özel Fayans)
-            { id: 11, icon: "✖️2", color: "#e67e22" }, // Çarpı 2 (Özel Fayans)
-            { id: 12, icon: "🔄", color: "#27ae60" }  // Takas/Dönüşüm
+        const galaxyQuotes = [
+            "\"Kozmos içimizdedir; evreni keşfetmek, kendi içimizi keşfetmektir.\"",
+            "\"Yıldızlararası yolculuk, en keskin zihinlerin tozlu raflarından başlar.\"",
+            "\"Zaman ve uzay bükülür, ancak doğru eşleşme her zaman yolu bulur.\"",
+            "\"Her bulmaca galaksisi, çözülmeyi bekleyen yeni bir bulutsu gizemidir.\""
         ];
 
         let currentLevel = 1;
@@ -344,33 +337,29 @@
         let tiles = [];
         let selectedTile = null;
         let gameActive = true;
-        let shuffleUses = 10;
-        let hintUses = 10;
+        let shuffleUses = 5;
+        let bombUses = 2;
         let timeLeft = 180;
         let timerInterval = null;
-        let moveHistory = []; // Geri Al (Undo) özelliği için geçmiş hamleler
+        let moveHistory = [];
 
         const gameContainer = document.getElementById('gameContainer');
         const scoreDisplay = document.getElementById('score');
         const levelDisplay = document.getElementById('levelDisplay');
         const timerDisplay = document.getElementById('timer');
         const shuffleBtn = document.getElementById('shuffleBtn');
+        const bombBtn = document.getElementById('bombBtn');
         const hintBtn = document.getElementById('hintBtn');
         const undoBtn = document.getElementById('undoBtn');
         const restartBtn = document.getElementById('restartBtn');
         const shuffleCountSpan = document.getElementById('shuffleCount');
-        const hintCountSpan = document.getElementById('hintCount');
+        const bombCountSpan = document.getElementById('bombCount');
         const modal = document.getElementById('modal');
         const modalTitle = document.getElementById('modalTitle');
         const quoteText = document.getElementById('quoteText');
         const modalText = document.getElementById('modalText');
         const nextLevelBtn = document.getElementById('nextLevelBtn');
         const matchTray = document.getElementById('matchTray');
-
-        function setBackgroundWallpaper() {
-            let bgIndex = (currentLevel - 1) % wallpapers.length;
-            gameContainer.style.backgroundImage = `url('${wallpapers[bgIndex]}')`;
-        }
 
         function startTimer() {
             clearInterval(timerInterval);
@@ -382,7 +371,7 @@
                 updateTimerDisplay();
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
-                    gameOver("Süre bitti!");
+                    gameOver("Kozmik Süre Tükendi!");
                 }
             }, 1000);
         }
@@ -400,35 +389,31 @@
             gameActive = true;
             modal.style.display = 'none';
             levelDisplay.textContent = currentLevel;
-            shuffleUses = 10;
-            hintUses = 10;
+            shuffleUses = 5;
+            bombUses = 2;
             moveHistory = [];
-            updateButtonsState();
-            setBackgroundWallpaper();
+            updatePowerupState();
             startTimer();
 
-            let pairCount = Math.min(18, 6 + Math.floor((currentLevel - 1) / 2) * 2);
-            let poolCopy = [...normalSymbols];
+            let pairCount = Math.min(16, 6 + Math.floor((currentLevel - 1) / 3) * 2);
+            let poolCopy = [...spaceSymbols];
             while (poolCopy.length < pairCount) {
-                poolCopy = poolCopy.concat(normalSymbols);
+                poolCopy = poolCopy.concat(spaceSymbols);
             }
             poolCopy.sort(() => Math.random() - 0.5);
             let selectedPool = poolCopy.slice(0, pairCount);
 
-            let tilePairs = [];
             let totalTiles = selectedPool.concat(selectedPool);
             totalTiles.sort(() => Math.random() - 0.5);
 
-            totalTiles.forEach((sym, index) => {
-                tilePairs.push({
-                    uuid: Math.random() + "_" + index,
-                    symbolId: sym.id,
-                    icon: sym.icon,
-                    color: sym.color
-                });
-            });
+            let tilePairs = totalTiles.map((sym, index) => ({
+                uuid: Math.random() + "_" + index,
+                symbolId: sym.id,
+                icon: sym.icon,
+                name: sym.name
+            }));
 
-            let positions = generateBalancedLayout(tilePairs.length, currentLevel);
+            let positions = generateGalaxyLayout(tilePairs.length);
             tiles = tilePairs.map((item, index) => ({
                 ...item,
                 x: positions[index].x,
@@ -440,26 +425,19 @@
             renderTiles();
         }
 
-        function generateBalancedLayout(count, level) {
+        function generateGalaxyLayout(count) {
             let posList = [];
-            let shapeType = level % 4;
-
             for (let i = 0; i < count; i++) {
-                let x = 35, y = 35, layer = 0;
-                if (shapeType === 0) {
-                    layer = i < count * 0.5 ? 0 : 1;
-                    let row = Math.floor(i / 6);
-                    let col = i % 6;
-                    x = 12 + (col * 14) + (layer * 2);
-                    y = 15 + (row * 15) + (layer * 3);
-                } else {
-                    layer = i % 2;
-                    let angle = (i / count) * Math.PI * 2;
-                    let radius = 25;
-                    x = 42 + Math.cos(angle) * radius;
-                    y = 40 + Math.sin(angle) * (radius * 0.7);
-                }
-                posList.push({ x: Math.max(5, Math.min(82, x)), y: Math.max(5, Math.min(78, y)), layer });
+                let layer = i < count * 0.4 ? 0 : (i < count * 0.8 ? 1 : 2);
+                let angle = (i / count) * Math.PI * 2;
+                let radius = 22 + (layer * 6);
+                let x = 43 + Math.cos(angle) * radius;
+                let y = 40 + Math.sin(angle) * (radius * 0.75);
+                posList.push({ 
+                    x: Math.max(6, Math.min(80, x)), 
+                    y: Math.max(6, Math.min(78, y)), 
+                    layer 
+                });
             }
             return posList;
         }
@@ -502,19 +480,17 @@
         function handleTileClick(tile) {
             if (!gameActive) return;
 
-            // Hamleyi kaydet (Geri Al için)
             moveHistory.push({ type: 'select', tileUuid: tile.uuid, prevSelected: selectedTile ? selectedTile.uuid : null });
 
             if (selectedTile) {
                 if (selectedTile.uuid === tile.uuid) {
                     selectedTile = null;
                 } else if (selectedTile.symbolId === tile.symbolId) {
-                    // Eşleşme gerçekleşti! Üst tepsiye taşı animatif koyabiliriz
                     updateMatchTray(selectedTile, tile);
                     selectedTile.removed = true;
                     tile.removed = true;
                     selectedTile = null;
-                    score += 20;
+                    score += 25;
                     scoreDisplay.textContent = score;
                     checkWinCondition();
                 } else {
@@ -528,31 +504,84 @@
 
         function updateMatchTray(t1, t2) {
             matchTray.innerHTML = `
-                <div class="tray-slot"><div class="tile" style="background:${t1.color};"><span class="tile-icon">${t1.icon}</span></div></div>
-                <div class="tray-slot"><div class="tile" style="background:${t2.color};"><span class="tile-icon">${t2.icon}</span></div></div>
+                <div class="tray-slot"><div class="tile"><span class="tile-icon">${t1.icon}</span></div></div>
+                <div class="tray-slot"><div class="tile"><span class="tile-icon">${t2.icon}</span></div></div>
                 <div class="tray-slot"></div>
             `;
             setTimeout(() => {
                 matchTray.innerHTML = '<div class="tray-slot"></div><div class="tray-slot"></div><div class="tray-slot"></div>';
-            }, 600);
+            }, 500);
         }
 
-        // Geri Al (Undo) Butonu Fonksiyonu
+        // Geri Al (Undo)
         undoBtn.addEventListener('click', () => {
             if (moveHistory.length === 0 || !gameActive) return;
             let lastMove = moveHistory.pop();
-            // Taşları aktif hale getir
             tiles.forEach(t => {
-                if (t.uuid === lastMove.tileUuid || (lastMove.pairedUuid && t.uuid === lastMove.pairedUuid)) {
-                    t.removed = false;
-                }
+                if (t.uuid === lastMove.tileUuid) t.removed = false;
             });
-            if (lastMove.prevSelected) {
-                selectedTile = tiles.find(t => t.uuid === lastMove.prevSelected) || null;
-            } else {
-                selectedTile = null;
-            }
+            selectedTile = lastMove.prevSelected ? (tiles.find(t => t.uuid === lastMove.prevSelected) || null) : null;
             renderTiles();
+        });
+
+        // Güçlendirici: Bomba (Açıkta olan bir çift taşı direkt yok eder/eşleştirir)
+        bombBtn.addEventListener('click', () => {
+            if (!gameActive || bombUses <= 0) return;
+            let activeTiles = tiles.filter(t => !t.removed && !isTileLocked(t));
+            if (activeTiles.length < 2) return;
+            
+            // İlk eşleşen çifti bul ve patlat
+            for (let i = 0; i < activeTiles.length; i++) {
+                for (let j = i + 1; j < activeTiles.length; j++) {
+                    if (activeTiles[i].symbolId === activeTiles[j].symbolId) {
+                        bombUses--;
+                        updatePowerupState();
+                        updateMatchTray(activeTiles[i], activeTiles[j]);
+                        activeTiles[i].removed = true;
+                        activeTiles[j].removed = true;
+                        selectedTile = null;
+                        score += 50;
+                        scoreDisplay.textContent = score;
+                        renderTiles();
+                        checkWinCondition();
+                        return;
+                    }
+                }
+            }
+            alert("Patlatılacak uygun eşleşme bulunamadı!");
+        });
+
+        // Karıştır
+        shuffleBtn.addEventListener('click', () => {
+            if (!gameActive || shuffleUses <= 0) return;
+            shuffleUses--;
+            updatePowerupState();
+            let activeTiles = tiles.filter(t => !t.removed);
+            let symbolsList = activeTiles.map(t => ({ id: t.symbolId, icon: t.icon, name: t.name }));
+            symbolsList.sort(() => Math.random() - 0.5);
+            activeTiles.forEach((t, i) => {
+                t.symbolId = symbolsList[i].id;
+                t.icon = symbolsList[i].icon;
+                t.name = symbolsList[i].name;
+            });
+            selectedTile = null;
+            renderTiles();
+        });
+
+        // İpucu
+        hintBtn.addEventListener('click', () => {
+            if (!gameActive) return;
+            let activeTiles = tiles.filter(t => !t.removed && !isTileLocked(t));
+            for (let i = 0; i < activeTiles.length; i++) {
+                for (let j = i + 1; j < activeTiles.length; j++) {
+                    if (activeTiles[i].symbolId === activeTiles[j].symbolId) {
+                        selectedTile = activeTiles[i];
+                        renderTiles();
+                        return;
+                    }
+                }
+            }
+            alert("Açıkta eşleşen taş yok, karıştırmayı kullan!");
         });
 
         function checkWinCondition() {
@@ -560,73 +589,40 @@
             if (remaining === 0) {
                 gameActive = false;
                 clearInterval(timerInterval);
-                quoteText.textContent = memoryQuotes[(currentLevel - 1) % memoryQuotes.length];
-                modalTitle.textContent = `Seviye ${currentLevel} Tamamlandı!`;
-                modalText.textContent = `Güncel Skor: ${score}`;
+                quoteText.textContent = galaxyQuotes[(currentLevel - 1) % galaxyQuotes.length];
+                modalTitle.textContent = `Galaksi ${currentLevel} Temizlendi!`;
+                modalText.textContent = `Kozmik Skor: ${score}`;
                 modal.style.display = 'flex';
             }
         }
 
         function gameOver(msg) {
             gameActive = false;
-            modalTitle.textContent = "Süre Bitti!";
-            quoteText.textContent = "\"Tekrar deneyerek ustalaşabilirsin!\"";
+            modalTitle.textContent = "Görev Başarısız!";
+            quoteText.textContent = "\"Yıldızlar tozdan doğar, tekrar dene kaşif!\"";
             modalText.textContent = msg;
-            nextLevelBtn.textContent = "Tekrar Dene";
+            nextLevelBtn.textContent = "Yeniden Dene";
             nextLevelBtn.onclick = () => initLevel();
             modal.style.display = 'flex';
         }
 
-        shuffleBtn.addEventListener('click', () => {
-            if (!gameActive || shuffleUses <= 0) return;
-            shuffleUses--;
-            updateButtonsState();
-            let activeTiles = tiles.filter(t => !t.removed);
-            let symbolsList = activeTiles.map(t => ({ id: t.symbolId, icon: t.icon, color: t.color }));
-            symbolsList.sort(() => Math.random() - 0.5);
-            activeTiles.forEach((t, i) => {
-                t.symbolId = symbolsList[i].id;
-                t.icon = symbolsList[i].icon;
-                t.color = symbolsList[i].color;
-            });
-            selectedTile = null;
-            renderTiles();
-        });
-
-        hintBtn.addEventListener('click', () => {
-            if (!gameActive || hintUses <= 0) return;
-            let activeTiles = tiles.filter(t => !t.removed && !isTileLocked(t));
-            for (let i = 0; i < activeTiles.length; i++) {
-                for (let j = i + 1; j < activeTiles.length; j++) {
-                    if (activeTiles[i].symbolId === activeTiles[j].symbolId) {
-                        hintUses--;
-                        updateButtonsState();
-                        selectedTile = activeTiles[i];
-                        renderTiles();
-                        return;
-                    }
-                }
-            }
-            alert("Açıkta eşleşen taş kalmadı, karıştırmayı dene!");
-        });
-
         restartBtn.addEventListener('click', () => {
-            if (confirm("Bu seviyeyi baştan başlatmak istiyor musun?")) {
+            if (confirm("Bu galaksi görevini yeniden başlatmak istiyor musun?")) {
                 initLevel();
             }
         });
 
-        function updateButtonsState() {
+        function updatePowerupState() {
             shuffleCountSpan.textContent = shuffleUses;
-            hintCountSpan.textContent = hintUses;
+            bombCountSpan.textContent = bombUses;
             shuffleBtn.disabled = (shuffleUses <= 0);
-            hintBtn.disabled = (hintUses <= 0);
+            bombBtn.disabled = (bombUses <= 0);
         }
 
         nextLevelBtn.addEventListener('click', () => {
-            if (currentLevel < 100) {
+            if (currentLevel < 50) {
                 currentLevel++;
-                nextLevelBtn.textContent = "Sonraki Seviye";
+                nextLevelBtn.textContent = "Sonraki Galaksiye Geç";
                 nextLevelBtn.onclick = () => initLevel();
                 initLevel();
             } else {
