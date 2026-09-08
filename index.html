@@ -71,25 +71,22 @@
             z-index: 1;
         }
 
-        /* Gönderdiğin görseldeki gibi kalın kırmızı duvarlı ve 3D kavisli Mahjong Taşı Tasarımı */
+        /* İstediğin o büyük, hacimli ve kalın kenarlı Mahjong Taşı Tasarımı */
         .tile {
             position: absolute;
-            width: 13.5%;
-            height: 16%;
-            /* Üst yüzey kemik rengi, alt/yan kısımları temsil eden belirgin kalın 3D çerçeve */
-            background: linear-gradient(135deg, #fffff8 0%, #f7f3e3 60%, #e6dfc7 100%);
-            border-radius: 8px;
-            /* Görseldeki gibi kalın kırmızı/bordo alt-yan duvar efekti ve içten yumuşak iç gölge */
-            border-top: 2px solid #ffffff;
-            border-left: 2px solid #ffffff;
-            border-right: 4px solid #b32d2d;
-            border-bottom: 6px solid #8a1c1c;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.65), 0 3px 6px rgba(0,0,0,0.4), inset 0 1px 3px rgba(255,255,255,0.8);
+            width: 15%;
+            height: 18%;
+            background: linear-gradient(135deg, #fffef9 0%, #f6f0dc 60%, #ded6bd 100%);
+            border-radius: 10px;
+            /* Gönderdiğin görsele benzer daha kalın ve belirgin bordo/kırmızı yan ve alt duvarlar */
+            border-top: 2.5px solid #ffffff;
+            border-left: 2.5px solid #ffffff;
+            border-right: 5px solid #a31c1c;
+            border-bottom: 8px solid #751212;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.7), 0 4px 8px rgba(0,0,0,0.4), inset 0 1px 4px rgba(255,255,255,0.9);
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 2px;
             cursor: pointer;
             user-select: none;
             transition: transform 0.1s, box-shadow 0.2s;
@@ -98,68 +95,53 @@
 
         .tile:hover:not(.locked) {
             transform: translateY(-4px);
-            box-shadow: 0 12px 20px rgba(0,0,0,0.75), 0 4px 8px rgba(0,0,0,0.4), inset 0 1px 3px rgba(255,255,255,0.9);
+            box-shadow: 0 14px 24px rgba(0,0,0,0.8), 0 5px 10px rgba(0,0,0,0.4), inset 0 1px 4px rgba(255,255,255,1);
         }
 
         .tile.selected {
             border-right-color: #e76f51;
             border-bottom-color: #bc3908;
             background: linear-gradient(135deg, #fffcf0 0%, #faedcd 60%, #f5dbb3 100%);
-            transform: translateY(-5px);
-            box-shadow: 0 14px 22px rgba(231, 111, 81, 0.65), 0 4px 8px rgba(0,0,0,0.4);
+            transform: translateY(-6px);
+            box-shadow: 0 16px 26px rgba(231, 111, 81, 0.7), 0 5px 10px rgba(0,0,0,0.4);
         }
 
         .tile.locked {
-            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 60%, #94a3b8 100%);
-            border-top-color: #f1f5f9;
-            border-left-color: #f1f5f9;
-            border-right-color: #475569;
-            border-bottom-color: #334155;
+            background: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 60%, #64748b 100%);
+            border-top-color: #e2e8f0;
+            border-left-color: #e2e8f0;
+            border-right-color: #334155;
+            border-bottom-color: #1e293b;
             cursor: not-allowed;
             filter: brightness(0.85);
             box-shadow: 0 3px 6px rgba(0,0,0,0.3);
         }
 
-        .tile-content-wrapper {
+        /* Taşın içindeki simgeyi ve yazıyı ortalayan ve büyüten alan */
+        .tile-inner {
+            width: 100%;
+            height: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(145deg, rgba(255,255,255,0.6), rgba(240,235,215,0.8));
-            border-radius: 5px;
-            border: 1px solid rgba(210, 200, 175, 0.6);
-            padding: 1px;
+            background: linear-gradient(145deg, rgba(255,255,255,0.7), rgba(245,238,220,0.9));
+            border-radius: 6px;
+            border: 1px solid rgba(200, 190, 160, 0.5);
+            padding: 2px;
         }
 
-        .tile.locked .tile-content-wrapper {
-            background: rgba(200, 205, 215, 0.5);
-            border-color: rgba(150, 160, 175, 0.4);
+        .tile.locked .tile-inner {
+            background: rgba(180, 190, 205, 0.6);
+            border-color: rgba(130, 140, 155, 0.4);
         }
 
+        /* Karakteri ilk görseldeki gibi büyük ve net yaptık */
         .tile-icon {
-            font-size: 1.1rem;
-            font-weight: 900;
+            font-size: 1.6rem;
             line-height: 1;
-            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
-        }
-
-        .tile-label {
-            font-size: 0.38rem;
-            text-transform: uppercase;
             font-weight: bold;
-            color: #555;
-            margin-top: 1px;
-            text-align: center;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            width: 100%;
-        }
-
-        .tile.locked .tile-label {
-            color: #64748b;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.25));
         }
 
         .controls {
@@ -294,41 +276,41 @@
             "\"Bilgi ve hafıza, paylaştıkça ve kullandıkça parlayan nadide mücevherlerdir.\""
         ];
 
-        /* Görseldeki estetiğe uygun klasik Çin / Asya motifleri ve renk tonları */
+        /* Simgeler ilk görseldeki gibi büyük ve net Çince Mahjong karakterleri ile güncellendi */
         const normalSymbols = [
-            { id: 1, icon: "🀄", label: "Orta", color: "#c0392b" },
-            { id: 2, icon: "🀆", label: "Ejder", color: "#2980b9" },
-            { id: 3, icon: "🀅", label: "Yeşil", color: "#27ae60" },
-            { id: 4, icon: "🀇", label: "Bir", color: "#c0392b" },
-            { id: 5, icon: "🀈", label: "İki", color: "#2980b9" },
-            { id: 6, icon: "🀉", label: "Üç", color: "#27ae60" },
-            { id: 7, icon: "🀊", label: "Dört", color: "#d35400" },
-            { id: 8, icon: "🀋", label: "Beş", color: "#8e44ad" },
-            { id: 9, icon: "🀌", label: "Altı", color: "#16a085" },
-            { id: 10, icon: "🀍", label: "Yedi", color: "#c0392b" },
-            { id: 11, icon: "🀎", label: "Sekiz", color: "#2980b9" },
-            { id: 12, icon: "🀏", label: "Dokuz", color: "#27ae60" },
-            { id: 13, icon: "🀙", label: "Daire 1", color: "#2980b9" },
-            { id: 14, icon: "🀚", label: "Daire 2", color: "#c0392b" },
-            { id: 15, icon: "🀛", label: "Daire 3", color: "#27ae60" },
-            { id: 16, icon: "🀜", label: "Daire 4", color: "#d35400" },
-            { id: 17, icon: "🀝", label: "Daire 5", color: "#8e44ad" },
-            { id: 18, icon: "🀞", label: "Daire 6", color: "#16a085" }
+            { id: 1, icon: "🀄", color: "#c0392b" },
+            { id: 2, icon: "🀆", color: "#2980b9" },
+            { id: 3, icon: "🀅", color: "#27ae60" },
+            { id: 4, icon: "🀇", color: "#c0392b" },
+            { id: 5, icon: "🀈", color: "#2980b9" },
+            { id: 6, icon: "🀉", color: "#27ae60" },
+            { id: 7, icon: "🀊", color: "#d35400" },
+            { id: 8, icon: "🀋", color: "#8e44ad" },
+            { id: 9, icon: "🀌", color: "#16a085" },
+            { id: 10, icon: "🀍", color: "#c0392b" },
+            { id: 11, icon: "🀎", color: "#2980b9" },
+            { id: 12, icon: "🀏", color: "#27ae60" },
+            { id: 13, icon: "🀙", color: "#2980b9" },
+            { id: 14, icon: "🀚", color: "#c0392b" },
+            { id: 15, icon: "🀛", color: "#27ae60" },
+            { id: 16, icon: "🀜", color: "#d35400" },
+            { id: 17, icon: "🀝", color: "#8e44ad" },
+            { id: 18, icon: "🀞", color: "#16a085" }
         ];
 
         const bonusSymbols = [
-            { id: 101, icon: "🀀", label: "Doğu", color: "#c0392b" },
-            { id: 102, icon: "🀁", label: "Güney", color: "#2980b9" },
-            { id: 103, icon: "🀂", label: "Batı", color: "#27ae60" },
-            { id: 104, icon: "🀃", label: "Kuzey", color: "#d35400" },
-            { id: 105, icon: "🀟", label: "Daire 7", color: "#c0392b" },
-            { id: 106, icon: "🀠", label: "Daire 8", color: "#2980b9" },
-            { id: 107, icon: "🀡", label: "Daire 9", color: "#27ae60" },
-            { id: 108, icon: "🀢", label: "Bambu 1", color: "#27ae60" },
-            { id: 109, icon: "🀣", label: "Bambu 2", color: "#2980b9" },
-            { id: 110, icon: "🀤", label: "Bambu 3", color: "#c0392b" },
-            { id: 111, icon: "🀥", label: "Bambu 4", color: "#d35400" },
-            { id: 112, icon: "🀦", label: "Bambu 5", color: "#8e44ad" }
+            { id: 101, icon: "🀀", color: "#c0392b" },
+            { id: 102, icon: "🀁", color: "#2980b9" },
+            { id: 103, icon: "🀂", color: "#27ae60" },
+            { id: 104, icon: "🀃", color: "#d35400" },
+            { id: 105, icon: "🀟", color: "#c0392b" },
+            { id: 106, icon: "🀠", color: "#2980b9" },
+            { id: 107, icon: "🀡", color: "#27ae60" },
+            { id: 108, icon: "🀢", color: "#27ae60" },
+            { id: 109, icon: "🀣", color: "#2980b9" },
+            { id: 110, icon: "🀤", color: "#c0392b" },
+            { id: 111, icon: "🀥", color: "#d35400" },
+            { id: 112, icon: "🀦", color: "#8e44ad" }
         ];
 
         let currentLevel = 1;
@@ -420,7 +402,6 @@
                     uuid: Math.random() + "_" + index,
                     symbolId: sym.id,
                     icon: sym.icon,
-                    label: sym.label,
                     color: sym.color,
                     number: index + 1
                 });
@@ -475,8 +456,8 @@
                     y = 42 + Math.cos(t) * 24 + (layer * 3);
                 }
 
-                x = Math.max(2, Math.min(84, x));
-                y = Math.max(3, Math.min(80, y));
+                x = Math.max(2, Math.min(82, x));
+                y = Math.max(3, Math.min(78, y));
 
                 posList.push({ x, y, layer });
             }
@@ -487,7 +468,7 @@
             if (tile.removed) return true;
             return tiles.some(other => {
                 if (other.removed || other.layer <= tile.layer) return false;
-                return Math.abs(other.x - tile.x) < 8.5 && Math.abs(other.y - tile.y) < 11;
+                return Math.abs(other.x - tile.x) < 9.5 && Math.abs(other.y - tile.y) < 12;
             });
         }
 
@@ -510,9 +491,8 @@
                 if (selectedTile && selectedTile.uuid === tile.uuid) el.classList.add('selected');
 
                 el.innerHTML = `
-                    <div class="tile-content-wrapper">
+                    <div class="tile-inner">
                         <span class="tile-icon" style="color: ${locked ? '#64748b' : tile.color};">${tile.icon}</span>
-                        <span class="tile-label">${tile.label}</span>
                     </div>
                 `;
 
@@ -581,12 +561,11 @@
             shuffleUses--;
             updateButtonsState();
             let activeTiles = tiles.filter(t => !t.removed);
-            let symbolsList = activeTiles.map(t => ({ id: t.symbolId, icon: t.icon, label: t.label, color: t.color }));
+            let symbolsList = activeTiles.map(t => ({ id: t.symbolId, icon: t.icon, color: t.color }));
             symbolsList.sort(() => Math.random() - 0.5);
             activeTiles.forEach((t, i) => {
                 t.symbolId = symbolsList[i].id;
                 t.icon = symbolsList[i].icon;
-                t.label = symbolsList[i].label;
                 t.color = symbolsList[i].color;
             });
             selectedTile = null;
