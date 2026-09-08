@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mahjong Eşleştirme Oyunu - Zen Manzaraları</title>
     <style>
         * {
@@ -15,55 +15,57 @@
         body {
             background: linear-gradient(135deg, #0f251a, #1b4332);
             color: #fff;
-            min-height: 100vh;
+            height: 100vh;
+            height: 100dvh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 8px;
+            justify-content: space-between;
+            padding: 6px;
+            overflow: hidden;
         }
 
         header {
             text-align: center;
-            margin-bottom: 6px;
             width: 100%;
-            max-width: 400px;
+            max-width: 380px;
         }
 
         h1 {
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             margin-bottom: 2px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
 
         .scoreboard {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             background: rgba(0, 0, 0, 0.4);
-            padding: 4px 8px;
+            padding: 3px 6px;
             border-radius: 6px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
             justify-content: space-around;
             backdrop-filter: blur(4px);
         }
 
-        /* Arka plan manzarası ve cam efekti eklenmiş oyun alanı */
+        /* Oyun alanını ekranı tam dolduracak şekilde esnek ve tam boyut yaptım */
         .game-container {
             position: relative;
             width: 100%;
             max-width: 380px;
-            height: 380px;
+            flex: 1;
+            max-height: 56vh;
             background-size: cover;
             background-position: center;
-            border-radius: 12px;
+            border-radius: 10px;
             border: 2px solid #52b788;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.6);
             overflow: hidden;
-            margin-bottom: 10px;
+            margin: 6px 0;
             transition: background-image 0.5s ease-in-out;
         }
 
-        /* Taşların rahat okunması için hafif karartma katmanı */
         .game-container::before {
             content: '';
             position: absolute;
@@ -74,22 +76,22 @@
 
         .tile {
             position: absolute;
-            width: 14%;
-            height: 19%;
+            width: 13%;
+            height: 15%;
             background: #f4f1de;
             color: #2b2b2b;
-            border-radius: 5px;
+            border-radius: 4px;
             border: 1.5px solid #d4d0c7;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-around;
-            padding: 2px 1px;
+            padding: 1px;
             cursor: pointer;
             user-select: none;
             transition: transform 0.1s, background-color 0.2s;
-            z-index: 2; /* Karartma katmanının üstünde kalır */
+            z-index: 2;
         }
 
         .tile:hover:not(.locked) {
@@ -101,7 +103,7 @@
             border-color: #e76f51;
             background: #faedcd;
             transform: translateY(-3px);
-            box-shadow: 0 5px 8px rgba(231, 111, 81, 0.5);
+            box-shadow: 0 4px 6px rgba(231, 111, 81, 0.5);
         }
 
         .tile.locked {
@@ -112,17 +114,17 @@
         }
 
         .tile-number {
-            font-size: 0.5rem;
+            font-size: 0.45rem;
             font-weight: bold;
             color: #e76f51;
         }
 
         .tile-icon {
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
 
         .tile-label {
-            font-size: 0.45rem;
+            font-size: 0.4rem;
             text-transform: uppercase;
             font-weight: bold;
             color: #40916c;
@@ -135,23 +137,24 @@
 
         .controls {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             align-items: center;
             justify-content: center;
             width: 100%;
             max-width: 380px;
+            margin-bottom: 4px;
         }
 
         button.btn {
             background-color: #52b788;
             color: white;
             border: none;
-            padding: 7px 12px;
-            font-size: 0.85rem;
+            padding: 7px 10px;
+            font-size: 0.75rem;
             font-weight: bold;
             border-radius: 6px;
             cursor: pointer;
-            box-shadow: 0 3px 5px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
             flex: 1;
         }
 
@@ -177,38 +180,37 @@
 
         .modal-content {
             background: linear-gradient(145deg, #1b4332, #0f251a);
-            padding: 22px;
-            border-radius: 14px;
+            padding: 18px;
+            border-radius: 12px;
             text-align: center;
             border: 2px solid #52b788;
-            max-width: 330px;
+            max-width: 310px;
             width: 90%;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
 
         .modal-content h2 {
-            margin-bottom: 8px;
-            font-size: 1.2rem;
+            margin-bottom: 6px;
+            font-size: 1.1rem;
             color: #52b788;
         }
 
-        /* Estetik Hafıza Sözleri Tasarımı */
         .quote-box {
             font-family: 'Georgia', serif;
             font-style: italic;
-            font-size: 0.9rem;
-            line-height: 1.4;
+            font-size: 0.85rem;
+            line-height: 1.3;
             color: #e9edc9;
             background: rgba(0, 0, 0, 0.3);
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 14px;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
             border-left: 3px solid #e76f51;
         }
 
         .modal-score {
-            font-size: 0.85rem;
-            margin-bottom: 12px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
             color: #a3b18a;
         }
     </style>
@@ -216,7 +218,7 @@
 <body>
 
     <header>
-        <h1>Mahjong Eşleştirme</h1>
+        <h1>Mahjong Eşleştirme - Zen</h1>
         <div class="scoreboard">
             <div>Seviye: <span id="levelDisplay">1</span>/100</div>
             <div>Skor: <span id="score">0</span></div>
@@ -229,6 +231,7 @@
     <div class="controls">
         <button class="btn" id="shuffleBtn">Karıştır (<span id="shuffleCount">10</span>)</button>
         <button class="btn" id="hintBtn">İpucu (<span id="hintCount">10</span>)</button>
+        <button class="btn" id="musicToggleBtn" style="flex: 0.8; background-color: #2d6a4f;">Müzik: 🔇</button>
     </div>
 
     <div class="modal" id="modal">
@@ -241,16 +244,14 @@
     </div>
 
     <script>
-        // Göz yormayan, yüksek kaliteli ve şık manzaraların listesi (Unsplash görsel havuzu)
         const wallpapers = [
-            "https://images.unsplash.com/photo-1518495973542-4542c06a5843?q=80&w=600&auto=format&fit=crop", // Orman yaprakları yeşil
-            "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600&auto=format&fit=crop", // Sakin huzurlu sahil/doğa
-            "https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=600&auto=format&fit=crop", // Sisli orman manzarası
-            "https://images.unsplash.com/photo-1511497584788-876761142212?q=80&w=600&auto=format&fit=crop", // Bambu yeşil doğa
-            "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=600&auto=format&fit=crop"  // Dağ ve doğa manzarası
+            "https://images.unsplash.com/photo-1518495973542-4542c06a5843?q=80&w=600&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=600&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1511497584788-876761142212?q=80&w=600&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=600&auto=format&fit=crop"
         ];
 
-        // Her seviye bitişi için hafıza ve zihin konulu estetik özlü sözler
         const memoryQuotes = [
             "\"Zihin, kaslar gibidir; ne kadar çok çalıştırırsanız, o kadar güçlenir ve keskinleşir.\"",
             "\"Güçlü bir hafıza, geçmişin tecrübesiyle bugünün farkındalığını birleştiren en büyük hazinedir.\"",
@@ -310,6 +311,12 @@
         let timeLeft = 180;
         let timerInterval = null;
 
+        // Web Audio API - Sakin Zen Müzik
+        let audioCtx = null;
+        let isMusicPlaying = false;
+        let musicInterval = null;
+        const zenFrequencies = [220.00, 246.94, 277.18, 329.63, 369.99, 440.00];
+
         const gameContainer = document.getElementById('gameContainer');
         const scoreDisplay = document.getElementById('score');
         const levelDisplay = document.getElementById('levelDisplay');
@@ -318,11 +325,65 @@
         const hintBtn = document.getElementById('hintBtn');
         const shuffleCountSpan = document.getElementById('shuffleCount');
         const hintCountSpan = document.getElementById('hintCount');
+        const musicToggleBtn = document.getElementById('musicToggleBtn');
         const modal = document.getElementById('modal');
         const modalTitle = document.getElementById('modalTitle');
         const quoteText = document.getElementById('quoteText');
         const modalText = document.getElementById('modalText');
         const nextLevelBtn = document.getElementById('nextLevelBtn');
+
+        function initAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playZenNote() {
+            if (!isMusicPlaying || !audioCtx) return;
+            try {
+                let freq = zenFrequencies[Math.floor(Math.random() * zenFrequencies.length)];
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+                gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 3.8);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start();
+                osc.stop(audioCtx.currentTime + 4.0);
+            } catch (e) {}
+        }
+
+        function startAmbientLoop() {
+            playZenNote();
+            musicInterval = setInterval(() => {
+                playZenNote();
+            }, 4000);
+        }
+
+        function stopAmbientLoop() {
+            clearInterval(musicInterval);
+        }
+
+        musicToggleBtn.addEventListener('click', () => {
+            initAudioContext();
+            isMusicPlaying = !isMusicPlaying;
+            if (isMusicPlaying) {
+                musicToggleBtn.textContent = "Müzik: 🎵";
+                startAmbientLoop();
+            } else {
+                musicToggleBtn.textContent = "Müzik: 🔇";
+                stopAmbientLoop();
+            }
+        });
 
         function setBackgroundWallpaper() {
             let bgIndex = (currentLevel - 1) % wallpapers.length;
@@ -366,7 +427,7 @@
             if (currentLevel <= 10) {
                 pairCount = 4 + (currentLevel - 1) * 2;
             } else {
-                pairCount = Math.min(20, 18 + Math.floor((currentLevel - 10) / 5) * 2);
+                pairCount = Math.min(18, 16 + Math.floor((currentLevel - 10) / 6) * 2);
             }
 
             let isBonusLevel = (currentLevel % 10 === 0);
@@ -417,33 +478,33 @@
                     layer = i < count * 0.4 ? 0 : (i < count * 0.8 ? 1 : 2);
                     let row = Math.floor(Math.sqrt(i * 2));
                     let col = i - (row * (row + 1)) / 2;
-                    x = 25 + (row * 4) + (col * 11);
-                    y = 15 + (row * 14) + (layer * 3);
+                    x = 22 + (row * 4) + (col * 11);
+                    y = 12 + (row * 13) + (layer * 3);
                 } 
                 else if (shapeType === 1) {
                     layer = i % 3;
                     let angle = (i / count) * Math.PI * 2;
-                    let radius = 25 - (layer * 5);
-                    x = 42 + Math.cos(angle) * radius;
-                    y = 40 + Math.sin(angle) * (radius * 0.8);
+                    let radius = 26 - (layer * 5);
+                    x = 43 + Math.cos(angle) * radius;
+                    y = 42 + Math.sin(angle) * (radius * 0.75);
                 } 
                 else if (shapeType === 2) {
                     layer = Math.floor(i / 14);
                     let localIdx = i % 14;
                     let col = localIdx % 5;
                     let row = Math.floor(localIdx / 5);
-                    x = 15 + (col * 14) + (layer * 4);
-                    y = 20 + (row * 14) + (layer * 4);
+                    x = 12 + (col * 14) + (layer * 3);
+                    y = 15 + (row * 14) + (layer * 3);
                 } 
                 else {
                     layer = i < count / 2 ? 0 : 1;
                     let t = (i % (count / 2)) / (count / 2) * Math.PI * 2;
-                    x = 40 + Math.sin(t) * 25;
-                    y = 40 + Math.cos(t) * 20 + (layer * 4);
+                    x = 42 + Math.sin(t) * 26;
+                    y = 42 + Math.cos(t) * 18 + (layer * 4);
                 }
 
-                x = Math.max(2, Math.min(82, x));
-                y = Math.max(5, Math.min(78, y));
+                x = Math.max(2, Math.min(84, x));
+                y = Math.max(4, Math.min(78, y));
 
                 posList.push({ x, y, layer });
             }
@@ -454,12 +515,11 @@
             if (tile.removed) return true;
             return tiles.some(other => {
                 if (other.removed || other.layer <= tile.layer) return false;
-                return Math.abs(other.x - tile.x) < 9 && Math.abs(other.y - tile.y) < 12;
+                return Math.abs(other.x - tile.x) < 8 && Math.abs(other.y - tile.y) < 11;
             });
         }
 
         function renderTiles() {
-            // Eski taşları temizle ama arka plan katmanını koru
             const existingTiles = gameContainer.querySelectorAll('.tile');
             existingTiles.forEach(t => t.remove());
 
@@ -517,7 +577,6 @@
                 gameActive = false;
                 clearInterval(timerInterval);
                 
-                // Rastgele veya sıradan bir hafıza sözü seç
                 let randomQuote = memoryQuotes[(currentLevel - 1) % memoryQuotes.length];
                 quoteText.textContent = randomQuote;
 
