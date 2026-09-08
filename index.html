@@ -71,18 +71,18 @@
             z-index: 1;
         }
 
-        /* İstediğin o büyük, hacimli ve kalın kenarlı Mahjong Taşı Tasarımı */
+        /* İstediğin gibi daha kareye yakın, kısa ve tok Mahjong Taşı Tasarımı */
         .tile {
             position: absolute;
-            width: 15%;
-            height: 18%;
+            width: 13%;
+            height: 16%;
             background: linear-gradient(135deg, #fffef9 0%, #f6f0dc 60%, #ded6bd 100%);
-            border-radius: 10px;
-            /* Gönderdiğin görsele benzer daha kalın ve belirgin bordo/kırmızı yan ve alt duvarlar */
-            border-top: 2.5px solid #ffffff;
-            border-left: 2.5px solid #ffffff;
-            border-right: 5px solid #a31c1c;
-            border-bottom: 8px solid #751212;
+            border-radius: 8px;
+            /* Kalın ve belirgin bordo/kırmızı yan ve alt duvarlar ile kareye yakın form */
+            border-top: 2px solid #ffffff;
+            border-left: 2px solid #ffffff;
+            border-right: 4px solid #a31c1c;
+            border-bottom: 7px solid #751212;
             box-shadow: 0 10px 20px rgba(0,0,0,0.7), 0 4px 8px rgba(0,0,0,0.4), inset 0 1px 4px rgba(255,255,255,0.9);
             display: flex;
             align-items: center;
@@ -117,7 +117,7 @@
             box-shadow: 0 3px 6px rgba(0,0,0,0.3);
         }
 
-        /* Taşın içindeki simgeyi ve yazıyı ortalayan ve büyüten alan */
+        /* İçeriği taşla aynı ölçüye getiren ve dolduran alan */
         .tile-inner {
             width: 100%;
             height: 100%;
@@ -125,10 +125,10 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(145deg, rgba(255,255,255,0.7), rgba(245,238,220,0.9));
-            border-radius: 6px;
-            border: 1px solid rgba(200, 190, 160, 0.5);
-            padding: 2px;
+            background: linear-gradient(145deg, rgba(255,255,255,0.85), rgba(245,238,220,0.95));
+            border-radius: 5px;
+            border: 1px solid rgba(200, 190, 160, 0.4);
+            padding: 1px;
         }
 
         .tile.locked .tile-inner {
@@ -136,9 +136,9 @@
             border-color: rgba(130, 140, 155, 0.4);
         }
 
-        /* Karakteri ilk görseldeki gibi büyük ve net yaptık */
+        /* Çince sembolü taşın neredeyse tamamını kaplayacak şekilde iyice büyüttük */
         .tile-icon {
-            font-size: 1.6rem;
+            font-size: 2.1rem;
             line-height: 1;
             font-weight: bold;
             filter: drop-shadow(0 1px 2px rgba(0,0,0,0.25));
@@ -276,7 +276,6 @@
             "\"Bilgi ve hafıza, paylaştıkça ve kullandıkça parlayan nadide mücevherlerdir.\""
         ];
 
-        /* Simgeler ilk görseldeki gibi büyük ve net Çince Mahjong karakterleri ile güncellendi */
         const normalSymbols = [
             { id: 1, icon: "🀄", color: "#c0392b" },
             { id: 2, icon: "🀆", color: "#2980b9" },
@@ -456,8 +455,8 @@
                     y = 42 + Math.cos(t) * 24 + (layer * 3);
                 }
 
-                x = Math.max(2, Math.min(82, x));
-                y = Math.max(3, Math.min(78, y));
+                x = Math.max(2, Math.min(84, x));
+                y = Math.max(3, Math.min(80, y));
 
                 posList.push({ x, y, layer });
             }
@@ -468,7 +467,7 @@
             if (tile.removed) return true;
             return tiles.some(other => {
                 if (other.removed || other.layer <= tile.layer) return false;
-                return Math.abs(other.x - tile.x) < 9.5 && Math.abs(other.y - tile.y) < 12;
+                return Math.abs(other.x - tile.x) < 8.5 && Math.abs(other.y - tile.y) < 11;
             });
         }
 
