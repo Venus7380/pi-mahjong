@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galactic Mahjong Pro</title>
+    <title>Galactic Mahjong Zen Pro</title>
     <style>
         * {
             box-sizing: border-box;
@@ -13,7 +13,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #050b14, #020408);
+            background: linear-gradient(135deg, #030712, #020408);
             color: #fff;
             min-height: 100vh;
             display: flex;
@@ -28,11 +28,12 @@
             margin-bottom: 4px;
             width: 100%;
             max-width: 420px;
-            background: linear-gradient(to bottom, #112233, #0a111a);
+            background: linear-gradient(to bottom, #0f172a, #020617);
             padding: 6px;
             border-radius: 8px;
             border: 2px solid #38bdf8;
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.25);
+            position: relative;
         }
 
         h1 {
@@ -45,7 +46,7 @@
         .scoreboard {
             display: flex;
             gap: 6px;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             padding: 2px 6px;
             border-radius: 4px;
             font-size: 0.65rem;
@@ -53,12 +54,36 @@
             color: #7dd3fc;
         }
 
-        /* Profesyonel Üst Toplama Tepsisi */
+        /* Müzik Kontrol Butonu */
+        .music-toggle {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: rgba(14, 165, 233, 0.2);
+            border: 1px solid #38bdf8;
+            color: #38bdf8;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .music-toggle.active {
+            background: #0ea5e9;
+            color: #fff;
+            box-shadow: 0 0 8px rgba(14, 165, 233, 0.8);
+        }
+
+        /* Üst Toplama Tepsisi */
         .match-tray {
             display: flex;
             justify-content: center;
             gap: 6px;
-            background: rgba(15, 23, 42, 0.85);
+            background: rgba(15, 23, 42, 0.9);
             border: 2px solid #0ea5e9;
             border-radius: 10px;
             padding: 5px;
@@ -88,7 +113,7 @@
             max-width: 420px;
             flex: 1;
             min-height: 380px;
-            background-image: url('https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=600&auto=format&fit=crop');
+            background-image: url('https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=600&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
             border-radius: 10px;
@@ -102,15 +127,15 @@
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(3, 7, 18, 0.75);
+            background: rgba(2, 6, 23, 0.78);
             z-index: 1;
         }
 
-        /* Kusursuz 3D Mahjong Taşları */
+        /* 3D Mahjong Taşları */
         .tile {
             position: absolute;
-            width: 13.5%;
-            height: 11.5%;
+            width: 15%;
+            height: 12.5%;
             background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 60%, #cbd5e1 100%);
             border-radius: 6px;
             border-top: 1px solid #ffffff;
@@ -147,8 +172,8 @@
             border-right-color: #020617;
             border-bottom-color: #000000;
             cursor: not-allowed;
-            filter: brightness(0.65);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            filter: brightness(0.55);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
         .tile-inner {
@@ -160,15 +185,14 @@
         }
 
         .tile-icon {
-            font-size: 1.35rem;
+            font-size: 1.4rem;
             line-height: 1;
             filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25));
         }
 
-        /* Kombo Bildirim Yazısı */
         .combo-popup {
             position: absolute;
-            top: 30%;
+            top: 28%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0);
             font-size: 1.5rem;
@@ -185,7 +209,6 @@
             opacity: 1;
         }
 
-        /* Alt Buton Paneli */
         .controls {
             display: flex;
             gap: 6px;
@@ -237,7 +260,7 @@
         .modal {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(2, 6, 23, 0.85);
+            background: rgba(2, 6, 23, 0.88);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -286,12 +309,13 @@
 <body>
 
     <header>
-        <h1>Galactic Mahjong Pro</h1>
+        <h1>Galactic Mahjong Zen</h1>
         <div class="scoreboard">
             <div>Sistem: <span id="levelDisplay">1</span>/50</div>
             <div>Skor: <span id="score">0</span></div>
             <div>Zaman: <span id="timer">03:00</span></div>
         </div>
+        <button class="music-toggle" id="musicToggle" title="Zen Müzik">🎵</button>
     </header>
 
     <div class="match-tray" id="matchTray">
@@ -355,6 +379,98 @@
         let moveHistory = [];
         let comboCount = 0;
 
+        // Web Audio API: Müzik ve Taş Sesi Sentezleyicisi
+        let audioCtx = null;
+        let isMusicPlaying = false;
+        let musicInterval = null;
+        const zenFrequencies = [220.00, 246.94, 277.18, 329.63, 369.99, 440.00, 493.88];
+
+        const musicToggleBtn = document.getElementById('musicToggle');
+
+        function initAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // Tok ve tatmin edici Mahjong taş tıklama/vuruş sesi
+        function playTileSound(isMatch = false) {
+            initAudioContext();
+            if (!audioCtx) return;
+
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+
+            // Eşleşme anında daha tiz ve neşeli, seçme anında tok bir vuruş frekansı
+            let startFreq = isMatch ? 580 : 320;
+            let endFreq = isMatch ? 220 : 120;
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(startFreq, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(endFreq, audioCtx.currentTime + 0.08);
+
+            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.09);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.1);
+        }
+
+        function toggleZenMusic() {
+            initAudioContext();
+            isMusicPlaying = !isMusicPlaying;
+            if (isMusicPlaying) {
+                musicToggleBtn.classList.add('active');
+                musicToggleBtn.textContent = "🔊";
+                startAmbientLoop();
+            } else {
+                musicToggleBtn.classList.remove('active');
+                musicToggleBtn.textContent = "🎵";
+                stopAmbientLoop();
+            }
+        }
+
+        function playZenNote() {
+            if (!isMusicPlaying || !audioCtx) return;
+
+            let freq = zenFrequencies[Math.floor(Math.random() * zenFrequencies.length)];
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+            gain.gain.setValueAtTime(0.01, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.07, audioCtx.currentTime + 1.5);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 4.5);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 4.6);
+        }
+
+        function startAmbientLoop() {
+            playZenNote();
+            clearInterval(musicInterval);
+            musicInterval = setInterval(() => {
+                playZenNote();
+            }, 3000);
+        }
+
+        function stopAmbientLoop() {
+            clearInterval(musicInterval);
+        }
+
+        musicToggleBtn.addEventListener('click', toggleZenMusic);
+
         const gameContainer = document.getElementById('gameContainer');
         const scoreDisplay = document.getElementById('score');
         const levelDisplay = document.getElementById('levelDisplay');
@@ -409,7 +525,7 @@
             updatePowerupState();
             startTimer();
 
-            let pairCount = Math.min(18, 8 + Math.floor((currentLevel - 1) / 2) * 2);
+            let pairCount = Math.min(21, 9 + Math.floor((currentLevel - 1) / 2) * 2);
             let poolCopy = [...spaceSymbols];
             while (poolCopy.length < pairCount) {
                 poolCopy = poolCopy.concat(spaceSymbols);
@@ -427,7 +543,7 @@
                 name: sym.name
             }));
 
-            let positions = generateAdvancedLayout(tilePairs.length);
+            let positions = generatePyramidLayout(tilePairs.length);
             tiles = tilePairs.map((item, index) => ({
                 ...item,
                 x: positions[index].x,
@@ -439,15 +555,31 @@
             renderTiles();
         }
 
-        function generateAdvancedLayout(count) {
+        function generatePyramidLayout(count) {
             let posList = [];
-            // Profesyonel katmanlı pyramid/galaksi yapısı
             for (let i = 0; i < count; i++) {
-                let layer = i < count * 0.4 ? 0 : (i < count * 0.75 ? 1 : 2);
-                let offsetX = (layer * 3) + (Math.sin(i) * 4);
-                let offsetY = (layer * 3) + (Math.cos(i) * 4);
-                let x = 25 + ((i % 5) * 11) + offsetX;
-                let y = 18 + (Math.floor(i / 5) * 13) + offsetY;
+                let layer = i < count * 0.35 ? 0 : (i < count * 0.75 ? 1 : 2);
+                let x, y;
+                
+                if (layer === 0) {
+                    let col = i % 5;
+                    let row = Math.floor(i / 5);
+                    x = 12 + (col * 16);
+                    y = 15 + (row * 16);
+                } else if (layer === 1) {
+                    let idx = i - Math.floor(count * 0.35);
+                    let col = idx % 4;
+                    let row = Math.floor(idx / 4);
+                    x = 20 + (col * 16);
+                    y = 22 + (row * 16);
+                } else {
+                    let idx = i - Math.floor(count * 0.75);
+                    let col = idx % 3;
+                    let row = Math.floor(idx / 3);
+                    x = 28 + (col * 16);
+                    y = 32 + (row * 16);
+                }
+                
                 posList.push({ 
                     x: Math.max(5, Math.min(80, x)), 
                     y: Math.max(5, Math.min(78, y)), 
@@ -461,7 +593,7 @@
             if (tile.removed) return true;
             return tiles.some(other => {
                 if (other.removed || other.layer <= tile.layer) return false;
-                return Math.abs(other.x - tile.x) < 9 && Math.abs(other.y - tile.y) < 10;
+                return Math.abs(other.x - tile.x) < 11 && Math.abs(other.y - tile.y) < 11;
             });
         }
 
@@ -500,7 +632,9 @@
             if (selectedTile) {
                 if (selectedTile.uuid === tile.uuid) {
                     selectedTile = null;
+                    playTileSound(false);
                 } else if (selectedTile.symbolId === tile.symbolId) {
+                    playTileSound(true); // Eşleşme sesi
                     comboCount++;
                     showComboEffect(comboCount);
                     updateMatchTray(selectedTile, tile);
@@ -512,10 +646,12 @@
                     checkWinCondition();
                 } else {
                     selectedTile = tile;
+                    playTileSound(false); // Seçim sesi
                     comboCount = 0;
                 }
             } else {
                 selectedTile = tile;
+                playTileSound(false); // Seçim sesi
                 comboCount = 0;
             }
             renderTiles();
@@ -543,6 +679,7 @@
 
         undoBtn.addEventListener('click', () => {
             if (moveHistory.length === 0 || !gameActive) return;
+            playTileSound(false);
             let lastMove = moveHistory.pop();
             tiles.forEach(t => {
                 if (t.uuid === lastMove.tileUuid) t.removed = false;
@@ -561,6 +698,7 @@
                     if (activeTiles[i].symbolId === activeTiles[j].symbolId) {
                         bombUses--;
                         updatePowerupState();
+                        playTileSound(true);
                         updateMatchTray(activeTiles[i], activeTiles[j]);
                         activeTiles[i].removed = true;
                         activeTiles[j].removed = true;
@@ -579,6 +717,7 @@
         shuffleBtn.addEventListener('click', () => {
             if (!gameActive || shuffleUses <= 0) return;
             shuffleUses--;
+            playTileSound(false);
             updatePowerupState();
             let activeTiles = tiles.filter(t => !t.removed);
             let symbolsList = activeTiles.map(t => ({ id: t.symbolId, icon: t.icon, name: t.name }));
@@ -598,6 +737,7 @@
             for (let i = 0; i < activeTiles.length; i++) {
                 for (let j = i + 1; j < activeTiles.length; j++) {
                     if (activeTiles[i].symbolId === activeTiles[j].symbolId) {
+                        playTileSound(false);
                         selectedTile = activeTiles[i];
                         renderTiles();
                         return;
