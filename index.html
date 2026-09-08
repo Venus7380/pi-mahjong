@@ -1,9 +1,9 @@
-       <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galactic Mahjong Odyssey</title>
+    <title>Galactic Mahjong Pro</title>
     <style>
         * {
             box-sizing: border-box;
@@ -13,13 +13,14 @@
         }
 
         body {
-            background: linear-gradient(135deg, #0b0f19, #05070a);
+            background: linear-gradient(135deg, #050b14, #020408);
             color: #fff;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             padding: 6px;
+            overflow: hidden;
         }
 
         header {
@@ -27,137 +28,127 @@
             margin-bottom: 4px;
             width: 100%;
             max-width: 420px;
-            background: linear-gradient(to bottom, #1b263b, #0d1b2a);
-            padding: 8px;
+            background: linear-gradient(to bottom, #112233, #0a111a);
+            padding: 6px;
             border-radius: 8px;
-            border: 2px solid #415a77;
-            box-shadow: 0 4px 15px rgba(0,255,255,0.15);
+            border: 2px solid #38bdf8;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
         }
 
         h1 {
-            font-size: 1.1rem;
+            font-size: 1rem;
             margin-bottom: 2px;
-            text-shadow: 0 0 8px rgba(100,200,255,0.6);
-            color: #e0fbfc;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
+            color: #e0f2fe;
         }
 
         .scoreboard {
             display: flex;
             gap: 6px;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 3px 6px;
-            border-radius: 5px;
-            font-size: 0.7rem;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.65rem;
             justify-content: space-around;
-            color: #8ecae6;
+            color: #7dd3fc;
         }
 
-        /* Videodaki gibi Üst Toplama Tepsisi (Match Tray) */
+        /* Profesyonel Üst Toplama Tepsisi */
         .match-tray {
             display: flex;
             justify-content: center;
-            gap: 4px;
-            background: rgba(13, 27, 42, 0.7);
-            border: 2px solid #48cae4;
-            border-radius: 8px;
-            padding: 4px;
+            gap: 6px;
+            background: rgba(15, 23, 42, 0.85);
+            border: 2px solid #0ea5e9;
+            border-radius: 10px;
+            padding: 5px;
             margin-bottom: 6px;
             width: 100%;
             max-width: 420px;
-            min-height: 48px;
+            min-height: 52px;
             align-items: center;
-            box-shadow: inset 0 0 10px rgba(72,202,228,0.3);
+            box-shadow: inset 0 0 15px rgba(14, 165, 233, 0.4);
         }
 
         .tray-slot {
-            width: 38px;
-            height: 44px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px dashed rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
+            width: 40px;
+            height: 46px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px dashed rgba(56, 189, 248, 0.4);
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .tray-slot .tile {
-            position: relative !important;
-            width: 100% !important;
-            height: 100% !important;
-            top: auto !important;
-            left: auto !important;
-            transform: none !important;
-            box-shadow: 0 2px 8px rgba(0,255,255,0.4);
-        }
-
-        /* Oyun Tahtası Alanı (Uzay / Galaksi Temalı Arkaplan) */
+        /* Oyun Tahtası Alanı */
         .game-container {
             position: relative;
             width: 100%;
             max-width: 420px;
             flex: 1;
             min-height: 380px;
-            background-image: url('https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=600&auto=format&fit=crop');
+            background-image: url('https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=600&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
-            border-radius: 8px;
-            border: 4px solid #1b263b;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.8);
+            border-radius: 10px;
+            border: 4px solid #0f172a;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.9);
             overflow: hidden;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .game-container::before {
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(11, 15, 25, 0.65);
+            background: rgba(3, 7, 18, 0.75);
             z-index: 1;
         }
 
-        /* Zarif 3D Mahjong Taşı Tasarımı */
+        /* Kusursuz 3D Mahjong Taşları */
         .tile {
             position: absolute;
             width: 13.5%;
             height: 11.5%;
-            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 60%, #cbd5e1 100%);
-            border-radius: 5px;
+            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 60%, #cbd5e1 100%);
+            border-radius: 6px;
             border-top: 1px solid #ffffff;
             border-left: 1px solid #ffffff;
-            border-right: 3px solid #334155;
-            border-bottom: 5px solid #1e293b;
-            box-shadow: 0 5px 12px rgba(0,0,0,0.6);
+            border-right: 3px solid #475569;
+            border-bottom: 6px solid #1e293b;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.7);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             user-select: none;
-            transition: transform 0.1s, box-shadow 0.2s;
+            transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
             z-index: 2;
         }
 
         .tile:hover:not(.locked) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 18px rgba(72,202,228,0.5);
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 10px 20px rgba(56, 189, 248, 0.6);
         }
 
         .tile.selected {
-            border-right-color: #00b4d8;
-            border-bottom-color: #0077b6;
+            border-right-color: #0ea5e9;
+            border-bottom-color: #0369a1;
             background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 60%, #bbf7d0 100%);
-            transform: translateY(-4px);
-            box-shadow: 0 10px 20px rgba(0, 180, 216, 0.7);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(14, 165, 233, 0.8);
         }
 
         .tile.locked {
-            background: linear-gradient(135deg, #475569 0%, #334155 60%, #1e293b 100%);
-            border-top-color: #64748b;
-            border-left-color: #64748b;
-            border-right-color: #0f172a;
-            border-bottom-color: #090d16;
+            background: linear-gradient(135deg, #334155 0%, #1e293b 60%, #0f172a 100%);
+            border-top-color: #475569;
+            border-left-color: #475569;
+            border-right-color: #020617;
+            border-bottom-color: #000000;
             cursor: not-allowed;
-            filter: brightness(0.75);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+            filter: brightness(0.65);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
         }
 
         .tile-inner {
@@ -169,12 +160,32 @@
         }
 
         .tile-icon {
-            font-size: 1.3rem;
+            font-size: 1.35rem;
             line-height: 1;
-            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25));
         }
 
-        /* Alt Buton Paneli ve Özel Güçler */
+        /* Kombo Bildirim Yazısı */
+        .combo-popup {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #fde047;
+            text-shadow: 0 0 15px rgba(234, 179, 8, 0.9);
+            z-index: 50;
+            pointer-events: none;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+            opacity: 0;
+        }
+        .combo-popup.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        /* Alt Buton Paneli */
         .controls {
             display: flex;
             gap: 6px;
@@ -182,13 +193,13 @@
             justify-content: center;
             width: 100%;
             max-width: 420px;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         button.btn {
-            background: linear-gradient(to bottom, #0077b6, #03045e);
+            background: linear-gradient(to bottom, #0284c7, #0369a1);
             color: white;
-            border: 1px solid #00b4d8;
+            border: 1px solid #38bdf8;
             padding: 6px 8px;
             font-size: 0.7rem;
             font-weight: bold;
@@ -200,56 +211,56 @@
         }
 
         button.btn.action-btn {
-            background: linear-gradient(to bottom, #7209b7, #3a0ca3);
-            flex: 0 0 40px;
-            height: 35px;
+            background: linear-gradient(to bottom, #9333ea, #6b21a8);
+            flex: 0 0 38px;
+            height: 34px;
             font-size: 0.9rem;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 0;
-            border-color: #b5179e;
+            border-color: #c084fc;
         }
 
         button.btn.powerup-btn {
-            background: linear-gradient(to bottom, #f77f00, #d62828);
-            border-color: #fcbf49;
+            background: linear-gradient(to bottom, #f97316, #c2410c);
+            border-color: #fdba74;
         }
 
         button.btn:disabled {
-            background: #2b2d42;
-            border-color: #4a4e69;
+            background: #1e293b;
+            border-color: #334155;
             cursor: not-allowed;
-            opacity: 0.5;
+            opacity: 0.4;
         }
 
         .modal {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
+            background: rgba(2, 6, 23, 0.85);
             display: flex;
             align-items: center;
             justify-content: center;
             display: none;
             z-index: 100;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(6px);
         }
 
         .modal-content {
-            background: linear-gradient(145deg, #1b263b, #0d1b2a);
+            background: linear-gradient(145deg, #0f172a, #020617);
             padding: 20px;
             border-radius: 12px;
             text-align: center;
-            border: 2px solid #48cae4;
+            border: 2px solid #38bdf8;
             max-width: 320px;
             width: 90%;
-            box-shadow: 0 10px 30px rgba(72,202,228,0.3);
+            box-shadow: 0 10px 35px rgba(56, 189, 248, 0.4);
         }
 
         .modal-content h2 {
             margin-bottom: 8px;
             font-size: 1.1rem;
-            color: #90e0ef;
+            color: #38bdf8;
         }
 
         .quote-box {
@@ -257,25 +268,25 @@
             font-style: italic;
             font-size: 0.85rem;
             line-height: 1.4;
-            color: #caf0f8;
+            color: #bae6fd;
             background: rgba(0, 0, 0, 0.4);
             padding: 10px;
             border-radius: 6px;
             margin-bottom: 12px;
-            border-left: 3px solid #f77f00;
+            border-left: 3px solid #f97316;
         }
 
         .modal-score {
             font-size: 0.8rem;
             margin-bottom: 10px;
-            color: #ade8f4;
+            color: #7dd3fc;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Galactic Mahjong</h1>
+        <h1>Galactic Mahjong Pro</h1>
         <div class="scoreboard">
             <div>Sistem: <span id="levelDisplay">1</span>/50</div>
             <div>Skor: <span id="score">0</span></div>
@@ -289,14 +300,16 @@
         <div class="tray-slot"></div>
     </div>
 
-    <div class="game-container" id="gameContainer"></div>
+    <div class="game-container" id="gameContainer">
+        <div class="combo-popup" id="comboPopup">Harika! 🔥</div>
+    </div>
 
     <div class="controls">
         <button class="btn action-btn" id="undoBtn" title="Geri Al">↩</button>
         <button class="btn" id="shuffleBtn">Karıştır (<span id="shuffleCount">5</span>)</button>
         <button class="btn powerup-btn" id="bombBtn">Bomba (<span id="bombCount">2</span>)</button>
         <button class="btn" id="hintBtn">İpucu</button>
-        <button class="btn" id="restartBtn" style="flex: 0 0 50px; background:#374151; border-color:#6b7280;">🔄</button>
+        <button class="btn" id="restartBtn" style="flex: 0 0 45px; background:#1e293b; border-color:#475569;">🔄</button>
     </div>
 
     <div class="modal" id="modal">
@@ -309,7 +322,6 @@
     </div>
 
     <script>
-        // Fantastik Gezegenler ve Galaksi Simgeleri
         const spaceSymbols = [
             { id: 1, icon: "🌍", name: "Dünya" },
             { id: 2, icon: "🪐", name: "Satürn" },
@@ -328,8 +340,7 @@
         const galaxyQuotes = [
             "\"Kozmos içimizdedir; evreni keşfetmek, kendi içimizi keşfetmektir.\"",
             "\"Yıldızlararası yolculuk, en keskin zihinlerin tozlu raflarından başlar.\"",
-            "\"Zaman ve uzay bükülür, ancak doğru eşleşme her zaman yolu bulur.\"",
-            "\"Her bulmaca galaksisi, çözülmeyi bekleyen yeni bir bulutsu gizemidir.\""
+            "\"Zaman ve uzay bükülür, ancak doğru eşleşme her zaman yolu bulur.\""
         ];
 
         let currentLevel = 1;
@@ -342,6 +353,7 @@
         let timeLeft = 180;
         let timerInterval = null;
         let moveHistory = [];
+        let comboCount = 0;
 
         const gameContainer = document.getElementById('gameContainer');
         const scoreDisplay = document.getElementById('score');
@@ -360,6 +372,7 @@
         const modalText = document.getElementById('modalText');
         const nextLevelBtn = document.getElementById('nextLevelBtn');
         const matchTray = document.getElementById('matchTray');
+        const comboPopup = document.getElementById('comboPopup');
 
         function startTimer() {
             clearInterval(timerInterval);
@@ -383,7 +396,7 @@
         }
 
         function initLevel() {
-            gameContainer.innerHTML = '';
+            gameContainer.querySelectorAll('.tile').forEach(t => t.remove());
             matchTray.innerHTML = '<div class="tray-slot"></div><div class="tray-slot"></div><div class="tray-slot"></div>';
             selectedTile = null;
             gameActive = true;
@@ -392,10 +405,11 @@
             shuffleUses = 5;
             bombUses = 2;
             moveHistory = [];
+            comboCount = 0;
             updatePowerupState();
             startTimer();
 
-            let pairCount = Math.min(16, 6 + Math.floor((currentLevel - 1) / 3) * 2);
+            let pairCount = Math.min(18, 8 + Math.floor((currentLevel - 1) / 2) * 2);
             let poolCopy = [...spaceSymbols];
             while (poolCopy.length < pairCount) {
                 poolCopy = poolCopy.concat(spaceSymbols);
@@ -413,7 +427,7 @@
                 name: sym.name
             }));
 
-            let positions = generateGalaxyLayout(tilePairs.length);
+            let positions = generateAdvancedLayout(tilePairs.length);
             tiles = tilePairs.map((item, index) => ({
                 ...item,
                 x: positions[index].x,
@@ -425,17 +439,18 @@
             renderTiles();
         }
 
-        function generateGalaxyLayout(count) {
+        function generateAdvancedLayout(count) {
             let posList = [];
+            // Profesyonel katmanlı pyramid/galaksi yapısı
             for (let i = 0; i < count; i++) {
-                let layer = i < count * 0.4 ? 0 : (i < count * 0.8 ? 1 : 2);
-                let angle = (i / count) * Math.PI * 2;
-                let radius = 22 + (layer * 6);
-                let x = 43 + Math.cos(angle) * radius;
-                let y = 40 + Math.sin(angle) * (radius * 0.75);
+                let layer = i < count * 0.4 ? 0 : (i < count * 0.75 ? 1 : 2);
+                let offsetX = (layer * 3) + (Math.sin(i) * 4);
+                let offsetY = (layer * 3) + (Math.cos(i) * 4);
+                let x = 25 + ((i % 5) * 11) + offsetX;
+                let y = 18 + (Math.floor(i / 5) * 13) + offsetY;
                 posList.push({ 
-                    x: Math.max(6, Math.min(80, x)), 
-                    y: Math.max(6, Math.min(78, y)), 
+                    x: Math.max(5, Math.min(80, x)), 
+                    y: Math.max(5, Math.min(78, y)), 
                     layer 
                 });
             }
@@ -486,34 +501,46 @@
                 if (selectedTile.uuid === tile.uuid) {
                     selectedTile = null;
                 } else if (selectedTile.symbolId === tile.symbolId) {
+                    comboCount++;
+                    showComboEffect(comboCount);
                     updateMatchTray(selectedTile, tile);
                     selectedTile.removed = true;
                     tile.removed = true;
                     selectedTile = null;
-                    score += 25;
+                    score += 30 + (comboCount * 5);
                     scoreDisplay.textContent = score;
                     checkWinCondition();
                 } else {
                     selectedTile = tile;
+                    comboCount = 0;
                 }
             } else {
                 selectedTile = tile;
+                comboCount = 0;
             }
             renderTiles();
         }
 
+        function showComboEffect(combo) {
+            if (combo < 2) return;
+            comboPopup.textContent = `Kombo x${combo}! 🔥`;
+            comboPopup.classList.add('show');
+            setTimeout(() => {
+                comboPopup.classList.remove('show');
+            }, 600);
+        }
+
         function updateMatchTray(t1, t2) {
             matchTray.innerHTML = `
-                <div class="tray-slot"><div class="tile"><span class="tile-icon">${t1.icon}</span></div></div>
-                <div class="tray-slot"><div class="tile"><span class="tile-icon">${t2.icon}</span></div></div>
+                <div class="tray-slot"><div class="tile" style="position:relative; width:100%; height:100%;"><span class="tile-icon">${t1.icon}</span></div></div>
+                <div class="tray-slot"><div class="tile" style="position:relative; width:100%; height:100%;"><span class="tile-icon">${t2.icon}</span></div></div>
                 <div class="tray-slot"></div>
             `;
             setTimeout(() => {
                 matchTray.innerHTML = '<div class="tray-slot"></div><div class="tray-slot"></div><div class="tray-slot"></div>';
-            }, 500);
+            }, 550);
         }
 
-        // Geri Al (Undo)
         undoBtn.addEventListener('click', () => {
             if (moveHistory.length === 0 || !gameActive) return;
             let lastMove = moveHistory.pop();
@@ -524,13 +551,11 @@
             renderTiles();
         });
 
-        // Güçlendirici: Bomba (Açıkta olan bir çift taşı direkt yok eder/eşleştirir)
         bombBtn.addEventListener('click', () => {
             if (!gameActive || bombUses <= 0) return;
             let activeTiles = tiles.filter(t => !t.removed && !isTileLocked(t));
             if (activeTiles.length < 2) return;
             
-            // İlk eşleşen çifti bul ve patlat
             for (let i = 0; i < activeTiles.length; i++) {
                 for (let j = i + 1; j < activeTiles.length; j++) {
                     if (activeTiles[i].symbolId === activeTiles[j].symbolId) {
@@ -540,7 +565,7 @@
                         activeTiles[i].removed = true;
                         activeTiles[j].removed = true;
                         selectedTile = null;
-                        score += 50;
+                        score += 60;
                         scoreDisplay.textContent = score;
                         renderTiles();
                         checkWinCondition();
@@ -551,7 +576,6 @@
             alert("Patlatılacak uygun eşleşme bulunamadı!");
         });
 
-        // Karıştır
         shuffleBtn.addEventListener('click', () => {
             if (!gameActive || shuffleUses <= 0) return;
             shuffleUses--;
@@ -568,7 +592,6 @@
             renderTiles();
         });
 
-        // İpucu
         hintBtn.addEventListener('click', () => {
             if (!gameActive) return;
             let activeTiles = tiles.filter(t => !t.removed && !isTileLocked(t));
