@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Galactic Mahjong Zen Pro</title>
     <style>
         * {
@@ -10,45 +10,48 @@
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
         }
 
         body {
             background: linear-gradient(135deg, #030712, #020408);
             color: #fff;
             height: 100vh;
+            height: 100dvh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
-            padding: 4px 6px;
+            justify-content: flex-start;
+            padding: 4px;
             overflow: hidden;
         }
 
         header {
             text-align: center;
             width: 100%;
-            max-width: 420px;
+            max-width: 400px;
             background: linear-gradient(to bottom, #0f172a, #020617);
-            padding: 4px 6px;
-            border-radius: 8px;
-            border: 2px solid #38bdf8;
-            box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid #38bdf8;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
             position: relative;
+            margin-bottom: 4px;
         }
 
         h1 {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             margin-bottom: 1px;
-            text-shadow: 0 0 8px rgba(56, 189, 248, 0.8);
             color: #e0f2fe;
+            text-shadow: 0 0 6px rgba(56, 189, 248, 0.8);
         }
 
         .scoreboard {
             display: flex;
             gap: 4px;
             background: rgba(0, 0, 0, 0.6);
-            padding: 2px 4px;
-            border-radius: 4px;
+            padding: 1px 4px;
+            border-radius: 3px;
             font-size: 0.6rem;
             justify-content: space-around;
             color: #7dd3fc;
@@ -61,10 +64,10 @@
             background: rgba(14, 165, 233, 0.2);
             border: 1px solid #38bdf8;
             color: #38bdf8;
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -73,30 +76,30 @@
         .music-toggle.active {
             background: #0ea5e9;
             color: #fff;
-            box-shadow: 0 0 8px rgba(14, 165, 233, 0.8);
+            box-shadow: 0 0 6px rgba(14, 165, 233, 0.8);
         }
 
         .match-tray {
             display: flex;
             justify-content: center;
-            gap: 6px;
+            gap: 4px;
             background: rgba(15, 23, 42, 0.9);
-            border: 2px solid #0ea5e9;
-            border-radius: 8px;
-            padding: 4px;
+            border: 1px solid #0ea5e9;
+            border-radius: 6px;
+            padding: 3px;
             width: 100%;
-            max-width: 420px;
-            min-height: 44px;
+            max-width: 400px;
+            min-height: 38px;
             align-items: center;
-            box-shadow: inset 0 0 10px rgba(14, 165, 233, 0.4);
+            margin-bottom: 4px;
         }
 
         .tray-slot {
-            width: 36px;
-            height: 38px;
+            width: 32px;
+            height: 34px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px dashed rgba(56, 189, 248, 0.4);
-            border-radius: 5px;
+            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -105,15 +108,16 @@
         .game-container {
             position: relative;
             width: 100%;
-            max-width: 420px;
-            height: 340px;
+            max-width: 400px;
+            height: 310px;
             background-image: url('https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=600&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
-            border-radius: 8px;
-            border: 3px solid #0f172a;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.9);
+            border-radius: 6px;
+            border: 2px solid #0f172a;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.9);
             overflow: hidden;
+            margin-bottom: 4px;
         }
 
         .game-container::before {
@@ -126,35 +130,33 @@
 
         .tile {
             position: absolute;
-            width: 15%;
-            height: 12.5%;
+            width: 14%;
+            height: 13%;
             background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 60%, #cbd5e1 100%);
-            border-radius: 5px;
+            border-radius: 4px;
             border-top: 1px solid #ffffff;
             border-left: 1px solid #ffffff;
             border-right: 2px solid #475569;
-            border-bottom: 5px solid #1e293b;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.7);
+            border-bottom: 4px solid #1e293b;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.7);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            user-select: none;
             transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 2;
         }
 
         .tile:hover:not(.locked) {
             transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 8px 16px rgba(56, 189, 248, 0.6);
         }
 
         .tile.selected {
             border-right-color: #0ea5e9;
             border-bottom-color: #0369a1;
             background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 60%, #bbf7d0 100%);
-            transform: translateY(-4px);
-            box-shadow: 0 10px 20px rgba(14, 165, 233, 0.8);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(14, 165, 233, 0.8);
         }
 
         .tile.locked {
@@ -165,7 +167,6 @@
             border-bottom-color: #000000;
             cursor: not-allowed;
             filter: brightness(0.55);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
         .tile-inner {
@@ -177,7 +178,7 @@
         }
 
         .tile-icon {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             line-height: 1;
         }
 
@@ -186,10 +187,10 @@
             top: 28%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0);
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 900;
             color: #fde047;
-            text-shadow: 0 0 12px rgba(234, 179, 8, 0.9);
+            text-shadow: 0 0 10px rgba(234, 179, 8, 0.9);
             z-index: 50;
             pointer-events: none;
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
@@ -202,33 +203,32 @@
 
         .controls {
             display: flex;
-            gap: 5px;
+            gap: 4px;
             align-items: center;
             justify-content: center;
             width: 100%;
-            max-width: 420px;
-            margin-bottom: 2px;
+            max-width: 400px;
         }
 
         button.btn {
             background: linear-gradient(to bottom, #0284c7, #0369a1);
             color: white;
             border: 1px solid #38bdf8;
-            padding: 6px 4px;
-            font-size: 0.65rem;
+            padding: 6px 2px;
+            font-size: 0.6rem;
             font-weight: bold;
-            border-radius: 6px;
+            border-radius: 5px;
             cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
             flex: 1;
             text-align: center;
         }
 
         button.btn.action-btn {
             background: linear-gradient(to bottom, #9333ea, #6b21a8);
-            flex: 0 0 34px;
-            height: 30px;
-            font-size: 0.8rem;
+            flex: 0 0 32px;
+            height: 28px;
+            font-size: 0.75rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -257,42 +257,42 @@
             justify-content: center;
             display: none;
             z-index: 100;
-            backdrop-filter: blur(6px);
+            backdrop-filter: blur(4px);
         }
 
         .modal-content {
             background: linear-gradient(145deg, #0f172a, #020617);
-            padding: 16px;
-            border-radius: 10px;
+            padding: 14px;
+            border-radius: 8px;
             text-align: center;
             border: 2px solid #38bdf8;
-            max-width: 300px;
+            max-width: 280px;
             width: 90%;
-            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.4);
+            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4);
         }
 
         .modal-content h2 {
-            margin-bottom: 6px;
-            font-size: 1rem;
+            margin-bottom: 4px;
+            font-size: 0.95rem;
             color: #38bdf8;
         }
 
         .quote-box {
             font-family: 'Georgia', serif;
             font-style: italic;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             line-height: 1.3;
             color: #bae6fd;
             background: rgba(0, 0, 0, 0.4);
-            padding: 8px;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            border-left: 3px solid #f97316;
+            padding: 6px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            border-left: 2px solid #f97316;
         }
 
         .modal-score {
-            font-size: 0.75rem;
-            margin-bottom: 8px;
+            font-size: 0.7rem;
+            margin-bottom: 6px;
             color: #7dd3fc;
         }
     </style>
@@ -324,7 +324,7 @@
         <button class="btn" id="shuffleBtn">Karıştır (<span id="shuffleCount">5</span>)</button>
         <button class="btn powerup-btn" id="bombBtn">Bomba (<span id="bombCount">2</span>)</button>
         <button class="btn" id="hintBtn">İpucu</button>
-        <button class="btn" id="restartBtn" style="flex: 0 0 38px; background:#1e293b; border-color:#475569;">🔄</button>
+        <button class="btn" id="restartBtn" style="flex: 0 0 34px; background:#1e293b; border-color:#475569;">🔄</button>
     </div>
 
     <div class="modal" id="modal">
@@ -332,7 +332,7 @@
             <h2 id="modalTitle">Sistem Temizlendi!</h2>
             <div class="quote-box" id="quoteText">"Kozmik zihnin sınırlarını aştın..."</div>
             <div class="modal-score" id="modalText">Skor: 0</div>
-            <button class="btn" id="nextLevelBtn" style="width:100%; padding:6px;">Sonraki Galaksiye Geç</button>
+            <button class="btn" id="nextLevelBtn" style="width:100%; padding:5px;">Sonraki Galaksiye Geç</button>
         </div>
     </div>
 
@@ -553,24 +553,24 @@
                     let col = i % 5;
                     let row = Math.floor(i / 5);
                     x = 10 + (col * 17);
-                    y = 12 + (row * 16);
+                    y = 10 + (row * 17);
                 } else if (layer === 1) {
                     let idx = i - Math.floor(count * 0.35);
                     let col = idx % 4;
                     let row = Math.floor(idx / 4);
                     x = 18 + (col * 17);
-                    y = 20 + (row * 16);
+                    y = 18 + (row * 17);
                 } else {
                     let idx = i - Math.floor(count * 0.75);
                     let col = idx % 3;
                     let row = Math.floor(idx / 3);
                     x = 26 + (col * 17);
-                    y = 30 + (row * 16);
+                    y = 26 + (row * 17);
                 }
                 
                 posList.push({ 
-                    x: Math.max(4, Math.min(81, x)), 
-                    y: Math.max(4, Math.min(78, y)), 
+                    x: Math.max(4, Math.min(82, x)), 
+                    y: Math.max(4, Math.min(76, y)), 
                     layer 
                 });
             }
