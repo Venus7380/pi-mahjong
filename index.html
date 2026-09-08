@@ -13,7 +13,6 @@
         }
 
         body {
-            /* Yeşil fon kaldırıldı, manzaraya uyumlu modern koyu tema arka planı eklendi */
             background: #0d1b1e;
             color: #fff;
             height: 100vh;
@@ -53,7 +52,6 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Oyun alanını tüm ekranı dolduracak ve tam ekran (fullscreen) hissi verecek şekilde ayarladım */
         .game-container {
             position: relative;
             width: 100vw;
@@ -74,30 +72,28 @@
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            /* Manzaralar daha net görünsün diye hafifletilmiş koyu katman */
             background: rgba(0, 0, 0, 0.45);
             z-index: 1;
         }
 
-        /* Gerçek 3 Boyutlu Mahjong Taşı Efekti */
+        /* Taş boyutları daha kompakt ve zarif hale getirildi */
         .tile {
             position: absolute;
-            width: 13%;
-            height: 14%;
+            width: 11%;
+            height: 12%;
             background: linear-gradient(145deg, #fdfbf7, #e3ded6);
             color: #2b2b2b;
-            border-radius: 6px;
-            /* 3 boyutlu kalınlık hissi veren çoklu gölge ve kenarlıklar */
+            border-radius: 5px;
             border-top: 1.5px solid #ffffff;
             border-left: 1.5px solid #ffffff;
             border-right: 2px solid #b5b0a6;
             border-bottom: 3px solid #8c877d;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255,255,255,0.8);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255,255,255,0.8);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-around;
-            padding: 2px;
+            padding: 1px;
             cursor: pointer;
             user-select: none;
             transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
@@ -107,14 +103,14 @@
         .tile:hover:not(.locked) {
             transform: translateY(-4px) scale(1.02);
             background: linear-gradient(145deg, #ffffff, #eae6dc);
-            box-shadow: 0 10px 18px rgba(0,0,0,0.6), inset 0 1px 3px rgba(255,255,255,0.9);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.6), inset 0 1px 3px rgba(255,255,255,0.9);
         }
 
         .tile.selected {
             border-color: #e76f51;
             background: linear-gradient(145deg, #fff3e2, #f3d5b5);
             transform: translateY(-6px) scale(1.04);
-            box-shadow: 0 12px 22px rgba(231, 111, 81, 0.6), inset 0 1px 3px rgba(255,255,255,0.9);
+            box-shadow: 0 10px 18px rgba(231, 111, 81, 0.6), inset 0 1px 3px rgba(255,255,255,0.9);
             border-bottom: 3px solid #bc4749;
         }
 
@@ -129,18 +125,18 @@
         }
 
         .tile-number {
-            font-size: 0.45rem;
+            font-size: 0.4rem;
             font-weight: bold;
             color: #d64045;
         }
 
         .tile-icon {
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
         }
 
         .tile-label {
-            font-size: 0.38rem;
+            font-size: 0.35rem;
             text-transform: uppercase;
             font-weight: bold;
             color: #2d6a4f;
@@ -153,7 +149,7 @@
 
         .controls {
             display: flex;
-            gap: 6px;
+            gap: 5px;
             align-items: center;
             justify-content: center;
             width: 100%;
@@ -166,8 +162,8 @@
             background-color: #2d6a4f;
             color: white;
             border: none;
-            padding: 7px 10px;
-            font-size: 0.75rem;
+            padding: 7px 8px;
+            font-size: 0.7rem;
             font-weight: bold;
             border-radius: 6px;
             cursor: pointer;
@@ -255,7 +251,8 @@
     <div class="controls">
         <button class="btn" id="shuffleBtn">Karıştır (<span id="shuffleCount">10</span>)</button>
         <button class="btn" id="hintBtn">İpucu (<span id="hintCount">10</span>)</button>
-        <button class="btn" id="musicToggleBtn" style="flex: 0.8; background-color: #1b4332;">Müzik: 🔇</button>
+        <button class="btn" id="restartBtn" style="background-color: #bc4749;">Yeniden Başlat</button>
+        <button class="btn" id="musicToggleBtn" style="flex: 0.7; background-color: #1b4332;">Müzik: 🔇</button>
     </div>
 
     <div class="modal" id="modal">
@@ -347,6 +344,7 @@
         const timerDisplay = document.getElementById('timer');
         const shuffleBtn = document.getElementById('shuffleBtn');
         const hintBtn = document.getElementById('hintBtn');
+        const restartBtn = document.getElementById('restartBtn');
         const shuffleCountSpan = document.getElementById('shuffleCount');
         const hintCountSpan = document.getElementById('hintCount');
         const musicToggleBtn = document.getElementById('musicToggleBtn');
@@ -502,8 +500,8 @@
                     layer = i < count * 0.4 ? 0 : (i < count * 0.8 ? 1 : 2);
                     let row = Math.floor(Math.sqrt(i * 2));
                     let col = i - (row * (row + 1)) / 2;
-                    x = 20 + (row * 4.5) + (col * 11.5);
-                    y = 10 + (row * 13.5) + (layer * 3);
+                    x = 22 + (row * 4) + (col * 10.5);
+                    y = 12 + (row * 12) + (layer * 3);
                 } 
                 else if (shapeType === 1) {
                     layer = i % 3;
@@ -517,8 +515,8 @@
                     let localIdx = i % 14;
                     let col = localIdx % 5;
                     let row = Math.floor(localIdx / 5);
-                    x = 10 + (col * 15) + (layer * 3);
-                    y = 12 + (row * 15) + (layer * 3);
+                    x = 12 + (col * 14) + (layer * 3);
+                    y = 15 + (row * 14) + (layer * 3);
                 } 
                 else {
                     layer = i < count / 2 ? 0 : 1;
@@ -527,8 +525,8 @@
                     y = 42 + Math.cos(t) * 19 + (layer * 4);
                 }
 
-                x = Math.max(2, Math.min(85, x));
-                y = Math.max(4, Math.min(80, y));
+                x = Math.max(2, Math.min(87, x));
+                y = Math.max(4, Math.min(82, y));
 
                 posList.push({ x, y, layer });
             }
@@ -539,7 +537,7 @@
             if (tile.removed) return true;
             return tiles.some(other => {
                 if (other.removed || other.layer <= tile.layer) return false;
-                return Math.abs(other.x - tile.x) < 8 && Math.abs(other.y - tile.y) < 11;
+                return Math.abs(other.x - tile.x) < 7 && Math.abs(other.y - tile.y) < 10;
             });
         }
 
@@ -555,7 +553,6 @@
                 el.className = 'tile';
                 el.style.left = `${tile.x}%`;
                 el.style.top = `${tile.y}%`;
-                // 3 boyutlu katman derinliği için z-index artırıldı
                 el.style.zIndex = (tile.layer * 20) + 2;
 
                 const locked = isTileLocked(tile);
@@ -659,6 +656,10 @@
                 }
             }
             alert("Açıkta eşleşen taş kalmadı, karıştırmayı dene!");
+        });
+
+        restartBtn.addEventListener('click', () => {
+            initLevel();
         });
 
         function updateButtonsState() {
